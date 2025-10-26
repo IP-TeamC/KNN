@@ -1,0 +1,100 @@
+@startuml
+
+Trainer --> Network
+Trainer --> StopFunction
+Trainer --> LossFunction
+Trainer --> OptimizationFunction
+class Trainer {
+    maxEpochs: int
+}
+
+' Early Stopping
+abstract class StopFunction {
+    isFinished(loss: float): boolean
+}
+
+StopFunction <|-- EarlyStopping
+class EarlyStopping {
+    minDelta: float
+    patience: int
+    losses: float[]
+}
+
+abstract class LossFunction {
+    ' ( Expected für alle Output-Neuronen, Predicted für alle Output-Neuronen ) je Datensatz
+    calc(inputs: (float[], float[])[]): float
+}
+
+LossFunction <|-- MeanSquaredError
+class MeanSquaredError {
+}
+
+LossFunction <|-- CrossEntropyLoss
+class CrossEntropyLoss {
+}
+
+' Lernfunktion: Gradient Descent / Lernfunktion
+abstract class OptimizationFunction {
+    learningRate: float
+
+}
+
+OptimizationFunction <|-- GradientDescent
+class GradientDescent {
+    ' TODO?
+}
+
+Network --> "1" InputLayer : inputLayer
+Network --> "1..*" DenseLayer : denseLayers
+class Network {
+    feedForward(inputs: float[]): float[]
+}
+
+' Ausgabe (Aktivierungsfunktion)
+class OutputFunction {
+    calc(input: float): float
+}
+
+' Übertragungsfunktion
+class InputFunction {
+    calc(incoming: Connection[], bias: float): float
+}
+
+Connection --> "1" Neuron : input
+class Connection {
+    weight: float
+    amplification: float
+    getInput(): float
+}
+
+Neuron <|-- InputNeuron
+class InputNeuron {
+    value: float
+}
+
+DenseNeuron --> "1" OutputFunction : outputFunction
+DenseNeuron --> "1" InputFunction : inputFunction
+DenseNeuron --> "1..*" Connection : incoming
+Neuron <|-- DenseNeuron
+class DenseNeuron {
+    outputCache: float
+    bias: float
+}
+
+abstract class Neuron {
+    output() : float
+}
+
+Layer --> "1..*" Neuron
+abstract class Layer {
+}
+
+Layer <|-- InputLayer
+class InputLayer {
+}
+
+Layer <|-- DenseLayer
+class DenseLayer {
+}
+
+@enduml
