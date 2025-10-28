@@ -22,7 +22,10 @@ class EarlyStopping {
 
 abstract class LossFunction {
     ' ( Expected für alle Output-Neuronen, Predicted für alle Output-Neuronen ) je Datensatz
-    calc(inputs: (float[], float[])[]): float
+    'calc(inputs: (float[], float[])[]): float
+
+    ' Expected/Predicted für alle Output-Neuronen (innen) je Datensatz (außen)
+    calc(expected: float[][], predicted: float[][]): float
 }
 
 LossFunction <|-- MeanSquaredError
