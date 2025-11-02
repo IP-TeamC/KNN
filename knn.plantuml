@@ -66,13 +66,12 @@ class InputFunction {
 Connection --> "1" Neuron : input
 class Connection {
     weight: float
-    amplification: float
-    getInput(): float
+    guard: boolean
 }
 
 Neuron <|-- InputNeuron
 class InputNeuron {
-    value: float
+    valueCache: float
 }
 
 DenseNeuron --> "1" OutputFunction : outputFunction
