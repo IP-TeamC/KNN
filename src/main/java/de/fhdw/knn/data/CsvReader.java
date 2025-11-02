@@ -7,10 +7,10 @@ import java.util.Map;
 
 public class CsvReader {
 
-    public static DataSet readFile(String filename, int inputStart, int inputSize, int outputStart, int outputSize) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+    public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             List<Map.Entry<double[], double[]>> data = br.lines().map(line -> line.split(",")).map(split -> {
-                double[] dataset = Arrays.stream(split).mapToDouble(Double::parseDouble).toArray();
+                double[] dataset = Arrays.stream(split).mapToDouble(CsvReader::parseDoubleOrNaN).toArray();
                 double[] input = new double[inputSize];
                 double[] output = new double[outputSize];
                 System.arraycopy(dataset, inputStart, input, 0, inputSize);
@@ -25,6 +25,14 @@ public class CsvReader {
                 output[i] = data.get(i).getValue();
             }
             return new DataSet(input, output);
+        }
+    }
+
+    private static double parseDoubleOrNaN(String value) {
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            return Double.NaN;
         }
     }
 

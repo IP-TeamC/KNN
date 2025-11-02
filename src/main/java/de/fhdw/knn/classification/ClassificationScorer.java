@@ -55,6 +55,21 @@ public record ClassificationScorer(Network network) {
             this.f1 = 2 * precision * recall / (precision + recall);
         }
 
+        public void print() {
+            System.out.println();
+            System.out.println("TP: " + truePositives);
+            System.out.println("TN: " + trueNegatives);
+            System.out.println("FP: " + falsePositives);
+            System.out.println("FN: " + falseNegatives);
+            System.out.println();
+            System.out.println("Accuracy: " + accuracy);
+            System.out.println("Error: " + error);
+            System.out.println("Precision: " + precision);
+            System.out.println("Recall: " + recall);
+            System.out.println("F1: " + f1);
+            System.out.println();
+        }
+
     }
 
 }

@@ -19,4 +19,12 @@ public class DenseLayer extends Layer {
         }
     }
 
+    public static DenseLayer[] createLayers(int... neurons) {
+        DenseLayer[] layers = new DenseLayer[neurons.length];
+        for (int i = 0; i < neurons.length; i++) {
+            layers[i] = new DenseLayer(neurons[i]);
+        }
+        return layers;
+    }
+
 }

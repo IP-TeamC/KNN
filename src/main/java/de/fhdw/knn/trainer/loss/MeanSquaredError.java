@@ -22,13 +22,4 @@ public class MeanSquaredError implements LossFunction {
         return sum / expected.length;
     }
 
-    @Override
-    public double totalLoss(double[][] expected, double[][] predicted) {
-        double sum = 0;
-        for (int i = 0; i < expected.length; i++) {
-            sum += loss(expected[i], predicted[i]);
-        }
-        return sum / expected.length;
-    }
-
 }
