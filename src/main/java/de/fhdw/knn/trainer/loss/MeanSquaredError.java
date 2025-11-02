@@ -2,13 +2,10 @@ package de.fhdw.knn.trainer.loss;
 
 public class MeanSquaredError implements LossFunction {
 
-    public static final MeanSquaredError DEFAULT = new MeanSquaredError();
-
     @Override
     public double loss(double[] expected, double[] predicted) {
         double sum = 0;
         for (int i = 0; i < expected.length; i++) {
-            //System.out.println("Expected: " + expected[i] + ", Predicted: " + predicted[i]);
             double error = expected[i] - predicted[i];
             sum += error * error;
         }
@@ -24,4 +21,14 @@ public class MeanSquaredError implements LossFunction {
         }
         return sum / expected.length;
     }
+
+    @Override
+    public double totalLoss(double[][] expected, double[][] predicted) {
+        double sum = 0;
+        for (int i = 0; i < expected.length; i++) {
+            sum += loss(expected[i], predicted[i]);
+        }
+        return sum / expected.length;
+    }
+
 }

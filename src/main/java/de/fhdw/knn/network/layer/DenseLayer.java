@@ -2,9 +2,7 @@ package de.fhdw.knn.network.layer;
 
 import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.network.neuron.Neuron;
-import lombok.ToString;
 
-@ToString
 public class DenseLayer extends Layer {
 
     public DenseNeuron[] neurons;

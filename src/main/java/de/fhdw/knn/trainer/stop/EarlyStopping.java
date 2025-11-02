@@ -5,9 +5,14 @@ import java.util.List;
 
 public class EarlyStopping implements StopFunction {
 
-    public double minDelta;
-    public int patience;
-    public List<Double> losses = new LinkedList<>();
+    public final double minDelta;
+    public final int patience;
+    public final List<Double> losses = new LinkedList<>(List.of(Double.MAX_VALUE));
+
+    public EarlyStopping(double minDelta, int patience) {
+        this.minDelta = minDelta;
+        this.patience = patience;
+    }
 
     private int epochsWaited = 0;
 

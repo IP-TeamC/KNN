@@ -1,11 +1,7 @@
 package de.fhdw.knn.network.neuron;
 
-import lombok.ToString;
-
-@ToString
 public class InputNeuron extends Neuron {
 
-    @ToString.Exclude
     public double valueCache;
 
     @Override

@@ -1,4 +1,4 @@
-package de.fhdw.knn.reader;
+package de.fhdw.knn.data;
 
 import java.io.*;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class CsvReader {
 
-    public static Map.Entry<double[][], double[][]> readFile(String filename, int inputStart, int inputSize, int outputStart, int outputSize) throws IOException {
+    public static DataSet readFile(String filename, int inputStart, int inputSize, int outputStart, int outputSize) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             List<Map.Entry<double[], double[]>> data = br.lines().map(line -> line.split(",")).map(split -> {
                 double[] dataset = Arrays.stream(split).mapToDouble(Double::parseDouble).toArray();
@@ -24,7 +24,7 @@ public class CsvReader {
                 input[i] = data.get(i).getKey();
                 output[i] = data.get(i).getValue();
             }
-            return Map.entry(input, output);
+            return new DataSet(input, output);
         }
     }
 

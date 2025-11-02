@@ -1,6 +1,6 @@
-package de.fhdw.knn.normalizer;
+package de.fhdw.knn.data;
 
-public class MinMaxNormalizer {
+public class MinMaxNormalizer implements Normalizer {
 
     public double min;
     public double max;
@@ -13,6 +13,7 @@ public class MinMaxNormalizer {
         this.max = max;
     }
 
+    @Override
     public void normalize(double[][] data) {
         for (double[] ds : data) {
             for (double d : ds) {
@@ -33,6 +34,7 @@ public class MinMaxNormalizer {
         }
     }
 
+    @Override
     public void denormalize(double[][] data) {
         double diff = max - min;
         double dataDiff = dataMax - dataMin;
