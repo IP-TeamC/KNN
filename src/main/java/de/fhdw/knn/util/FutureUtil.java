@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 
 public class FutureUtil {
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(12);
+    public static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(12);
 
     public static void partitionedExecution(int n, int size, BiConsumer<Integer, Integer> f) {
         LinkedList<Future<?>> futures = new LinkedList<>();
@@ -19,7 +19,7 @@ public class FutureUtil {
         for (int partition = 1; partition < partitions.length; partition++) {
             int first = partitions[partition - 1];
             int next = partitions[partition];
-            Future<?> future = executor.submit(() -> f.accept(first, next));
+            Future<?> future = EXECUTOR.submit(() -> f.accept(first, next));
             futures.add(future);
         }
         FutureUtil.awaitFutures(futures);

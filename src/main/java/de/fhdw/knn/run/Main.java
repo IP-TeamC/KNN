@@ -11,6 +11,7 @@ import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
+import de.fhdw.knn.util.FutureUtil;
 
 import java.io.IOException;
 
@@ -55,6 +56,7 @@ public class Main {
         long testTime = testStop - testStart;
         System.out.printf("Train Time: %d ms (%.2f s)%n", trainTime, trainTime / 1000.0);
         System.out.printf("Test Time: %d ms (%.2f s)%n", testTime, testTime / 1000.0);
+        FutureUtil.EXECUTOR.close();
     }
 
 }
