@@ -13,16 +13,18 @@ public class NetworkPaths {
     private final Connection[][][][][] allPaths;
 
     public NetworkPaths(Network network) {
+        int outputLayer = network.denseLayers.length - 1;
         allPaths = new Connection[network.denseLayers.length][][][][];
-        Neuron[] outputNeurons = network.denseLayers[network.denseLayers.length - 1].neurons;
+        Neuron[] outputNeurons = network.denseLayers[outputLayer].neurons;
         for (int layer = 0; layer < network.denseLayers.length; layer++) {
+            int maxDepth = outputLayer - layer;
             Neuron[] neurons = network.denseLayers[layer].neurons;
             allPaths[layer] = new Connection[neurons.length][][][];
             for (int start = 0; start < neurons.length; start++) {
                 Neuron neuron = neurons[start];
                 allPaths[layer][start] = new Connection[outputNeurons.length][][];
                 for (int output = 0; output < outputNeurons.length; output++) {
-                    Connection[][] paths = getAllPaths((DenseNeuron) neuron, (DenseNeuron) outputNeurons[output])
+                    Connection[][] paths = getAllPaths(maxDepth, (DenseNeuron) neuron, (DenseNeuron) outputNeurons[output])
                             .stream().map(path -> path.toArray(Connection[]::new)).toArray(Connection[][]::new);
                     allPaths[layer][start][output] = paths;
                 }
@@ -48,8 +50,8 @@ public class NetworkPaths {
         return pathsAdjustment;
     }
 
-    private List<List<Connection>> getAllPaths(DenseNeuron startNeuron, DenseNeuron endNeuron) {
-        if (startNeuron == endNeuron) {
+    private List<List<Connection>> getAllPaths(int maxDepth, DenseNeuron startNeuron, DenseNeuron endNeuron) {
+        if (startNeuron == endNeuron || maxDepth <= 0) {
             return new LinkedList<>();
         }
 
@@ -63,7 +65,7 @@ public class NetworkPaths {
                 simplePath.add(conn);
                 return List.of(simplePath);
             } else if (conn.inputNeuron instanceof DenseNeuron dn) {
-                for (List<Connection> path : getAllPaths(startNeuron, dn)) {
+                for (List<Connection> path : getAllPaths(maxDepth - 1, startNeuron, dn)) {
                     path.add(conn);
                     paths.add(path);
                 }
