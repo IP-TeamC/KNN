@@ -4,10 +4,12 @@ import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.neuron.Connection;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 
+import java.util.stream.IntStream;
+
 public record Adjustments(double[][][] adjustmentsWeight, double[][] adjustmentsBias) {
 
     public void adjust(Network network) {
-        for (int layer = 0; layer < network.denseLayers.length; layer++) {
+        IntStream.range(0, network.denseLayers.length).parallel().forEach(layer -> {
             DenseNeuron[] neurons = network.denseLayers[layer].neurons;
             for (int neuron = 0; neuron < neurons.length; neuron++) {
                 Connection[] conns = neurons[neuron].incoming;
@@ -16,7 +18,7 @@ public record Adjustments(double[][][] adjustmentsWeight, double[][] adjustments
                 }
                 neurons[neuron].bias -= adjustmentsBias[layer][neuron];
             }
-        }
+        });
     }
 
 }
