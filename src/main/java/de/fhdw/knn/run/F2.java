@@ -23,7 +23,7 @@ public class F2 {
         data.normalizeOutputs(normalizer);
 
         Network network = new Network(42, 1, 200, 300, 200, 3);
-        network = Importer.importNetwork("f2_200x300x200_50.knn");
+        network = Importer.importNetwork("f2.knn2");
 
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = new EarlyStopping(0.0001, 100);
