@@ -11,7 +11,8 @@ public record ClassificationScorer(Network network) {
         int falsePositives = 0;
         int falseNegatives = 0;
         for (int i = 0; i < data.size; i++) {
-            double prediction = network.feedForward(data.inputs[i])[0];
+            double[][] outputs = network.feedForward(data.inputs[i]).x;
+            double prediction = outputs[outputs.length - 1][0];
             double expected = data.outputs[i][0];
             if (prediction >= 0.5) {
                 if (expected == 1) {

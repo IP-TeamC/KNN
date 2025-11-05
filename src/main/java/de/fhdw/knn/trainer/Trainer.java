@@ -4,23 +4,29 @@ import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.io.Exporter;
 import de.fhdw.knn.trainer.loss.LossFunction;
+import de.fhdw.knn.trainer.optimization.Adjustments;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.StopFunction;
+import de.fhdw.knn.util.FutureUtil;
+
+import java.util.stream.IntStream;
 
 public class Trainer {
 
     public final Network network;
     public final int maxEpochs;
     public final boolean shuffleEpoch;
+    public int batchSize;
 
     public final LossFunction lossFunction;
     public final StopFunction stopFunction;
     public final OptimizationFunction optimizationFunction;
 
-    public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction) {
+    public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction) {
         this.network = network;
         this.maxEpochs = maxEpochs;
         this.shuffleEpoch = shuffleEpoch;
+        this.batchSize = batchSize;
         this.lossFunction = lossFunction;
         this.stopFunction = stopFunction;
         this.optimizationFunction = optimizationFunction;
@@ -28,6 +34,7 @@ public class Trainer {
 
     public void train(DataSet data) {
         train(data, null, 0);
+        FutureUtil.EXECUTOR.close();
     }
 
     public void train(DataSet data, String export, int mod) {
@@ -45,8 +52,23 @@ public class Trainer {
     }
 
     private double trainEpoch(DataSet data) {
-        for (int i = 0; i < data.size; i++) {
-            optimizationFunction.compute(data.inputs[i], data.outputs[i]).adjust(network);
+        if (batchSize > 1) {
+            Adjustments[] adjustments = new Adjustments[batchSize];
+            for (int i = 0; i < data.size; i += batchSize) {
+                int base = i;
+                int limit = i + batchSize > data.size ? data.size - i : batchSize;
+                IntStream.range(0, limit).parallel().forEach(offset -> {
+                    int index = base + offset;
+                    adjustments[offset] = optimizationFunction.compute(data.inputs[index], data.outputs[index], batchSize);
+                });
+                for (Adjustments adjustment : adjustments) {
+                    adjustment.adjust(network);
+                }
+            }
+        } else {
+            for (int i = 0; i < data.size; i += batchSize) {
+                optimizationFunction.compute(data.inputs[i], data.outputs[i], 1).adjust(network);
+            }
         }
 
         double[][] predicted = network.predict(data.inputs);

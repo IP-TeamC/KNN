@@ -16,4 +16,5 @@ public interface LossFunction {
         }
         return sum / expected.length;
     }
+
 }

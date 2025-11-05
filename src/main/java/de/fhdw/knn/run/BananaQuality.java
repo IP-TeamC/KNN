@@ -25,14 +25,13 @@ public class BananaQuality {
 
         long trainStart = System.currentTimeMillis();
         Network network = new Network(42, 7, 100, 100, 1);
-        //network = Importer.importNetwork("bq_2x100_9.knn");
-        //network = Importer.importNetwork("bq_54.knn");
+        //network = Importer.importNetwork("bq.knn");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = new EarlyStopping(0.0001, 8);
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, 0.1);
+        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, 0.05);
 
-        Trainer trainer = new Trainer(network, 10, true, lossFunction, stopFunction, optimizationFunction);
+        Trainer trainer = new Trainer(network, 20, true, 1, lossFunction, stopFunction, optimizationFunction);
         trainer.train(train);
         long trainStop = System.currentTimeMillis();
 

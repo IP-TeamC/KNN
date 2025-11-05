@@ -1,4 +1,4 @@
-package de.fhdw.knn.trainer.optimization;
+package de.fhdw.knn.legacy;
 
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.neuron.Connection;
@@ -8,11 +8,12 @@ import de.fhdw.knn.network.neuron.Neuron;
 import java.util.LinkedList;
 import java.util.List;
 
-public class NetworkPaths {
+@Deprecated
+public class LegacyNetworkPaths {
 
     private final Connection[][][][][] allPaths;
 
-    public NetworkPaths(Network network) {
+    public LegacyNetworkPaths(Network network) {
         int outputLayer = network.denseLayers.length - 1;
         allPaths = new Connection[network.denseLayers.length][][][][];
         Neuron[] outputNeurons = network.denseLayers[outputLayer].neurons;

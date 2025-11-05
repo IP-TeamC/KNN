@@ -24,15 +24,15 @@ public class Mails {
         DataSet test = trainTest.test;
 
         long trainStart = System.currentTimeMillis();
-        Network network = new Network(42, 3000, 600, 300, 1);
+        Network network = new Network(42, 3000, 300, 300, 1);
         //network = Importer.importNetwork("mails_best.knn");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = new EarlyStopping(0.0001, 8);
         OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, 0.01);
 
-        Trainer trainer = new Trainer(network, 100, true, lossFunction, stopFunction, optimizationFunction);
-        trainer.train(train);
+        Trainer trainer = new Trainer(network, 100, true, 1, lossFunction, stopFunction, optimizationFunction);
+        trainer.train(train, "target/models/mails_%d.knn", 1);
         long trainStop = System.currentTimeMillis();
 
         long testStart = System.currentTimeMillis();

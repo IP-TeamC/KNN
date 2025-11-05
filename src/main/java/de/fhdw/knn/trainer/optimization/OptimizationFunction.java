@@ -4,6 +4,6 @@ public interface OptimizationFunction {
 
     void init();
 
-    Adjustments compute(double[] input, double[] output);
+    Adjustments compute(double[] input, double[] output, int batchSize);
 
 }
