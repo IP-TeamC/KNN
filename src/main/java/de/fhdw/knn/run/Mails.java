@@ -5,6 +5,7 @@ import de.fhdw.knn.data.CsvReader;
 import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.data.TrainTestSplit;
 import de.fhdw.knn.network.Network;
+import de.fhdw.knn.network.io.Importer;
 import de.fhdw.knn.trainer.Trainer;
 import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.GradientDescent;
@@ -25,14 +26,14 @@ public class Mails {
 
         long trainStart = System.currentTimeMillis();
         Network network = new Network(42, 3000, 300, 300, 1);
-        //network = Importer.importNetwork("mails_best.knn");
+        network = Importer.importNetwork("mails_91.knn2");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = new EarlyStopping(0.0001, 8);
         OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, 0.01);
 
         Trainer trainer = new Trainer(network, 100, true, 1, lossFunction, stopFunction, optimizationFunction);
-        trainer.train(train, "target/models/mails_%d.knn", 1);
+        //trainer.train(train);
         long trainStop = System.currentTimeMillis();
 
         long testStart = System.currentTimeMillis();

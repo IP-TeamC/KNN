@@ -25,7 +25,7 @@ public class BananaQuality {
 
         long trainStart = System.currentTimeMillis();
         Network network = new Network(42, 7, 100, 100, 1);
-        //network = Importer.importNetwork("bq.knn");
+        //network = Importer.importNetwork("bq.knn2");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = new EarlyStopping(0.0001, 8);
