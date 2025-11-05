@@ -13,7 +13,14 @@ public class BestModel {
         String best = null;
         double f1 = 0;
         for (String fileName : fileNames) {
-            Network network = Importer.importNetwork(fileName);
+            Network network;
+            if (fileName.endsWith(".knn")) {
+                network = new Importer().loadText(fileName);
+            } else if (fileName.endsWith(".knn2")) {
+                network = Importer.importNetwork(fileName);
+            } else {
+                throw new IllegalArgumentException("unknown file extension");
+            }
 
             ClassificationScorer scorer = new ClassificationScorer(network);
             ClassificationScorer.Score score = scorer.score(test);
