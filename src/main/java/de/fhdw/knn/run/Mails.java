@@ -26,7 +26,8 @@ public class Mails {
 
         long trainStart = System.currentTimeMillis();
         Network network = new Network(42, 3000, 300, 300, 1);
-        network = Importer.importNetwork("mails_91.knn2");
+        //network = Importer.importNetwork("mails_91.knn2");
+        network = Importer.importNetwork("mails_98.knn2");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = new EarlyStopping(0.0001, 8);
