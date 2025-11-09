@@ -1,12 +1,12 @@
 package de.fhdw.knn.network.io;
 
 import de.fhdw.knn.network.Network;
+import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.layer.DenseLayer;
-import de.fhdw.knn.network.neuron.Connection;
+import de.fhdw.knn.network.connection.Connection;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 import lombok.SneakyThrows;
 
-import java.io.FileWriter;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,6 +20,7 @@ public class Exporter {
     // Anzahl Neuronen
     // }
     // { je Neuron je Layer (0 -> n)
+    // ActivationFunction
     // BIAS
     // Weights... je Connection (0 -> n)
     // }
@@ -27,6 +28,9 @@ public class Exporter {
     public static void export(Network network, String fileName) {
         int size = 8 + network.denseLayers.length * 4;
         for (int i = 0; i < network.denseLayers.length; i++) {
+            // ActivationFunction (4 ...)
+            size += 4 * network.denseLayers[i].neurons.length;
+            // Bias (...1), Weights (...incoming.length)
             size += 8 * network.denseLayers[i].neurons.length * (1 + network.denseLayers[i].neurons[0].incoming.length);
         }
         ByteBuffer buffer = ByteBuffer.allocate(size);
@@ -38,6 +42,7 @@ public class Exporter {
 
         for (DenseLayer layer : network.denseLayers) {
             for (DenseNeuron neuron : layer.neurons) {
+                buffer.putInt(ActivationFunction.FUNCTIONS.indexOf(neuron.activationFunction));
                 buffer.putDouble(neuron.bias);
                 for (Connection conn : neuron.incoming) {
                     buffer.putDouble(conn.weight);
@@ -45,26 +50,6 @@ public class Exporter {
             }
         }
         Files.write(Paths.get(fileName), buffer.array(), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-    }
-
-    @SneakyThrows
-    public static void exportText(Network network, String fileName) {
-        try (FileWriter writer = new FileWriter(fileName)) {
-            writer.write(network.inputLayer.neurons.length + "\n");
-            writer.write(network.denseLayers.length + "\n");
-            for (DenseLayer layer : network.denseLayers) {
-                writer.write(layer.neurons.length + "\n");
-            }
-
-            for (DenseLayer layer : network.denseLayers) {
-                for (DenseNeuron neuron : layer.neurons) {
-                    writer.write(Double.doubleToLongBits(neuron.bias) + "\n");
-                    for (Connection conn : neuron.incoming) {
-                        writer.write(Double.doubleToLongBits(conn.weight) + "\n");
-                    }
-                }
-            }
-        }
     }
 
 }

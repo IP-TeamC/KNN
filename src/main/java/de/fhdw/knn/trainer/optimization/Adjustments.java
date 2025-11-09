@@ -1,7 +1,7 @@
 package de.fhdw.knn.trainer.optimization;
 
 import de.fhdw.knn.network.Network;
-import de.fhdw.knn.network.neuron.Connection;
+import de.fhdw.knn.network.connection.Connection;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 
 import java.util.stream.IntStream;

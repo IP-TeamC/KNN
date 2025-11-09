@@ -7,7 +7,6 @@ import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.Adjustments;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.StopFunction;
-import de.fhdw.knn.util.FutureUtil;
 
 import java.util.stream.IntStream;
 
@@ -34,14 +33,15 @@ public class Trainer {
 
     public void train(DataSet data) {
         train(data, null, 0);
-        FutureUtil.EXECUTOR.close();
     }
 
     public void train(DataSet data, String export, int mod) {
         optimizationFunction.init();
+        double totalLoss = Double.NaN;
         for (int epoch = 0; epoch < maxEpochs; epoch++) {
             System.out.println("Epoch: " + epoch);
-            double totalLoss = trainEpoch(data);
+            optimizationFunction.epoch(epoch, totalLoss);
+            totalLoss = trainEpoch(data);
 
             if (export != null && (epoch % mod == 0 || epoch == maxEpochs - 1))
                 Exporter.export(network, export.formatted(epoch));
@@ -66,15 +66,20 @@ public class Trainer {
                 }
             }
         } else {
-            for (int i = 0; i < data.size; i += batchSize) {
+            for (int i = 0; i < data.size; i += 1) {
                 optimizationFunction.compute(data.inputs[i], data.outputs[i], 1).adjust(network);
             }
         }
 
-        double[][] predicted = network.predict(data.inputs);
-        double totalLoss = lossFunction.totalLoss(data.outputs, predicted);
-        System.out.println("Loss: " + totalLoss);
-        return totalLoss;
+        if (lossFunction != null) {
+            double[][] predicted = network.predict(data.inputs);
+            double totalLoss = lossFunction.totalLoss(data.outputs, predicted);
+            System.out.println("Loss: " + totalLoss);
+            return totalLoss;
+        } else {
+            return Double.NaN;
+        }
+
     }
 
 }

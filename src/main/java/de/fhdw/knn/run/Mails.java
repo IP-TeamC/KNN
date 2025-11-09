@@ -5,14 +5,16 @@ import de.fhdw.knn.data.CsvReader;
 import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.data.TrainTestSplit;
 import de.fhdw.knn.network.Network;
+import de.fhdw.knn.network.activation.ActivationFunction;
+import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.io.Importer;
+import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.trainer.Trainer;
+import de.fhdw.knn.trainer.learningrate.ConstantLearningRate;
 import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
-import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
-import de.fhdw.knn.util.FutureUtil;
 
 import java.io.IOException;
 
@@ -25,15 +27,17 @@ public class Mails {
         DataSet test = trainTest.test;
 
         long trainStart = System.currentTimeMillis();
-        Network network = new Network(42, 3000, 300, 300, 1);
-        //network = Importer.importNetwork("mails_91.knn2");
-        network = Importer.importNetwork("mails_98.knn2");
+        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.SIGMOID, 300, 300, 1);
+        Network network = new Network(42, WeightInitializer.HE, 3000, denseLayers);
+        network = Importer.importNetwork("mails_swish_97.knn");
+        //network = Importer.importNetwork("mails_91.knn");
+        //network = Importer.importNetwork("mails_98.knn");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
-        StopFunction stopFunction = new EarlyStopping(0.0001, 8);
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, 0.01);
+        StopFunction stopFunction = StopFunction.NEVER;
+        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new ConstantLearningRate(0.00001));
 
-        Trainer trainer = new Trainer(network, 100, true, 1, lossFunction, stopFunction, optimizationFunction);
+        Trainer trainer = new Trainer(network, 100, true, 1, null, stopFunction, optimizationFunction);
         //trainer.train(train);
         long trainStop = System.currentTimeMillis();
 
@@ -48,7 +52,6 @@ public class Mails {
         long testTime = testStop - testStart;
         System.out.printf("Train Time: %d ms (%.2f s)%n", trainTime, trainTime / 1000.0);
         System.out.printf("Test Time: %d ms (%.2f s)%n", testTime, testTime / 1000.0);
-        FutureUtil.EXECUTOR.close();
     }
 
 }
