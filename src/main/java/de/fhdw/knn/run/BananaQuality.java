@@ -27,15 +27,15 @@ public class BananaQuality {
         DataSet test = trainTest.test;
 
         long trainStart = System.currentTimeMillis();
-        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.RELU, ActivationFunction.SIGMOID, 100, 100, 1);
-        Network network = new Network(42, WeightInitializer.GLOROT, 7, denseLayers);
+        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.SIGMOID, 100, 100, 1);
+        Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 7, denseLayers);
         //network = Importer.importNetwork("bq.knn");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = EarlyStopping.NEVER;
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new ConstantLearningRate(0.1));
+        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new ConstantLearningRate(0.06));
 
-        Trainer trainer = new Trainer(network, 10, true, 1, null, stopFunction, optimizationFunction);
+        Trainer trainer = new Trainer(network, 20, true, 1, null, stopFunction, optimizationFunction);
         trainer.train(train);
         long trainStop = System.currentTimeMillis();
 
