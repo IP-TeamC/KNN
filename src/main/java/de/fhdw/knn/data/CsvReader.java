@@ -7,9 +7,13 @@ import java.util.Map;
 
 public class CsvReader {
 
-    public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize) throws IOException {
+    public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize)  throws IOException{
+        return readFile(fileName, inputStart, inputSize, outputStart, outputSize, 0);
+    }
+
+    public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize, final int skip) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            List<Map.Entry<double[], double[]>> data = br.lines().map(line -> line.split(",")).map(split -> {
+            List<Map.Entry<double[], double[]>> data = br.lines().skip(skip).map(line -> line.split(",")).map(split -> {
                 double[] dataset = Arrays.stream(split).mapToDouble(CsvReader::parseDoubleOrNaN).toArray();
                 double[] input = new double[inputSize];
                 double[] output = new double[outputSize];
