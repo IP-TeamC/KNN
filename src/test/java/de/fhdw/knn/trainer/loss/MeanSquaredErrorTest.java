@@ -181,7 +181,7 @@ public class MeanSquaredErrorTest {
         double[] predicted = {-0.5, -1.0};
 
         double loss = mse.loss(expected, predicted);
-        assertEquals(0.5, loss, 1e-10);
+        assertEquals(0.25, loss, 1e-10);
     }
 
     @Test

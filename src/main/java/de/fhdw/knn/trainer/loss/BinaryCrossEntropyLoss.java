@@ -10,7 +10,7 @@ public class BinaryCrossEntropyLoss implements LossFunction {
         for (int i = 0; i < expected.length; i++) {
             sum -= expected[i] * Math.log(predicted[i] + DELTA) + (1 - expected[i]) * Math.log(1 - predicted[i] + DELTA);
         }
-        return sum;
+        return sum / expected.length;
     }
 
     @Override
