@@ -10,7 +10,6 @@ import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
-import de.fhdw.knn.trainer.learningrate.LearningRateFunction;
 import de.fhdw.knn.trainer.loss.LossFunction;
 
 public class GradientDescentTest {
@@ -21,7 +20,8 @@ public class GradientDescentTest {
 
     @Test
     public void testSingleNeuronGradientComputation() {
-        Network network = createSingleNeuronNetwork();
+        // 1 Input -> 2 Hidden -> 1 Output
+        Network network = createNetworkWithHiddenLayer(1, 2, 1);
         gradientDescent = new GradientDescent(
                 network,
                 LossFunction.MEAN_SQUARED_ERROR,
@@ -36,12 +36,34 @@ public class GradientDescentTest {
 
         assertNotNull(adj.adjustmentsWeight());
         assertNotNull(adj.adjustmentsBias());
-        assertEquals(1, adj.adjustmentsWeight().length);
+        assertEquals(2, adj.adjustmentsWeight().length);
+    }
+
+    @Test
+    public void testMultipleOutputNeurons() {
+        // 1 Input -> 3 Hidden -> 3 Output
+        Network network = createNetworkWithHiddenLayer(1, 3, 3);
+        gradientDescent = new GradientDescent(
+                network,
+                LossFunction.MEAN_SQUARED_ERROR,
+                new ConstantLearningRate(0.01)
+        );
+
+        double[] input = {0.5};
+        double[] expectedOutput = {0.8, 0.2, 0.5};
+
+        gradientDescent.epoch(0, 0);
+        Adjustments adj = gradientDescent.compute(input, expectedOutput, 1);
+
+        assertEquals(2, adj.adjustmentsWeight().length);
+        assertEquals(2, adj.adjustmentsBias().length);
+        assertEquals(3, adj.adjustmentsWeight()[1].length);
     }
 
     @Test
     public void testTwoLayerNetworkGradients() {
-        Network network = createTwoLayerNetwork(2, 3, 1);
+        // 2 Input -> 3 Hidden -> 1 Output
+        Network network = createNetworkWithMultipleHiddenLayers(2, new int[]{3, 2}, 1);
         gradientDescent = new GradientDescent(
                 network,
                 LossFunction.MEAN_SQUARED_ERROR,
@@ -54,29 +76,30 @@ public class GradientDescentTest {
         gradientDescent.epoch(0, 0);
         Adjustments adj = gradientDescent.compute(input, expectedOutput, 1);
 
-        assertEquals(2, adj.adjustmentsWeight().length);
-        assertEquals(2, adj.adjustmentsBias().length);
+        // 3 Layer total: Input -> 3 Hidden -> 2 Hidden -> 1 Output
+        assertEquals(3, adj.adjustmentsWeight().length);
+        assertEquals(3, adj.adjustmentsBias().length);
     }
 
     // ===== 2. GRADIENT-EIGENSCHAFTEN =====
 
     @Test
     public void testGradientProportionalToLearningRate() {
-        Network network = createSingleNeuronNetwork();
+        Network network = createNetworkWithHiddenLayer(1, 2, 1);
 
         Adjustments adj1 = computeWithLearningRate(network, 0.01);
         Adjustments adj2 = computeWithLearningRate(network, 0.02);
 
         // Bei 2x Lernrate sollten Gradienten ~2x sein
-        if (Math.abs(adj1.adjustmentsBias()[0][0]) > 1e-10) {
-            double ratio = adj2.adjustmentsBias()[0][0] / adj1.adjustmentsBias()[0][0];
+        if (Math.abs(adj1.adjustmentsBias()[1][0]) > 1e-10) {
+            double ratio = adj2.adjustmentsBias()[1][0] / adj1.adjustmentsBias()[1][0];
             assertEquals(2.0, ratio, 0.05);
         }
     }
 
     @Test
     public void testGradientInverselyProportionalToBatchSize() {
-        Network network = createSingleNeuronNetwork();
+        Network network = createNetworkWithHiddenLayer(1, 2, 1);
         double[] input = {1.0};
         double[] output = {0.5};
 
@@ -93,8 +116,8 @@ public class GradientDescentTest {
         Adjustments adjBatch32 = gradientDescent.compute(input, output, 32);
 
         // Mit 32x Batch sollten Adjustments 1/32 sein
-        if (Math.abs(adjBatch32.adjustmentsBias()[0][0]) > 1e-10) {
-            double ratio = adjBatch1.adjustmentsBias()[0][0] / adjBatch32.adjustmentsBias()[0][0];
+        if (Math.abs(adjBatch32.adjustmentsBias()[1][0]) > 1e-10) {
+            double ratio = adjBatch1.adjustmentsBias()[1][0] / adjBatch32.adjustmentsBias()[1][0];
             assertEquals(32.0, ratio, 1.0);
         }
     }
@@ -103,7 +126,7 @@ public class GradientDescentTest {
 
     @Test
     public void testZeroLearningRateNoChanges() {
-        Network network = createSingleNeuronNetwork();
+        Network network = createNetworkWithHiddenLayer(1, 2, 1);
         double[] input = {1.0};
         double[] output = {0.5};
 
@@ -121,7 +144,7 @@ public class GradientDescentTest {
 
     @Test
     public void testLargeInputsStability() {
-        Network network = createSingleNeuronNetwork();
+        Network network = createNetworkWithHiddenLayer(1, 2, 1);
         double[] largeInput = {1000.0};
         double[] output = {1.0};
 
@@ -140,7 +163,7 @@ public class GradientDescentTest {
 
     @Test
     public void testVerySmallLearningRateStability() {
-        Network network = createSingleNeuronNetwork();
+        Network network = createNetworkWithHiddenLayer(1, 2, 1);
         double[] input = {1.0};
         double[] output = {0.5};
 
@@ -159,7 +182,7 @@ public class GradientDescentTest {
 
     @Test
     public void testNegativeInputsStability() {
-        Network network = createSingleNeuronNetwork();
+        Network network = createNetworkWithHiddenLayer(1, 2, 1);
         double[] negativeInput = {-100.0};
         double[] output = {0.0};
 
@@ -180,8 +203,32 @@ public class GradientDescentTest {
 
     @Test
     public void testMultiLayerGradientFlow() {
-        // 3-Layer Netzwerk: 2 Input -> 3 Hidden -> 2 Output
-        Network network = createTwoLayerNetwork(2, 3, 2);
+        // 2 Input -> 3 Hidden -> 3 Output
+        Network network = createNetworkWithHiddenLayer(2, 3, 3);
+        gradientDescent = new GradientDescent(
+                network,
+                LossFunction.MEAN_SQUARED_ERROR,
+                new ConstantLearningRate(0.01)
+        );
+
+        double[] input = {0.5, -0.3};
+        double[] expectedOutput = {0.8, 0.2, 0.5};
+
+        gradientDescent.epoch(0, 0);
+        Adjustments adj = gradientDescent.compute(input, expectedOutput, 1);
+
+        // Prüfe dass beide Layer Gradienten haben
+        assertEquals(2, adj.adjustmentsWeight().length);
+        assertNotNull(adj.adjustmentsWeight()[0], "Hidden layer weight adjustments null");
+        assertNotNull(adj.adjustmentsWeight()[1], "Output layer weight adjustments null");
+        assertNotNull(adj.adjustmentsBias()[0], "Hidden layer bias adjustments null");
+        assertNotNull(adj.adjustmentsBias()[1], "Output layer bias adjustments null");
+    }
+
+    @Test
+    public void testDeepNetworkGradientBackpropagation() {
+        // 2 Input -> 4 Hidden -> 2 Hidden -> 2 Output (3 Dense Layers)
+        Network network = createNetworkWithMultipleHiddenLayers(2, new int[]{4, 2}, 2);
         gradientDescent = new GradientDescent(
                 network,
                 LossFunction.MEAN_SQUARED_ERROR,
@@ -194,19 +241,21 @@ public class GradientDescentTest {
         gradientDescent.epoch(0, 0);
         Adjustments adj = gradientDescent.compute(input, expectedOutput, 1);
 
-        // Prüfe dass alle Layer Gradienten haben
-        for (int layer = 0; layer < adj.adjustmentsWeight().length; layer++) {
-            assertNotNull(adj.adjustmentsWeight()[layer], "Layer " + layer + " weight adjustments null");
-            assertNotNull(adj.adjustmentsBias()[layer], "Layer " + layer + " bias adjustments null");
+        // 3 Dense Layers (2 hidden + 1 output)
+        assertEquals(3, adj.adjustmentsWeight().length);
+        assertEquals(3, adj.adjustmentsBias().length);
 
-            // Prüfe Dimensionen
-            assertTrue(adj.adjustmentsWeight()[layer].length > 0, "Layer " + layer + " hat keine Neuronen");
+        // Prüfe dass alle Layer Gradienten haben
+        for (int i = 0; i < 3; i++) {
+            assertNotNull(adj.adjustmentsWeight()[i], "Layer " + i + " weight adjustments null");
+            assertNotNull(adj.adjustmentsBias()[i], "Layer " + i + " bias adjustments null");
+            assertTrue(adj.adjustmentsWeight()[i].length > 0, "Layer " + i + " hat keine Neuronen");
         }
     }
 
     @Test
     public void testGradientMagnitudeReasonable() {
-        Network network = createSingleNeuronNetwork();
+        Network network = createNetworkWithHiddenLayer(1, 2, 1);
         double[] input = {0.5};
         double[] output = {0.5};
 
@@ -295,17 +344,7 @@ public class GradientDescentTest {
 
     // ===== NETZWERK-FACTORY METHODEN =====
 
-    private Network createSingleNeuronNetwork() {
-        // 1 Input -> 1 Output
-        ActivationFunction linear = new LinearActivationFunction();
-        DenseLayer[] layers = new DenseLayer[]{
-                new DenseLayer(1).withActivationFunction(linear)
-        };
-
-        return new Network(42, new ConstantWeightInitializer(0.5), 1, layers);
-    }
-
-    private Network createTwoLayerNetwork(int inputSize, int hiddenSize, int outputSize) {
+    private Network createNetworkWithHiddenLayer(int inputSize, int hiddenSize, int outputSize) {
         // inputSize Input -> hiddenSize Hidden -> outputSize Output
         ActivationFunction relu = new ReLUActivationFunction();
         ActivationFunction linear = new LinearActivationFunction();
@@ -314,6 +353,25 @@ public class GradientDescentTest {
                 new DenseLayer(hiddenSize).withActivationFunction(relu),
                 new DenseLayer(outputSize).withActivationFunction(linear)
         };
+
+        return new Network(42, new ConstantWeightInitializer(0.5), inputSize, layers);
+    }
+
+    private Network createNetworkWithMultipleHiddenLayers(int inputSize, int[] hiddenSizes, int outputSize) {
+        // inputSize Input -> hiddenSizes[0] Hidden -> hiddenSizes[1] Hidden -> ... -> outputSize Output
+        ActivationFunction relu = new ReLUActivationFunction();
+        ActivationFunction linear = new LinearActivationFunction();
+
+        // Berechne Anzahl der Dense Layers (alle Hidden Layers + Output Layer)
+        DenseLayer[] layers = new DenseLayer[hiddenSizes.length + 1];
+
+        // Hidden Layers mit ReLU
+        for (int i = 0; i < hiddenSizes.length; i++) {
+            layers[i] = new DenseLayer(hiddenSizes[i]).withActivationFunction(relu);
+        }
+
+        // Output Layer mit Linear
+        layers[hiddenSizes.length] = new DenseLayer(outputSize).withActivationFunction(linear);
 
         return new Network(42, new ConstantWeightInitializer(0.5), inputSize, layers);
     }
@@ -332,5 +390,4 @@ public class GradientDescentTest {
             return weight;
         }
     }
-
 }
