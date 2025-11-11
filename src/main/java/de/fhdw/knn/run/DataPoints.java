@@ -8,7 +8,7 @@ import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.trainer.Trainer;
-import de.fhdw.knn.trainer.learningrate.ConstantLearningRate;
+import de.fhdw.knn.trainer.learningrate.DecayLearningRate;
 import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
@@ -32,9 +32,9 @@ public class DataPoints {
 
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = EarlyStopping.NEVER;
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new ConstantLearningRate(0.0001));
+        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new DecayLearningRate(0.0003, 0.99));
 
-        Trainer trainer = new Trainer(network, 100, true, 1, lossFunction, stopFunction, optimizationFunction);
+        Trainer trainer = new Trainer(network, 500, true, 1, lossFunction, stopFunction, optimizationFunction);
         trainer.train(train);
         long trainStop = System.currentTimeMillis();
 
