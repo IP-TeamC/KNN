@@ -1,5 +1,8 @@
 package de.fhdw.knn.trainer.optimization;
 
+import de.fhdw.knn.network.activation.LinearActivationFunction;
+import de.fhdw.knn.network.activation.ReLUActivationFunction;
+import de.fhdw.knn.trainer.learningrate.ConstantLearningRate;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -294,7 +297,7 @@ public class GradientDescentTest {
 
     private Network createSingleNeuronNetwork() {
         // 1 Input -> 1 Output
-        ActivationFunction linear = new LinearActivation();
+        ActivationFunction linear = new LinearActivationFunction();
         DenseLayer[] layers = new DenseLayer[]{
                 new DenseLayer(1).withActivationFunction(linear)
         };
@@ -304,8 +307,8 @@ public class GradientDescentTest {
 
     private Network createTwoLayerNetwork(int inputSize, int hiddenSize, int outputSize) {
         // inputSize Input -> hiddenSize Hidden -> outputSize Output
-        ActivationFunction relu = new ReLUActivation();
-        ActivationFunction linear = new LinearActivation();
+        ActivationFunction relu = new ReLUActivationFunction();
+        ActivationFunction linear = new LinearActivationFunction();
 
         DenseLayer[] layers = new DenseLayer[]{
                 new DenseLayer(hiddenSize).withActivationFunction(relu),
@@ -316,19 +319,6 @@ public class GradientDescentTest {
     }
 
     // ===== TEST UTILITY CLASSES =====
-
-    private static class ConstantLearningRate implements LearningRateFunction {
-        private final double rate;
-
-        public ConstantLearningRate(double rate) {
-            this.rate = rate;
-        }
-
-        @Override
-        public double calc(int epoch, double previousLoss) {
-            return rate;
-        }
-    }
 
     private static class ConstantWeightInitializer implements WeightInitializer {
         private final double weight;
@@ -343,27 +333,4 @@ public class GradientDescentTest {
         }
     }
 
-    private static class LinearActivation implements ActivationFunction {
-        @Override
-        public double calc(double weightedSum) {
-            return weightedSum;
-        }
-
-        @Override
-        public double derived(double weightedSum, double activation) {
-            return 1.0;
-        }
-    }
-
-    private static class ReLUActivation implements ActivationFunction {
-        @Override
-        public double calc(double weightedSum) {
-            return Math.max(0, weightedSum);
-        }
-
-        @Override
-        public double derived(double weightedSum, double activation) {
-            return weightedSum > 0 ? 1.0 : 0.0;
-        }
-    }
 }
