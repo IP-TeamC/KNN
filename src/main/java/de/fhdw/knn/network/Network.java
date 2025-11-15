@@ -41,6 +41,15 @@ public class Network {
         return predictions;
     }
 
+    public double[] predictSingles(double[][] inputs) {
+        double[] predictions = new double[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            double[][] outputs = feedForward(inputs[i]).x;
+            predictions[i] = outputs[outputs.length - 1][0];
+        }
+        return predictions;
+    }
+
     public double[] predictSingles(double[] inputs) {
         double[] predictions = new double[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
