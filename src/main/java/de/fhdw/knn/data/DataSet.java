@@ -27,6 +27,19 @@ public class DataSet {
         this.outputs = outputs;
     }
 
+    public DataSet subsetInputs(int... columns) {
+        double[][] subset = new double[inputs.length][];
+        for (int i = 0; i < inputs.length; i++) {
+            subset[i] = new double[columns.length];
+            int newColumn = 0;
+            for (int column : columns) {
+                subset[i][newColumn] = inputs[i][column];
+                newColumn += 1;
+            }
+        }
+        return new DataSet(subset, outputs);
+    }
+
     public void shuffle(long seed) {
         Random random = new Random(seed);
         for (int i = 0; i < inputs.length; i++) {

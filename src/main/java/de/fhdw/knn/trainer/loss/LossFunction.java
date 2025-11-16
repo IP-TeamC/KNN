@@ -4,6 +4,7 @@ public interface LossFunction {
 
     LossFunction MEAN_SQUARED_ERROR = new MeanSquaredError();
     LossFunction CROSS_ENTROPY_LOSS = new BinaryCrossEntropyLoss();
+    LossFunction MEAN_ABSOLUTE_ERROR = new MeanAbsoluteError();
 
     double loss(double[] expected, double[] predicted);
 
