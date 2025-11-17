@@ -16,13 +16,11 @@ import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import org.jfree.data.xy.XYSeries;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class DataPoints {
