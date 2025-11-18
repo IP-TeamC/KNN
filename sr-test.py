@@ -9,14 +9,13 @@ X = data
 y = target
 
 model = PySRRegressor(
-    maxsize=20,
-    niterations=500,  # < Increase me for better results
+    maxsize=14,
+    niterations=200,  # < Increase me for better results
     binary_operators=["+", "*", "/", "-"],
     unary_operators=[
         "exp",
         "inv(x) = 1/x",
-        "square",
-        "log"
+        "square"
         # ^ Custom operator (julia syntax)
     ],
     extra_sympy_mappings={"inv": lambda x: 1 / x},

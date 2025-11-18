@@ -57,7 +57,7 @@ public class LineChart extends ApplicationFrame {
         plot.setRenderer(renderer);
 
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setRange(0, 40);
+        rangeAxis.setRange(0.5, 1.5);
         plot.getDomainAxis().setRange(minX, maxX);
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 

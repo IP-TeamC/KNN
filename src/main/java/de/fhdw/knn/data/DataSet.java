@@ -1,6 +1,7 @@
 package de.fhdw.knn.data;
 
 import java.util.Random;
+import java.util.function.BiConsumer;
 
 public class DataSet {
 
@@ -25,6 +26,12 @@ public class DataSet {
 
         this.inputs = inputs;
         this.outputs = outputs;
+    }
+
+    public void preprocess(BiConsumer<double[], double[]> preprocessor) {
+        for (int i = 0; i < size; i++) {
+            preprocessor.accept(inputs[i], outputs[i]);
+        }
     }
 
     public DataSet subsetInputs(int... columns) {
