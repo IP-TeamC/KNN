@@ -12,6 +12,9 @@ public class DataSet {
     public double[][] inputs;
     public double[][] outputs;
 
+    public String[] inputLabels;
+    public String[] outputLabels;
+
     private Normalizer normalizerInputs;
     private Normalizer normalizerOutputs;
 

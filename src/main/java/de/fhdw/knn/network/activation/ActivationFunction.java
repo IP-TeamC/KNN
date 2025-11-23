@@ -10,8 +10,10 @@ public interface ActivationFunction {
     ActivationFunction TANH = new TanhActivationFunction();
     ActivationFunction SWISH = new SwishActivationFunction();
     ActivationFunction SOFTPLUS = new SoftplusActivationFunction();
+    ActivationFunction SNAKE = new SnakeActivationFunction();
+    ActivationFunction SIN = new SinActivationFunction();
 
-    List<ActivationFunction> FUNCTIONS = List.of(SIGMOID, RELU, LINEAR, TANH, SWISH, SOFTPLUS);
+    List<ActivationFunction> FUNCTIONS = List.of(SIGMOID, RELU, LINEAR, TANH, SWISH, SOFTPLUS, SNAKE, SIN);
 
     double calc(double input);
 

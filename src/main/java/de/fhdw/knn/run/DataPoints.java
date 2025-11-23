@@ -36,17 +36,25 @@ public class DataPoints {
         data.normalizeInputs(normalizerOutputs);
 
         long trainStart = System.currentTimeMillis();
-        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.LINEAR, 200, 200, 200, data.outputSize);
+        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SNAKE, ActivationFunction.LINEAR, 100, 100, data.outputSize);
+        for (DenseLayer layer : denseLayers) {
+            for (int i = 0; i < Math.min(50, layer.neurons.length); i++) {
+                if (layer.neurons[i].activationFunction == ActivationFunction.SNAKE) {
+                    layer.neurons[i].activationFunction = ActivationFunction.SWISH;
+                }
+            }
+        }
         Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, data.inputSize, denseLayers);
-        network = Importer.importNetwork("target/models/divx0_dp_swish_gr_3x200_mse_0001dlr_499.knn");
+        //network = Importer.importNetwork("target/models/divx0_dp_swish_gr_3x200_mse_0001dlr_499.knn");
 
-        LossFunction lossFunction = LossFunction.MEAN_ABSOLUTE_ERROR;
+        LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = EarlyStopping.NEVER;
         // learning rate zu klein oder decay zu groß (bzw. zu klein: näher an 1 - ist ja 1 - decay eig...)
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new DecayLearningRate(0.001, 0.99));
+        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new DecayLearningRate(0.001, 0.995));
 
-        Trainer trainer = new Trainer(network, 500, true, 1, lossFunction, stopFunction, optimizationFunction);
-        //trainer.train(data, "target/models/divx0_dp_swish_gr_3x200_mae_from_mse_0001dlr_%d.knn", 10);
+        Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);
+        //trainer.train(data, "target/models/divx0_dp_swishlt90_snake_gr_2x100_mse_0001dlr_%d.knn", 10);
+        trainer.train(data);
         long trainStop = System.currentTimeMillis();
 
         long testStart = System.currentTimeMillis();
@@ -61,8 +69,8 @@ public class DataPoints {
         System.out.printf("Test Time: %d ms (%.2f s)%n", testTime, testTime / 1000.0);
 
 
-        int offset = 2500;
-        int size = 100;
+        int offset = 4500;
+        int size = 1000;
         double[][] predictionInputs = new double[size][];
         System.arraycopy(data.inputs, offset, predictionInputs, 0, size);
         double[][] predictionOutputs = network.predict(predictionInputs);
