@@ -15,6 +15,8 @@ import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
+import de.fhdw.knn.util.Heatmap;
+import de.fhdw.knn.util.HeatmapData;
 
 import java.io.IOException;
 
@@ -50,6 +52,10 @@ public class BananaQuality {
         long testTime = testStop - testStart;
         System.out.printf("Train Time: %d ms (%.2f s)%n", trainTime, trainTime / 1000.0);
         System.out.printf("Test Time: %d ms (%.2f s)%n", testTime, testTime / 1000.0);
+        HeatmapData heatmap = new HeatmapData(network);
+        double[][] matrix = heatmap.buildFullWeightMatrix();
+        Heatmap map = new Heatmap("test", matrix);
+        map.drawHeatmap();
     }
 
 }
