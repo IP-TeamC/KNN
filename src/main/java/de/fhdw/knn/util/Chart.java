@@ -15,6 +15,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class Chart extends ApplicationFrame {
 
@@ -22,8 +23,15 @@ public class Chart extends ApplicationFrame {
     public JFreeChart chart;
 
     public static Chart draw(Network network, double[][] inputs, String inputLabel, int input, String outputLabel, int output) {
+        return draw(new Network[]{network}, inputs, inputLabel, output, outputLabel, output);
+    }
+
+    public static Chart draw(Network[] network, double[][] inputs, String inputLabel, int input, String outputLabel, int output) {
         XYSeriesCollection xys = new XYSeriesCollection();
-        double[][] predictions = network.predict(inputs);
+        double[][] predictions = Arrays.stream(network)
+                .reduce(inputs,
+                        (nextInputs, nextNetwork) -> nextNetwork.predict(nextInputs),
+                        (a, b) -> b);
         XYSeries series = new XYSeries(inputLabel + " => " + outputLabel);
         for (int i = 0; i < predictions.length; i++) {
             series.add(inputs[i][input], predictions[i][output]);
