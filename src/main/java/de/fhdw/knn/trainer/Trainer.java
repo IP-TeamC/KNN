@@ -36,7 +36,6 @@ public class Trainer {
     }
 
     public void train(DataSet data, String export, int mod) {
-        optimizationFunction.init();
         double totalLoss = Double.NaN;
         for (int epoch = 0; epoch < maxEpochs; epoch++) {
             System.out.println("Epoch: " + epoch);

@@ -21,10 +21,6 @@ public class GradientDescent implements OptimizationFunction {
     }
 
     @Override
-    public void init() {
-    }
-
-    @Override
     public void epoch(int epoch, double previousLoss) {
         learningRate = learningRateFunction.calc(epoch, previousLoss);
     }
