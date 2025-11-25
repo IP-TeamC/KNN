@@ -36,7 +36,7 @@ public class Heatmap extends ApplicationFrame {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 xValues[index] = j;
-                yValues[index] = rows - i - 1;
+                yValues[index] = i;
                 zValues[index] = matrix[i][j];
                 min = Math.min(min, matrix[i][j]);
                 max = Math.max(max, matrix[i][j]);

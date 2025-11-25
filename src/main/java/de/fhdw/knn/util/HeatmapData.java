@@ -41,7 +41,7 @@ public class HeatmapData {
                 }
             }
         }
-        this.printMatrix(matrix);
+        //this.printMatrix(matrix);
         return matrix;
     }
 
