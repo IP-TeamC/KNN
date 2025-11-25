@@ -24,8 +24,8 @@ public class Sinus {
         long trainStart = System.currentTimeMillis();
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SIN, ActivationFunction.LINEAR, 1, data.outputSize);
         Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, data.inputSize, denseLayers);
-        //network = Importer.importNetwork("sin_snake.knn");
-        //network = Importer.importNetwork("sin_sin.knn");
+        //network = Importer.importNetwork("models/sin_snake.knn");
+        //network = Importer.importNetwork("models/sin_sin.knn");
 
         LossFunction lossFunction = LossFunction.MEAN_ABSOLUTE_ERROR;
         StopFunction stopFunction = new EarlyStopping(1e-9, 50);

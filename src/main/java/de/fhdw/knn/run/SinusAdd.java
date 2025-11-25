@@ -26,8 +26,8 @@ public class SinusAdd {
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SNAKE, ActivationFunction.LINEAR, 1, 10, data.outputSize);
         denseLayers[0].neurons[0].activationFunction = ActivationFunction.LINEAR;
         Network network = new Network(235890, WeightInitializer.GLOROT_UNIFORM, data.inputSize, denseLayers);
-        //network = Importer.importNetwork("sinusadd_lin_snake_lin_235890gr_1x1_mae_001dlr_10000_es1e-9-50.knn");
-        //network = Importer.importNetwork("sinusadd_lin_sin_50gr_1x1_mae_001dlr_10000_es1e-9-50.knn");
+        //network = Importer.importNetwork("models/sinusadd_lin_snake_lin_235890gr_1x1_mae_001dlr_10000_es1e-9-50.knn");
+        //network = Importer.importNetwork("models/sinusadd_lin_sin_50gr_1x1_mae_001dlr_10000_es1e-9-50.knn");
 
         LossFunction lossFunction = LossFunction.MEAN_ABSOLUTE_ERROR;
         StopFunction stopFunction = new EarlyStopping(1e-9, 50);
@@ -62,8 +62,8 @@ public class SinusAdd {
         //Chart.draw(network, inputsA, "a", 0, "sin(a+0)", 0);
         //Chart.draw(network, inputsB, "b", 1, "sin(0+b)", 0);
 
-        Network add = Importer.importNetwork("add.knn");
-        Network sin = Importer.importNetwork("sin_snake.knn");
+        Network add = Importer.importNetwork("models/add.knn");
+        Network sin = Importer.importNetwork("models/sin_snake.knn");
         Chart.draw(new Network[]{add, sin}, inputsA, "a", 0, "sin(a+0)", 0);
     }
 

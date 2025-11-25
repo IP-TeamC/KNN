@@ -23,7 +23,7 @@ import java.io.IOException;
 public class BananaQuality {
 
     public static void main(String[] args) throws IOException {
-        DataSet data = CsvReader.readFile("banana_quality.csv", 0, 7, 7, 1);
+        DataSet data = CsvReader.readFile("data/banana_quality.csv", 0, 7, 7, 1);
         TrainTestSplit trainTest = data.shuffleAndSplit(42, 0.2);
         DataSet train = trainTest.train;
         DataSet test = trainTest.test;
@@ -31,7 +31,7 @@ public class BananaQuality {
         long trainStart = System.currentTimeMillis();
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.SIGMOID, 100, 100, 1);
         Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 7, denseLayers);
-        //network = Importer.importNetwork("bq.knn");
+        //network = Importer.importNetwork("models/bq.knn");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = EarlyStopping.NEVER;

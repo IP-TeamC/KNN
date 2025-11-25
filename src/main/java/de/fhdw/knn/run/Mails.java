@@ -21,7 +21,7 @@ import java.io.IOException;
 public class Mails {
 
     public static void main(String[] args) throws IOException {
-        DataSet data = CsvReader.readFile("emails.csv", 1, 3000, 3001, 1);
+        DataSet data = CsvReader.readFile("data/emails.csv", 1, 3000, 3001, 1);
         TrainTestSplit trainTest = data.shuffleAndSplit(42, 0.2);
         DataSet train = trainTest.train;
         DataSet test = trainTest.test;
@@ -29,9 +29,9 @@ public class Mails {
         long trainStart = System.currentTimeMillis();
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.SIGMOID, 300, 300, 1);
         Network network = new Network(42, WeightInitializer.HE, 3000, denseLayers);
-        network = Importer.importNetwork("mails_swish_97.knn");
-        //network = Importer.importNetwork("mails_91.knn");
-        //network = Importer.importNetwork("mails_98.knn");
+        network = Importer.importNetwork("models/mails_swish_97.knn");
+        //network = Importer.importNetwork("models/mails_91.knn");
+        //network = Importer.importNetwork("models/mails_98.knn");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = StopFunction.NEVER;

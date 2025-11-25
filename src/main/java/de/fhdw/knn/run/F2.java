@@ -19,12 +19,12 @@ import java.io.IOException;
 public class F2 {
 
     public static void main(String[] args) throws IOException {
-        DataSet data = CsvReader.readFile("f2_full.csv", 0, 1, 2, 1);
+        DataSet data = CsvReader.readFile("data/f2_full.csv", 0, 1, 2, 1);
         data.shuffle(42);
 
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.RELU, ActivationFunction.LINEAR, 200, 200, 200, 1);
         Network network = new Network(42, WeightInitializer.HE, 1, denseLayers);
-        //network = Importer.importNetwork("f2.knn");
+        //network = Importer.importNetwork("models/f2.knn");
 
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = new EarlyStopping(0.0001, 100);

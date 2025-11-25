@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
 public class DataPoints {
 
     public static void main(String[] args) throws IOException {
-        DataSet data = CsvReader.readFile("datapoints.csv", 1, 10, 0, 1, 1);
+        DataSet data = CsvReader.readFile("data/datapoints.csv", 1, 10, 0, 1, 1);
         data.preprocess((input, output) -> output[0] /= input[0]);
         Normalizer normalizerInputs = new MinMaxNormalizer(-10, 10);
         Normalizer normalizerOutputs = new MinMaxNormalizer(-10, 10);
