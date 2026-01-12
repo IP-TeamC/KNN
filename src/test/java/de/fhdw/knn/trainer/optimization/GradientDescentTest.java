@@ -4,6 +4,7 @@ import de.fhdw.knn.network.activation.LinearActivationFunction;
 import de.fhdw.knn.network.activation.ReLUActivationFunction;
 import de.fhdw.knn.trainer.learningrate.ConstantLearningRate;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.fhdw.knn.network.Network;

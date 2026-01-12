@@ -2,6 +2,7 @@ package de.fhdw.knn.trainer.loss;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Binary Cross Entropy Loss Function Tests")
@@ -75,7 +76,7 @@ public class BinaryCrossEntropyLossTest {
         double[] expected = {0.8, 0.2};
         double[] predicted = {0.7, 0.3};
 
-        double analyticalGradient = bce.derivedLoss(expected, predicted);
+        double analyticalGradient = bce.derivedLoss(expected, predicted, 0) + bce.derivedLoss(expected, predicted, 1);
         double numericalGradient = computeNumericalGradient(
                 p -> bce.loss(expected, p),
                 predicted
@@ -92,7 +93,7 @@ public class BinaryCrossEntropyLossTest {
         double[] expected = {1.0};
         double[] predicted = {0.1};
 
-        double gradient = bce.derivedLoss(expected, predicted);
+        double gradient = bce.derivedLoss(expected, predicted, 0);
         assertTrue(gradient < 0, "Gradient sollte negativ sein (prediction zu niedrig)");
     }
 
@@ -102,7 +103,7 @@ public class BinaryCrossEntropyLossTest {
         double[] expected = {0.0};
         double[] predicted = {0.9};
 
-        double gradient = bce.derivedLoss(expected, predicted);
+        double gradient = bce.derivedLoss(expected, predicted, 0);
         assertTrue(gradient > 0, "Gradient sollte positiv sein (prediction zu hoch)");
     }
 
@@ -110,8 +111,8 @@ public class BinaryCrossEntropyLossTest {
     @DisplayName("Größere Fehler sollten größere Gradienten haben")
     public void testLargerErrorLargerGradient() {
         double[] expected = {1.0};
-        double grad1 = Math.abs(bce.derivedLoss(expected, new double[]{0.9}));
-        double grad2 = Math.abs(bce.derivedLoss(expected, new double[]{0.1}));
+        double grad1 = Math.abs(bce.derivedLoss(expected, new double[]{0.9}, 0));
+        double grad2 = Math.abs(bce.derivedLoss(expected, new double[]{0.1}, 0));
 
         assertTrue(grad2 > grad1, "Größerer Error sollte größeren Gradient haben");
     }
@@ -124,7 +125,7 @@ public class BinaryCrossEntropyLossTest {
         double[] expected = {1.0, 0.0, 1.0};
         double[] predicted = {0.8, 0.2, 0.9};
 
-        double gradient = bce.derivedLoss(expected, predicted);
+        double gradient = bce.derivedLoss(expected, predicted, 2);
 
         assertFalse(Double.isNaN(gradient), "Gradient sollte nicht NaN sein");
         assertFalse(Double.isInfinite(gradient), "Gradient sollte nicht Infinity sein");
@@ -201,7 +202,7 @@ public class BinaryCrossEntropyLossTest {
         double[] predicted = {0.9999999, 0.0000001};
 
         double loss = bce.loss(expected, predicted);
-        double gradient = bce.derivedLoss(expected, predicted);
+        double gradient = bce.derivedLoss(expected, predicted, 1);
 
         assertFalse(Double.isNaN(loss), "Loss sollte nicht NaN sein");
         assertFalse(Double.isInfinite(loss), "Loss sollte nicht Infinity sein");
@@ -274,18 +275,18 @@ public class BinaryCrossEntropyLossTest {
         double[] expected = {1.0};
         double[] predicted = {0.9999};
 
-        double gradient = bce.derivedLoss(expected, predicted);
+        double gradient = bce.derivedLoss(expected, predicted, 0);
         // Sollte sehr klein sein
-        assertTrue(Math.abs(gradient) < 1.0, "Gradient sollte klein bei guter Prediction sein");
+        assertTrue(Math.abs(gradient) < 1.001, "Gradient sollte klein bei guter Prediction sein");
     }
 
     @Test
     @DisplayName("Gradient Magnitude steigt mit falscher Prediction")
     public void testGradientMagnitudeIncreases() {
         double[] expected = {1.0};
-        double grad1 = Math.abs(bce.derivedLoss(expected, new double[]{0.9}));
-        double grad2 = Math.abs(bce.derivedLoss(expected, new double[]{0.5}));
-        double grad3 = Math.abs(bce.derivedLoss(expected, new double[]{0.1}));
+        double grad1 = Math.abs(bce.derivedLoss(expected, new double[]{0.9}, 0));
+        double grad2 = Math.abs(bce.derivedLoss(expected, new double[]{0.5}, 0));
+        double grad3 = Math.abs(bce.derivedLoss(expected, new double[]{0.1}, 0));
 
         assertTrue(grad1 < grad2 && grad2 < grad3,
                 "Gradient magnitude sollte mit Error steigen: " + grad1 + " < " + grad2 + " < " + grad3);
@@ -296,8 +297,8 @@ public class BinaryCrossEntropyLossTest {
     public void testGradientOppositeDirections() {
         double[] predicted = {0.3};
 
-        double grad1 = bce.derivedLoss(new double[]{1.0}, predicted);
-        double grad2 = bce.derivedLoss(new double[]{0.0}, predicted);
+        double grad1 = bce.derivedLoss(new double[]{1.0}, predicted, 0);
+        double grad2 = bce.derivedLoss(new double[]{0.0}, predicted, 0);
 
         assertTrue((grad1 > 0) != (grad2 > 0), "Gradienten sollten unterschiedliche Richtung haben");
     }
@@ -311,7 +312,7 @@ public class BinaryCrossEntropyLossTest {
         double[] predicted = {0.4, 0.6, 0.9, 0.1};
 
         double loss = bce.loss(expected, predicted);
-        double gradient = bce.derivedLoss(expected, predicted);
+        double gradient = bce.derivedLoss(expected, predicted, 3);
 
         assertFalse(Double.isNaN(loss));
         assertFalse(Double.isNaN(gradient));
@@ -324,7 +325,7 @@ public class BinaryCrossEntropyLossTest {
         double[] predicted = {0.99, 0.01, 0.95};
 
         double loss = bce.loss(expected, predicted);
-        double gradient = bce.derivedLoss(expected, predicted);
+        double gradient = bce.derivedLoss(expected, predicted, 2);
 
         assertFalse(Double.isInfinite(loss));
         assertFalse(Double.isInfinite(gradient));

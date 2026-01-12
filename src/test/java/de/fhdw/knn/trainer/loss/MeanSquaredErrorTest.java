@@ -2,6 +2,7 @@ package de.fhdw.knn.trainer.loss;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Mean Squared Error Loss Function Tests")
@@ -74,7 +75,7 @@ public class MeanSquaredErrorTest {
         double[] expected = {0.8, 0.2};
         double[] predicted = {0.7, 0.3};
 
-        double analyticalGradient = mse.derivedLoss(expected, predicted);
+        double analyticalGradient = mse.derivedLoss(expected, predicted, 0) + mse.derivedLoss(expected, predicted, 1);
         double numericalGradient = computeNumericalGradient(
                 p -> mse.loss(expected, p),
                 predicted
@@ -93,7 +94,7 @@ public class MeanSquaredErrorTest {
 
         // expected > predicted, error = 0.5
         // Gradient sollte negativ sein (predicted zu niedrig)
-        double gradient = mse.derivedLoss(expected, predicted);
+        double gradient = mse.derivedLoss(expected, predicted, 0);
         assertTrue(gradient < 0, "Gradient sollte negativ sein für unterprognostizierte Werte");
     }
 
@@ -102,8 +103,8 @@ public class MeanSquaredErrorTest {
     public void testLargeErrorLargeGradient() {
         double[] expected = {10.0};
 
-        double grad1 = Math.abs(mse.derivedLoss(expected, new double[]{9.0}));
-        double grad2 = Math.abs(mse.derivedLoss(expected, new double[]{5.0}));
+        double grad1 = Math.abs(mse.derivedLoss(expected, new double[]{9.0}, 0));
+        double grad2 = Math.abs(mse.derivedLoss(expected, new double[]{5.0}, 0));
 
         assertTrue(grad2 > grad1, "Größerer Error sollte größeren Gradient haben");
     }
@@ -116,7 +117,7 @@ public class MeanSquaredErrorTest {
         double[] expected = {0.5, 0.5, 0.5};
         double[] predicted = {0.4, 0.5, 0.6};
 
-        double gradient = mse.derivedLoss(expected, predicted);
+        double gradient = mse.derivedLoss(expected, predicted, 2);
 
         assertFalse(Double.isNaN(gradient), "Gradient sollte nicht NaN sein");
         assertFalse(Double.isInfinite(gradient), "Gradient sollte nicht Infinity sein");
@@ -212,7 +213,7 @@ public class MeanSquaredErrorTest {
         double[] expected = {1.0};
         double[] predicted = {1.0};
 
-        double gradient = mse.derivedLoss(expected, predicted);
+        double gradient = mse.derivedLoss(expected, predicted, 0);
         assertEquals(0.0, gradient, 1e-10);
     }
 
@@ -224,7 +225,7 @@ public class MeanSquaredErrorTest {
 
         // expected < predicted, error = -1.0
         // -2 * (-1.0) = 2.0 → positiv
-        double gradient = mse.derivedLoss(expected, predicted);
+        double gradient = mse.derivedLoss(expected, predicted, 0);
         assertTrue(gradient > 0);
     }
 
@@ -236,7 +237,7 @@ public class MeanSquaredErrorTest {
 
         // expected > predicted, error = 1.0
         // -2 * (1.0) = -2.0 → negativ
-        double gradient = mse.derivedLoss(expected, predicted);
+        double gradient = mse.derivedLoss(expected, predicted, 0);
         assertTrue(gradient < 0);
     }
 
@@ -247,8 +248,8 @@ public class MeanSquaredErrorTest {
         double[] pred1 = {0.9};
         double[] pred2 = {0.8};
 
-        double grad1 = Math.abs(mse.derivedLoss(expected, pred1));
-        double grad2 = Math.abs(mse.derivedLoss(expected, pred2));
+        double grad1 = Math.abs(mse.derivedLoss(expected, pred1, 0));
+        double grad2 = Math.abs(mse.derivedLoss(expected, pred2, 0));
 
         // error1 = 0.1, grad1 = -2 * 0.1 = -0.2
         // error2 = 0.2, grad2 = -2 * 0.2 = -0.4
@@ -264,7 +265,7 @@ public class MeanSquaredErrorTest {
         double[] predicted = {0.4, 0.5, 0.6};
 
         double loss = mse.loss(expected, predicted);
-        double gradient = mse.derivedLoss(expected, predicted);
+        double gradient = mse.derivedLoss(expected, predicted, 1);
 
         assertFalse(Double.isNaN(loss));
         assertFalse(Double.isNaN(gradient));
@@ -277,7 +278,7 @@ public class MeanSquaredErrorTest {
         double[] predicted = {1e10 + 1};
 
         double loss = mse.loss(expected, predicted);
-        double gradient = mse.derivedLoss(expected, predicted);
+        double gradient = mse.derivedLoss(expected, predicted, 0);
 
         assertFalse(Double.isInfinite(loss));
         assertFalse(Double.isInfinite(gradient));
