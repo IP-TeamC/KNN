@@ -22,7 +22,7 @@ public class HeatmapLauncher {
         SwingUtilities.invokeLater(() -> {
             HeatmapWindow window = new HeatmapWindow();
             HeatmapData data = new HeatmapData(network);
-            window.addEpoch(0, data);
+            window.addEpoch(path, data);
             System.out.println("Heatmap geöffnet.");
         });
     }

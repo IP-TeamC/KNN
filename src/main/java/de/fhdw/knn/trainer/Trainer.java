@@ -73,7 +73,7 @@ public class Trainer {
             // Heatmap Update
             if (HEATMAP_INTERVAL > 0 && heatmapWindow != null) {
                 if (humanEpoch == 1 || humanEpoch % HEATMAP_INTERVAL == 0 || humanEpoch == maxEpochs) {
-                    heatmapWindow.addEpoch(humanEpoch, new HeatmapData(this.network));
+                    heatmapWindow.addEpoch("Epoche " + humanEpoch, new HeatmapData(this.network));
                     System.out.println("Heatmap-Update bei Epoche " + humanEpoch);
                 }
             }

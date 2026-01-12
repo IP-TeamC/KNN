@@ -30,10 +30,19 @@ public class HeatmapWindow extends JFrame {
         this.setVisible(true);
     }
 
+    public void showSingleMatrix(String title, HeatmapData matrix) {
+        this.addEpoch(title, matrix);
+
+        this.setTitle(title);
+        this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        this.pack();
+        this.setVisible(true);
+    }
+
     // Methode nach einer Epoche auf, um einen neuen Tab hinzuzufügen
-    public void addEpoch(int epochNumber, HeatmapData data) {
+    public void addEpoch(String tabTitle, HeatmapData data) {
         SwingUtilities.invokeLater(() -> { // invokeLater, da Swing nicht Thread-safe ist
-            JFreeChart chart = buildChart(data, "Epoche " + epochNumber);
+            JFreeChart chart = buildChart(data, tabTitle);
             ChartPanel panel = new ChartPanel(chart);
 
             panel.setMouseWheelEnabled(true);
@@ -44,7 +53,7 @@ public class HeatmapWindow extends JFrame {
             panel.getChart().getXYPlot().setRangePannable(true);
 
             JScrollPane scrollPane = new JScrollPane(panel);
-            this.tabs.addTab("Epoche " + epochNumber, scrollPane);
+            this.tabs.addTab(tabTitle, scrollPane);
             this.tabs.setSelectedIndex(this.tabs.getTabCount() - 1);
         });
     }
