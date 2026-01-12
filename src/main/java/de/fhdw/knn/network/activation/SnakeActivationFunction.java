@@ -10,7 +10,7 @@ public class SnakeActivationFunction implements ActivationFunction {
 
     @Override
     public double derived(double input, double calc) {
-        return 1 + 2 * Math.sin(input) * Math.cos(input);
+        return 1 + Math.sin(2 * input);
     }
 
 }

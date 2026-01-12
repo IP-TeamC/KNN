@@ -13,13 +13,8 @@ public class MeanSquaredError implements LossFunction {
     }
 
     @Override
-    public double derivedLoss(double[] expected, double[] predicted) {
-        double sum = 0;
-        for (int i = 0; i < expected.length; i++) {
-            double error = expected[i] - predicted[i];
-            sum -= 2 * error;
-        }
-        return sum / expected.length;
+    public double derivedLoss(double[] expected, double[] predicted, int neuron) {
+        return ((double) -2 / expected.length) * (expected[neuron] - predicted[neuron]);
     }
 
 }

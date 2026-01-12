@@ -8,7 +8,7 @@ public interface LossFunction {
 
     double loss(double[] expected, double[] predicted);
 
-    double derivedLoss(double[] expected, double[] predicted);
+    double derivedLoss(double[] expected, double[] predicted, int neuron);
 
     default double totalLoss(double[][] expected, double[][] predicted) {
         double sum = 0;

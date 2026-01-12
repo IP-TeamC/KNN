@@ -13,12 +13,9 @@ public class MeanAbsoluteError implements LossFunction {
     }
 
     @Override
-    public double derivedLoss(double[] expected, double[] predicted) {
-        double sum = 0;
-        for (int i = 0; i < expected.length; i++) {
-            sum += expected[i] < predicted[i] ? 1 : -1;
-        }
-        return sum / expected.length;
+    public double derivedLoss(double[] expected, double[] predicted, int neuron) {
+        double abs = (double) 1 / expected.length;
+        return expected[neuron] < predicted[neuron] ? abs : -abs;
     }
 
 }
