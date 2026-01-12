@@ -4,8 +4,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.LookupPaintScale;
-import org.jfree.chart.renderer.PaintScale;
 import org.jfree.chart.renderer.xy.XYBlockRenderer;
 import org.jfree.chart.ui.ApplicationFrame;
 import org.jfree.chart.ui.UIUtils;
@@ -47,6 +45,11 @@ public class Heatmap extends ApplicationFrame {
         double[][] data = new double[][]{xValues, yValues, zValues};
         dataset.addSeries("Weights", data);
 
+        ChartPanel chartPanel = getChartPanel(min, max, dataset);
+        setContentPane(chartPanel);
+    }
+
+    private static ChartPanel getChartPanel(double min, double max, DefaultXYZDataset dataset) {
         XYBlockRenderer renderer = new XYBlockRenderer();
         renderer.setBlockWidth(1.0);
         renderer.setBlockHeight(1.0);
@@ -66,8 +69,8 @@ public class Heatmap extends ApplicationFrame {
         JFreeChart chart = new JFreeChart("Neuronal Weights Heatmap", JFreeChart.DEFAULT_TITLE_FONT, plot, false);
 
         ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(800, 600));
-        setContentPane(chartPanel);
+        chartPanel.setPreferredSize(new Dimension(800, 600));
+        return chartPanel;
     }
 
     public void drawHeatmap(){

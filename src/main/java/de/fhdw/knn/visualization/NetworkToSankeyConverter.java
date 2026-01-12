@@ -27,17 +27,27 @@ public class NetworkToSankeyConverter extends Application {
         // Network network = Importer.importNetwork("models/bq.knn");
         // Network network = Importer.importNetwork("models/sin_snake.knn");
 
+        List<PlotItem> items = convertNetworkToItems(network);
+
+        SankeyPlot sankey = new SankeyPlot();
+        sankey.setItems(items);
+        sankey.setStreamFillMode(SankeyPlot.StreamFillMode.GRADIENT);
+        sankey.setShowFlowDirection(false);
+
+        StackPane root = new StackPane(sankey);
+        Scene scene = new Scene(root, 1200, 800);
+
+        primaryStage.setTitle("Sankey Viewer");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static List<PlotItem> convertNetworkToItems(Network network) {
         List<PlotItem> allItems = new ArrayList<>();
 
         Color[] layerColors = {
-                Color.RED,
-                Color.ORANGERED,
-                Color.ORANGE,
-                Color.GOLD,
-                Color.LIGHTGREEN,
-                Color.CYAN,
-                Color.LIGHTBLUE,
-                Color.BLUE,
+                Color.RED, Color.ORANGERED, Color.ORANGE, Color.GOLD,
+                Color.LIGHTGREEN, Color.CYAN, Color.LIGHTBLUE, Color.BLUE,
         };
 
         int totalLayers = network.denseLayers.length + 1;
@@ -109,23 +119,10 @@ public class NetworkToSankeyConverter extends Application {
             createConnectionsReversed(hiddenItems[0], inputItems, network.denseLayers[0]);
         }
 
-        // SankeyPlot
-        SankeyPlot sankey = new SankeyPlot();
-        sankey.setItems(allItems);
-        sankey.setStreamFillMode(SankeyPlot.StreamFillMode.GRADIENT);
-        sankey.setShowFlowDirection(false);
-
-        StackPane root = new StackPane(sankey);
-        Scene scene = new Scene(root, 1200, 800);
-
-        primaryStage.setTitle("Künstliches Neuronales Netz - " +
-                network.inputLayer.neurons.length + " Inputs, " +
-                outputLayer.neurons.length + " Outputs");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        return allItems;
     }
 
-    private void createConnectionsReversed(PlotItem[] rightItems, PlotItem[] leftItems, DenseLayer rightLayer) {
+    private static void createConnectionsReversed(PlotItem[] rightItems, PlotItem[] leftItems, DenseLayer rightLayer) {
         for (int rIdx = 0; rIdx < rightItems.length; rIdx++) {
             DenseNeuron rightNeuron = rightLayer.neurons[rIdx];
             Connection[] incomingFromLeft = rightNeuron.incoming;
@@ -140,7 +137,7 @@ public class NetworkToSankeyConverter extends Application {
         }
     }
 
-    private Color getColorForLayer(int layer, Color[] colors, int totalLayers) {
+    private static Color getColorForLayer(int layer, Color[] colors, int totalLayers) {
         int colorIndex = (layer * (colors.length - 1)) / Math.max(1, totalLayers - 1);
         return colors[Math.min(colorIndex, colors.length - 1)];
     }
