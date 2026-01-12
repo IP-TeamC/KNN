@@ -8,7 +8,7 @@ import javax.swing.*;
 public class HeatmapLauncher {
 
     public static void main(String[] args) {
-        String path = "models/datapoints.knn";
+        String path = "models/datapoints_small5.knn";
 
         System.out.println("Lade Netzwerk von: " + path);
         Network network = Importer.importNetwork(path);
