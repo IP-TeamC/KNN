@@ -72,7 +72,7 @@ public class GradientDescent implements OptimizationFunction {
             } else {
                 adjustmentsWeight[outputLayer][neuron] = new double[dn.incoming.length];
                 for (int conn = 0; conn < dn.incoming.length; conn++) {
-                    adjustmentsWeight[outputLayer][neuron][conn] = adjustmentsBias[outputLayer][neuron] * outputs[outputLayer - 1][conn];
+                    adjustmentsWeight[outputLayer][neuron][conn] = adjustmentsBase[neuron] * outputs[outputLayer - 1][conn];
                 }
             }
         }
