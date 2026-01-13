@@ -43,14 +43,14 @@ public class A22T {
     }
 
     private static Network trainNetwork(final DataSet data) {
-        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SNAKE, ActivationFunction.SIGMOID, 20, data.outputSize);
+        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SNAKE, ActivationFunction.SIGMOID, data.outputSize);
         Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, data.inputSize, denseLayers);
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = EarlyStopping.NEVER;
-        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.1));
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(10));
 
-        Trainer trainer = new Trainer(network, 10, true, 1, lossFunction, stopFunction, optimizationFunction);
+        Trainer trainer = new Trainer(network, 1, true, 1, lossFunction, stopFunction, optimizationFunction, true);
         trainer.train(data);
         return network;
     }

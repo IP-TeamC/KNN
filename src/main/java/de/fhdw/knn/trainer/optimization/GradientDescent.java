@@ -47,6 +47,7 @@ public class GradientDescent implements OptimizationFunction {
         double[][] adjustmentsBias = new double[network.denseLayers.length][];
 
         int outputLayer = network.denseLayers.length - 1;
+        double[] outputLayerInputs = outputLayer == 0 ? input : outputs[outputLayer - 1];
         AbstractDenseNeuron[] outputNeurons = network.denseLayers[outputLayer].neurons;
         adjustmentsWeight[outputLayer] = new double[outputNeurons.length][];
         adjustmentsBias[outputLayer] = adjustmentsBase;
@@ -72,7 +73,7 @@ public class GradientDescent implements OptimizationFunction {
             } else {
                 adjustmentsWeight[outputLayer][neuron] = new double[dn.incoming.length];
                 for (int conn = 0; conn < dn.incoming.length; conn++) {
-                    adjustmentsWeight[outputLayer][neuron][conn] = adjustmentsBase[neuron] * outputs[outputLayer - 1][conn];
+                    adjustmentsWeight[outputLayer][neuron][conn] = adjustmentsBase[neuron] * outputLayerInputs[conn];
                 }
             }
         }
