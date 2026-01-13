@@ -7,6 +7,7 @@ import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.Adjustments;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.StopFunction;
+import de.fhdw.knn.visualization.LiveViewManager;
 
 import java.util.stream.IntStream;
 
@@ -21,7 +22,13 @@ public class Trainer {
     public final StopFunction stopFunction;
     public final OptimizationFunction optimizationFunction;
 
+    private final LiveViewManager liveViewManager;
+
     public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction) {
+        this(network, maxEpochs, shuffleEpoch, batchSize, lossFunction, stopFunction, optimizationFunction, false);
+    }
+
+    public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction, boolean visualization) {
         this.network = network;
         this.maxEpochs = maxEpochs;
         this.shuffleEpoch = shuffleEpoch;
@@ -29,6 +36,7 @@ public class Trainer {
         this.lossFunction = lossFunction;
         this.stopFunction = stopFunction;
         this.optimizationFunction = optimizationFunction;
+        this.liveViewManager = visualization ? new LiveViewManager(this) : null;
     }
 
     public void train(DataSet data) {
@@ -37,16 +45,24 @@ public class Trainer {
 
     public void train(DataSet data, String export, int mod) {
         double totalLoss = Double.NaN;
-        for (int epoch = 0; epoch < maxEpochs; epoch++) {
+
+        for (int epoch = 1; epoch <= maxEpochs; epoch++) {
             System.out.println("Epoch: " + epoch);
             optimizationFunction.epoch(epoch, totalLoss);
             totalLoss = trainEpoch(data);
 
-            if (export != null && (epoch % mod == 0 || epoch == maxEpochs - 1))
+            // Visualization
+            if (liveViewManager != null) {
+                liveViewManager.nextEpoch(epoch);
+            }
+
+            // Export
+            if (export != null && mod > 0 && (epoch % mod == 0 || epoch == maxEpochs - 1)) {
                 Exporter.export(network, export.formatted(epoch));
+            }
 
             if (stopFunction.isFinished(totalLoss)) break;
-            else if (shuffleEpoch) data.shuffle(epoch);
+            if (shuffleEpoch) data.shuffle(epoch);
         }
     }
 
@@ -55,7 +71,7 @@ public class Trainer {
             Adjustments[] adjustments = new Adjustments[batchSize];
             for (int i = 0; i < data.size; i += batchSize) {
                 int base = i;
-                int limit = i + batchSize > data.size ? data.size - i : batchSize;
+                int limit = Math.min(batchSize, data.size - i);
                 IntStream.range(0, limit).parallel().forEach(offset -> {
                     int index = base + offset;
                     adjustments[offset] = optimizationFunction.compute(data.inputs[index], data.outputs[index], batchSize);
@@ -78,7 +94,5 @@ public class Trainer {
         } else {
             return Double.NaN;
         }
-
     }
-
 }

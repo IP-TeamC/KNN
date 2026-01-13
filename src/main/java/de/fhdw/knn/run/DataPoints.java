@@ -36,7 +36,7 @@ public class DataPoints {
         data.normalizeInputs(normalizerOutputs);
 
         long trainStart = System.currentTimeMillis();
-        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SNAKE, ActivationFunction.LINEAR, 100, 100, data.outputSize);
+        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SNAKE, ActivationFunction.LINEAR, 5, 5, data.outputSize);
         for (DenseLayer layer : denseLayers) {
             for (int i = 0; i < Math.min(50, layer.neurons.length); i++) {
                 if (layer.neurons[i].activationFunction == ActivationFunction.SNAKE) {
@@ -56,6 +56,8 @@ public class DataPoints {
         //trainer.train(data, "target/models/divx0_dp_swishlt90_snake_gr_2x100_mse_0001dlr_%d.knn", 10);
         trainer.train(data);
         long trainStop = System.currentTimeMillis();
+
+        network.export("models/datapoints_small5.knn");
 
         long testStart = System.currentTimeMillis();
         double[][] predictions = network.predict(data.inputs);

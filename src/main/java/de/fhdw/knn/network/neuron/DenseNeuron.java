@@ -18,5 +18,4 @@ public class DenseNeuron extends Neuron {
         }
         return weightedSum + bias;
     }
-
 }
