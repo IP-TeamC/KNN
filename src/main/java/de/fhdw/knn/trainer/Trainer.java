@@ -7,10 +7,7 @@ import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.Adjustments;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.StopFunction;
-import de.fhdw.knn.visualization.HeatmapData;
-import de.fhdw.knn.visualization.HeatmapWindow;
-import de.fhdw.knn.visualization.SankeyLiveView;
-import javafx.application.Platform;
+import de.fhdw.knn.visualization.LiveViewManager;
 
 import java.util.stream.IntStream;
 
@@ -25,9 +22,7 @@ public class Trainer {
     public final StopFunction stopFunction;
     public final OptimizationFunction optimizationFunction;
 
-    // Einstellung: Alle wie viele Epochen soll die Heatmap/Sankey aktualisiert werden?
-    public static int HEATMAP_INTERVAL = 5;
-    public static int SANKEY_INTERVAL = 10;
+    private final LiveViewManager liveViewManager;
 
     public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction) {
         this.network = network;
@@ -37,6 +32,18 @@ public class Trainer {
         this.lossFunction = lossFunction;
         this.stopFunction = stopFunction;
         this.optimizationFunction = optimizationFunction;
+        this.liveViewManager = null;
+    }
+
+    public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction, boolean visualization) {
+        this.network = network;
+        this.maxEpochs = maxEpochs;
+        this.shuffleEpoch = shuffleEpoch;
+        this.batchSize = batchSize;
+        this.lossFunction = lossFunction;
+        this.stopFunction = stopFunction;
+        this.optimizationFunction = optimizationFunction;
+        this.liveViewManager = new LiveViewManager(this);
     }
 
     public void train(DataSet data) {
@@ -44,51 +51,21 @@ public class Trainer {
     }
 
     public void train(DataSet data, String export, int mod) {
-
-        HeatmapWindow heatmapWindow = null;
-        SankeyLiveView sankeyView = null;
-
-        if (HEATMAP_INTERVAL > 0) {
-            heatmapWindow = new HeatmapWindow();
-        }
-
-        if (SANKEY_INTERVAL > 0) {
-            try {
-                Platform.startup(() -> {});
-            } catch (IllegalStateException ignored) {} // Falls es schon läuft
-
-            sankeyView = new SankeyLiveView();
-            sankeyView.show(this.network);
-        }
-
         double totalLoss = Double.NaN;
 
-        for (int epoch = 0; epoch < maxEpochs; epoch++) {
-            int humanEpoch = epoch + 1;
-
-            System.out.println("Epoch: " + humanEpoch);
+        for (int epoch = 1; epoch <= maxEpochs; epoch++) {
+            System.out.println("Epoch: " + epoch);
             optimizationFunction.epoch(epoch, totalLoss);
             totalLoss = trainEpoch(data);
 
-            // Heatmap Update
-            if (HEATMAP_INTERVAL > 0 && heatmapWindow != null) {
-                if (humanEpoch == 1 || humanEpoch % HEATMAP_INTERVAL == 0 || humanEpoch == maxEpochs) {
-                    heatmapWindow.addEpoch("Epoche " + humanEpoch, new HeatmapData(this.network));
-                    System.out.println("Heatmap-Update bei Epoche " + humanEpoch);
-                }
-            }
-
-            // Sankey Update
-            if (SANKEY_INTERVAL > 0 && sankeyView != null) {
-                if (humanEpoch == 1 || humanEpoch % SANKEY_INTERVAL == 0 || humanEpoch == maxEpochs) {
-                    sankeyView.update(this.network, humanEpoch);
-                    System.out.println("Sankey-Update bei Epoche " + humanEpoch);
-                }
+            // Visualization
+            if (liveViewManager != null) {
+                liveViewManager.nextEpoch(epoch);
             }
 
             // Export
             if (export != null && mod > 0 && (epoch % mod == 0 || epoch == maxEpochs - 1)) {
-                Exporter.export(network, export.formatted(humanEpoch));
+                Exporter.export(network, export.formatted(epoch));
             }
 
             if (stopFunction.isFinished(totalLoss)) break;
