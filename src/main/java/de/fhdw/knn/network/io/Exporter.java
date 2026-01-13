@@ -4,6 +4,7 @@ import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.connection.Connection;
+import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 import lombok.SneakyThrows;
 
@@ -41,9 +42,10 @@ public class Exporter {
         }
 
         for (DenseLayer layer : network.denseLayers) {
-            for (DenseNeuron neuron : layer.neurons) {
-                buffer.putInt(ActivationFunction.FUNCTIONS.indexOf(neuron.activationFunction));
-                buffer.putDouble(neuron.bias);
+            for (AbstractDenseNeuron neuron : layer.neurons) {
+                DenseNeuron dn = (DenseNeuron) neuron;
+                buffer.putInt(ActivationFunction.FUNCTIONS.indexOf(dn.activationFunction));
+                buffer.putDouble(dn.bias);
                 for (Connection conn : neuron.incoming) {
                     buffer.putDouble(conn.weight);
                 }

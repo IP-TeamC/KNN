@@ -56,7 +56,7 @@ public class CsvReader {
             }
 
             DataSet dataSet = new DataSet(input, output);
-            if (labelParser != null) {
+            if (labels != null) {
                 labelParser.accept(dataSet, labels);
             }
 

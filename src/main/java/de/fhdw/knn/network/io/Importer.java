@@ -5,6 +5,7 @@ import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.layer.InputLayer;
+import de.fhdw.knn.network.neuron.DenseNeuron;
 import lombok.SneakyThrows;
 
 import java.nio.ByteBuffer;
@@ -67,8 +68,9 @@ public class Importer {
     }
 
     private void updateActivationFunctionAndBias(ByteBuffer buffer) {
-        denseLayers[denseLayer].neurons[neuron].activationFunction = ActivationFunction.FUNCTIONS.get(buffer.getInt());
-        denseLayers[denseLayer].neurons[neuron].bias = buffer.getDouble();
+        DenseNeuron dn = (DenseNeuron) denseLayers[denseLayer].neurons[neuron];
+        dn.activationFunction = ActivationFunction.FUNCTIONS.get(buffer.getInt());
+        dn.bias = buffer.getDouble();
         state = this::updateWeights;
     }
 

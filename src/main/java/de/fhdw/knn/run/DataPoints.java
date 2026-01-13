@@ -9,6 +9,7 @@ import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.io.Importer;
 import de.fhdw.knn.network.layer.DenseLayer;
+import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.trainer.Trainer;
 import de.fhdw.knn.trainer.learningrate.DecayLearningRate;
 import de.fhdw.knn.trainer.loss.LossFunction;
@@ -39,8 +40,9 @@ public class DataPoints {
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SNAKE, ActivationFunction.LINEAR, 5, 5, data.outputSize);
         for (DenseLayer layer : denseLayers) {
             for (int i = 0; i < Math.min(50, layer.neurons.length); i++) {
-                if (layer.neurons[i].activationFunction == ActivationFunction.SNAKE) {
-                    layer.neurons[i].activationFunction = ActivationFunction.SWISH;
+                DenseNeuron dn = (DenseNeuron) layer.neurons[i];
+                if (dn.activationFunction == ActivationFunction.SNAKE) {
+                    dn.activationFunction = ActivationFunction.SWISH;
                 }
             }
         }

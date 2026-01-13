@@ -22,7 +22,7 @@ public class Add {
         DataSet data = generate(9973, -100, 100);
 
         long trainStart = System.currentTimeMillis();
-        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.LINEAR, 1, 1, data.outputSize);
+        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.LINEAR, 1, data.outputSize);
         Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, data.inputSize, denseLayers);
 
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;

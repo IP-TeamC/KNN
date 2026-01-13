@@ -6,6 +6,7 @@ import de.fhdw.knn.network.io.Exporter;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.layer.InputLayer;
 import de.fhdw.knn.network.connection.Connection;
+import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 
 import java.util.Random;
@@ -17,6 +18,12 @@ public class Network {
 
     public InputLayer inputLayer;
     public DenseLayer[] denseLayers;
+
+    public Network(InputLayer inputLayer, DenseLayer[] denseLayers) {
+        this.random = null;
+        this.inputLayer = inputLayer;
+        this.denseLayers = denseLayers;
+    }
 
     public Network(long seed, WeightInitializer weightInitializer, InputLayer inputLayer, DenseLayer... denseLayers) {
         this.random = new Random(seed);
@@ -72,21 +79,20 @@ public class Network {
     }
 
     private void calculateOutput(int layer, double[] input, double[][] output, double[][] derived) {
-        DenseNeuron[] neurons = denseLayers[layer].neurons;
+        AbstractDenseNeuron[] neurons = denseLayers[layer].neurons;
         output[layer] = new double[neurons.length];
         derived[layer] = new double[neurons.length];
 
         for (int neuron = 0; neuron < neurons.length; neuron++) {
-            DenseNeuron dn = denseLayers[layer].neurons[neuron];
-            double weightedSum = dn.compute(input);
-            double activation = dn.activationFunction.calc(weightedSum);
-            output[layer][neuron] = activation;
-            derived[layer][neuron] = dn.activationFunction.derived(weightedSum, activation);
+            AbstractDenseNeuron dn = denseLayers[layer].neurons[neuron];
+            Pair<Double, Double> neuronOutput = dn.compute(input);
+            output[layer][neuron] = neuronOutput.x;
+            derived[layer][neuron] = neuronOutput.y;
         }
     }
 
     private void connectAll(WeightInitializer weightInitializer) {
-        for (DenseNeuron denseNeuron : denseLayers[0].neurons) {
+        for (AbstractDenseNeuron denseNeuron : denseLayers[0].neurons) {
             if (denseNeuron.incoming != null) continue;
             denseNeuron.incoming = new Connection[inputLayer.neurons.length];
 
@@ -98,10 +104,10 @@ public class Network {
         }
 
         for (int layer = 1; layer < denseLayers.length; layer++) {
-            DenseNeuron[] prevNeurons = denseLayers[layer - 1].neurons;
-            DenseNeuron[] currentNeurons = denseLayers[layer].neurons;
+            AbstractDenseNeuron[] prevNeurons = denseLayers[layer - 1].neurons;
+            AbstractDenseNeuron[] currentNeurons = denseLayers[layer].neurons;
 
-            for (DenseNeuron currentNeuron : currentNeurons) {
+            for (AbstractDenseNeuron currentNeuron : currentNeurons) {
                 if (currentNeuron.incoming != null) continue;
                 currentNeuron.incoming = new Connection[prevNeurons.length];
 

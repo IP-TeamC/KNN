@@ -74,7 +74,7 @@ public class Trainer {
                 int limit = Math.min(batchSize, data.size - i);
                 IntStream.range(0, limit).parallel().forEach(offset -> {
                     int index = base + offset;
-                    adjustments[offset] = optimizationFunction.compute(data.inputs[index], data.outputs[index], batchSize);
+                    adjustments[offset] = optimizationFunction.compute(network, data.inputs[index], data.outputs[index], batchSize);
                 });
                 for (Adjustments adjustment : adjustments) {
                     adjustment.adjust(network);
@@ -82,7 +82,7 @@ public class Trainer {
             }
         } else {
             for (int i = 0; i < data.size; i += 1) {
-                optimizationFunction.compute(data.inputs[i], data.outputs[i], 1).adjust(network);
+                optimizationFunction.compute(network, data.inputs[i], data.outputs[i], 1).adjust(network);
             }
         }
 
