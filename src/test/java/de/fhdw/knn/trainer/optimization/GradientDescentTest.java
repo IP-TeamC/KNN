@@ -24,7 +24,6 @@ public class GradientDescentTest {
         // 1 Input -> 2 Hidden -> 1 Output
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -45,7 +44,6 @@ public class GradientDescentTest {
         // 1 Input -> 3 Hidden -> 3 Output
         Network network = createNetworkWithHiddenLayer(1, 3, 3);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -66,7 +64,6 @@ public class GradientDescentTest {
         // 2 Input -> 3 Hidden -> 1 Output
         Network network = createNetworkWithMultipleHiddenLayers(2, new int[]{3, 2}, 1);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -105,7 +102,6 @@ public class GradientDescentTest {
         double[] output = {0.5};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -132,7 +128,6 @@ public class GradientDescentTest {
         double[] output = {0.5};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.0)
         );
@@ -150,7 +145,6 @@ public class GradientDescentTest {
         double[] output = {1.0};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -169,7 +163,6 @@ public class GradientDescentTest {
         double[] output = {0.5};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(1e-8)
         );
@@ -188,7 +181,6 @@ public class GradientDescentTest {
         double[] output = {0.0};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -207,7 +199,6 @@ public class GradientDescentTest {
         // 2 Input -> 3 Hidden -> 3 Output
         Network network = createNetworkWithHiddenLayer(2, 3, 3);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -231,7 +222,6 @@ public class GradientDescentTest {
         // 2 Input -> 4 Hidden -> 2 Hidden -> 2 Output (3 Dense Layers)
         Network network = createNetworkWithMultipleHiddenLayers(2, new int[]{4, 2}, 2);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -261,7 +251,6 @@ public class GradientDescentTest {
         double[] output = {0.5};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -283,7 +272,6 @@ public class GradientDescentTest {
 
     private Adjustments computeWithLearningRate(Network network, double lr) {
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(lr)
         );

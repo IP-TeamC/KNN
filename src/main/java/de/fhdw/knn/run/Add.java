@@ -27,7 +27,7 @@ public class Add {
 
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = EarlyStopping.NEVER;
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new DecayLearningRate(0.00001, 0.9999));
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new DecayLearningRate(0.00001, 0.9999));
 
         Trainer trainer = new Trainer(network, 1000, true, 1, lossFunction, stopFunction, optimizationFunction);
         trainer.train(data);

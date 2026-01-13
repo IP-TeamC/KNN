@@ -52,7 +52,7 @@ public class DataPoints {
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = EarlyStopping.NEVER;
         // learning rate zu klein oder decay zu groß (bzw. zu klein: näher an 1 - ist ja 1 - decay eig...)
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new DecayLearningRate(0.001, 0.995));
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new DecayLearningRate(0.001, 0.995));
 
         Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);
         //trainer.train(data, "target/models/divx0_dp_swishlt90_snake_gr_2x100_mse_0001dlr_%d.knn", 10);

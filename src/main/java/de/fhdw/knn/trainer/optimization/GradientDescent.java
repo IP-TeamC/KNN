@@ -2,9 +2,7 @@ package de.fhdw.knn.trainer.optimization;
 
 import de.fhdw.knn.data.Pair;
 import de.fhdw.knn.network.Network;
-import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
-import de.fhdw.knn.network.neuron.InputNeuron;
 import de.fhdw.knn.network.neuron.SuperNeuron;
 import de.fhdw.knn.trainer.learningrate.LearningRateFunction;
 import de.fhdw.knn.trainer.loss.LossFunction;
@@ -16,7 +14,7 @@ public class GradientDescent implements OptimizationFunction {
     private final LearningRateFunction learningRateFunction;
     private double learningRate;
 
-    public GradientDescent(Network network, LossFunction lossFunction, LearningRateFunction learningRateFunction) {
+    public GradientDescent(LossFunction lossFunction, LearningRateFunction learningRateFunction) {
         this.lossFunction = lossFunction;
         this.learningRateFunction = learningRateFunction;
     }

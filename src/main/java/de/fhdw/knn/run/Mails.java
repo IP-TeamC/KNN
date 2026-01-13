@@ -35,7 +35,7 @@ public class Mails {
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = StopFunction.NEVER;
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new ConstantLearningRate(0.00001));
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.00001));
 
         Trainer trainer = new Trainer(network, 100, true, 1, null, stopFunction, optimizationFunction);
         //trainer.train(train);

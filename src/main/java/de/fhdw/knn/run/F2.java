@@ -28,7 +28,7 @@ public class F2 {
 
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = new EarlyStopping(0.0001, 100);
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new SoftstartLearningRate(0.00005, 0.3, 5));
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new SoftstartLearningRate(0.00005, 0.3, 5));
 
         Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);
         trainer.train(data);

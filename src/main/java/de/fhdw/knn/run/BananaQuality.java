@@ -35,7 +35,7 @@ public class BananaQuality {
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = EarlyStopping.NEVER;
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new ConstantLearningRate(0.06));
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.06));
 
         Trainer trainer = new Trainer(network, 20, true, 1, null, stopFunction, optimizationFunction);
         trainer.train(train);
