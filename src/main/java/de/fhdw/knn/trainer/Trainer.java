@@ -25,14 +25,7 @@ public class Trainer {
     private final LiveViewManager liveViewManager;
 
     public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction) {
-        this.network = network;
-        this.maxEpochs = maxEpochs;
-        this.shuffleEpoch = shuffleEpoch;
-        this.batchSize = batchSize;
-        this.lossFunction = lossFunction;
-        this.stopFunction = stopFunction;
-        this.optimizationFunction = optimizationFunction;
-        this.liveViewManager = null;
+        this(network, maxEpochs, shuffleEpoch, batchSize, lossFunction, stopFunction, optimizationFunction, false);
     }
 
     public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction, boolean visualization) {
@@ -43,7 +36,7 @@ public class Trainer {
         this.lossFunction = lossFunction;
         this.stopFunction = stopFunction;
         this.optimizationFunction = optimizationFunction;
-        this.liveViewManager = new LiveViewManager(this);
+        this.liveViewManager = visualization ? new LiveViewManager(this) : null;
     }
 
     public void train(DataSet data) {
