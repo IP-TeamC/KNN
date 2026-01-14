@@ -5,7 +5,6 @@ import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.layer.InputLayer;
-import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.network.neuron.SuperNeuron;
 import lombok.SneakyThrows;
@@ -98,15 +97,7 @@ public class Importer {
         buffer.get(subnetRaw);
         Network subnet = new Importer().load(subnetRaw);
 
-        SuperNeuron sn = new SuperNeuron(subnet);
-        sn.incoming = denseLayers[denseLayer].neurons[neuron].incoming;
-        if (denseLayer != denseLayers.length - 1) {
-            for (AbstractDenseNeuron nextNeuron : denseLayers[denseLayer + 1].neurons) {
-                nextNeuron.incoming[neuron].inputNeuron = sn;
-            }
-        }
-        denseLayers[denseLayer].neurons[neuron] = sn;
-
+        new SuperNeuron(subnet).insert(network, denseLayer, neuron);
         state = this::updateWeights;
     }
 

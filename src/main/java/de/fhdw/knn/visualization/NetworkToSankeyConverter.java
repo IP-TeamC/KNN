@@ -5,7 +5,6 @@ import de.fhdw.knn.network.connection.Connection;
 import de.fhdw.knn.network.io.Importer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
-import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.network.neuron.Neuron;
 import eu.hansolo.fx.charts.SankeyPlot;
 import eu.hansolo.fx.charts.data.PlotItem;

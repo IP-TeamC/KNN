@@ -7,6 +7,7 @@ import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.Connection;
 import de.fhdw.knn.network.connection.WeightInitializer;
+import de.fhdw.knn.network.io.Exporter;
 import de.fhdw.knn.network.io.Importer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
@@ -111,6 +112,7 @@ public class SinusAdd {
 
         Trainer trainer2 = new Trainer(addsin, 100, true, 1, lossFunction, stopFunction, optimizationFunction);
         trainer2.train(data);
+        addsin = new Importer().load(Exporter.export(addsin));
 
         for (DenseLayer layer : addsin.denseLayers) {
             for (AbstractDenseNeuron dn : layer.neurons) {

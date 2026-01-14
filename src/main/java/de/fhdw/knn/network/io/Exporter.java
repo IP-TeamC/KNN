@@ -48,7 +48,6 @@ public class Exporter {
         int size = 8 + network.denseLayers.length * 4
                 - exportedSubs.size() * 4 // halb so groß wie Bias
                 + exportedSubs.stream().reduce(0, (sizeSum, exported) -> sizeSum + exported.length, Integer::sum);
-        System.out.println("calc size: " + size);
         for (int i = 0; i < network.denseLayers.length; i++) {
             // ActivationFunction (4 ...)
             size += 4 * network.denseLayers[i].neurons.length;

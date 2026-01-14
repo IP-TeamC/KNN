@@ -60,4 +60,14 @@ public class SuperNeuron extends AbstractDenseNeuron {
         return new Pair<>(output.x[output.x.length - 1][0], output.y[output.y.length - 1][0]); // evtl. Index 0 statt output.y.length (1. oder letzter Layer?)
     }
 
+    public void insert(Network network, int layer, int neuron) {
+        incoming = network.denseLayers[layer].neurons[neuron].incoming;
+        if (layer != network.denseLayers.length - 1) {
+            for (AbstractDenseNeuron nextNeuron : network.denseLayers[layer + 1].neurons) {
+                nextNeuron.incoming[neuron].inputNeuron = this;
+            }
+        }
+        network.denseLayers[layer].neurons[neuron] = this;
+    }
+
 }
