@@ -7,7 +7,6 @@ import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.layer.InputLayer;
 import de.fhdw.knn.network.connection.Connection;
 import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
-import de.fhdw.knn.network.neuron.SuperNeuron;
 
 import java.util.Random;
 import java.util.stream.IntStream;
