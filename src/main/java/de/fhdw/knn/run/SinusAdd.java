@@ -38,7 +38,7 @@ public class SinusAdd {
         LossFunction lossFunction = LossFunction.MEAN_ABSOLUTE_ERROR;
         StopFunction stopFunction = new EarlyStopping(1e-9, 1000);
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction,
-                new DecayLearningRate(0.0001, 0.995));
+                new DecayLearningRate(0.001, 0.995));
 
         Trainer trainer = new Trainer(network, 1, true, 1, lossFunction, stopFunction, optimizationFunction);
         // trainer.train(data);
@@ -73,7 +73,7 @@ public class SinusAdd {
 
         Network add = Importer.importNetwork("models/add.knn");
         Network sin = Importer.importNetwork("models/sin_snake.knn");
-        final Network addsin = new Network(235890, WeightInitializer.GLOROT_UNIFORM, data.inputSize,
+        Network addsin = new Network(235890, WeightInitializer.GLOROT_UNIFORM, data.inputSize,
                 DenseLayer.createLayers(null, null, 0, 0, 0));
         addsin.denseLayers[0] = add.denseLayers[0];
         addsin.denseLayers[1] = add.denseLayers[1];
@@ -96,8 +96,8 @@ public class SinusAdd {
         double totalLoss = lossFunction.totalLoss(testSet.outputs, predictions);
         System.out.println("Total Loss: " + totalLoss);
 
-        addsin.denseLayers[0].neurons[0].incoming[0].weight = 1.2694410904012163;// ;new Random().nextDouble(1.4);
-        addsin.denseLayers[0].neurons[0].incoming[1].weight = 1.386981814728813;// new Random().nextDouble(1.4);
+        addsin.denseLayers[0].neurons[0].incoming[0].weight = 0.4;
+        addsin.denseLayers[0].neurons[0].incoming[1].weight = 0.1;
 
         for (DenseLayer layer : addsin.denseLayers) {
             for (AbstractDenseNeuron dn : layer.neurons) {

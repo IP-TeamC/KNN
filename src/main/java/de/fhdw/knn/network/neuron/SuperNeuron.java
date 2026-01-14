@@ -11,6 +11,15 @@ public class SuperNeuron extends AbstractDenseNeuron {
 
     public final Network network;
 
+    /**
+     * ACHTUNG! Nur für Import!
+     *
+     * @param network Das Netzwerk muss bereits einen Adapter enthalten!
+     */
+    public SuperNeuron(Network network) {
+        this.network = network;
+    }
+
     public SuperNeuron(Network network, double[] adapterBias, double[][] adapterWeights) {
         if (network.denseLayers[network.denseLayers.length - 1].neurons.length != 1) {
             throw new IllegalArgumentException("invalid super neuron network output layer size: expected 1");
@@ -48,7 +57,7 @@ public class SuperNeuron extends AbstractDenseNeuron {
     @Override
     public Pair<Double, Double> compute(double[] input) {
         Pair<double[][], double[][]> output = network.feedForward(input);
-        return new Pair<>(output.x[output.x.length - 1][0], output.y[output.y.length - 1][0]);
+        return new Pair<>(output.x[output.x.length - 1][0], output.y[output.y.length - 1][0]); // evtl. Index 0 statt output.y.length (1. oder letzter Layer?)
     }
 
 }
