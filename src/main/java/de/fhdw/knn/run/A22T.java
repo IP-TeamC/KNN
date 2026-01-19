@@ -16,6 +16,7 @@ import de.fhdw.knn.trainer.stop.StopFunction;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public class A22T {
@@ -31,9 +32,10 @@ public class A22T {
         });
         DataSet dataDecryption = new DataSet(dataEncryption.outputs, dataEncryption.inputs);
 
+        Function<DataSet, Network> trainerFunction = A22T::trainNetwork;
         long trainStart = System.currentTimeMillis();
-        final Network encryption = trainNetwork(dataEncryption);
-        final Network decryption = trainNetwork(dataDecryption);
+        final Network encryption = trainerFunction.apply(dataEncryption);
+        final Network decryption = trainerFunction.apply(dataDecryption);
         long trainStop = System.currentTimeMillis();
 
         long trainTime = trainStop - trainStart;
@@ -50,7 +52,20 @@ public class A22T {
         StopFunction stopFunction = EarlyStopping.NEVER;
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(10));
 
-        Trainer trainer = new Trainer(network, 1, true, 1, lossFunction, stopFunction, optimizationFunction, true);
+        Trainer trainer = new Trainer(network, 1, false, 1, lossFunction, stopFunction, optimizationFunction, true);
+        trainer.train(data);
+        return network;
+    }
+
+    private static Network trainNetworkWithHidden(final DataSet data) {
+        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SNAKE, ActivationFunction.SIGMOID, 15, data.outputSize);
+        Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, data.inputSize, denseLayers);
+
+        LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
+        StopFunction stopFunction = EarlyStopping.NEVER;
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.1));
+
+        Trainer trainer = new Trainer(network, 10, true, 1, lossFunction, stopFunction, optimizationFunction, false);
         trainer.train(data);
         return network;
     }
@@ -111,6 +126,9 @@ public class A22T {
     private static boolean compare(final String[] expected, final String[] predicted) {
         boolean ok = true;
         for (int i = 0; i < expected.length; i++) {
+            System.out.println("\nExpected/Predicted:");
+            System.out.println(expected[i]);
+            System.out.println(predicted[i]);
             if (!expected[i].equals(predicted[i])) {
                 System.out.println("Not equals: " + i);
                 ok = false;
