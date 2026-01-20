@@ -69,6 +69,7 @@ Die minimal benötigten Trainings-Epochen bei 10, 15, 20 und 50 Neuronen im Hidd
 
 Im Hidden Layer sind von den in unserer Implementierung vorhandenen Aktivierungsfunktionen eher nur diese 3 Aktivierungsfunktionen sinnvoll (statt z.B. einer Sigmoid-Funktion wie im Output-Layer bei einer Klassifikation).
 Dabei ist aber auffällig und unerwartet, dass insbesondere die für periodische Daten geeignete Snake-Aktivierungsfunktion in jedem getesteten Fall besser war als die häufig verwendete ReLU-Funktion oder die darauf aufbauende Swish-Funktion.
+Eine mögliche Ursache für diese Abweichung könnte der an bestimmten Stellen höhere Gradient (Ableitung) der Snake-Funktion sein (zwischen 0 und 2, bei ReLU entweder 0 oder 1).
 
 Aufgrund dieser Ergebnisse fällt die Wahl der Aktivierungsfunktion auf die Snake-Funktion im Hidden Layer.
 Hier ist auch die Verwendung von 15 Neuronen eine möglichst geringe Anzahl, die die Anzahl der Trainings-Epochen nicht zu sehr erhöht.
@@ -84,5 +85,27 @@ Verschlüsselung:
 Entschlüsselung:
 ![siehe decryption_heatmap.png](decryption_heatmap.png "Entschlüsselung Heatmap")
 
-Der Index des Input-/Output-Neurons entspricht dem Index der Zeichens im gewählten Alphabet.
+Der Index des Input-/Output-Neurons entspricht dem Index des Zeichens im gewählten Alphabet.
 Man sieht sogar sehr gut, dass alle Sonderzeichen (jeweils oben rechts) auf sich selbst abgebildet werden.
+
+Auffällig ist ebenfalls, dass gerade häufige Zeichen (z.B. Leerzeichen, e, n, s, a bei der Verschlüsselung) eine wesentlich grünere Spalte erzeugen.
+Das bedeutet, die Gewichte zu den falschen Neuronen sind wesentlich schwächer (nahe 0) als bei weniger häufig auftretenden Zeichen.
+Eine grüne Spalte impliziert jedoch nicht zwangsläufig, dass ein Zeichen häufig auftritt (z.B. w bei der Verschlüsselung).
+Teilweise lernt das Netz also auch die Häufigkeit der Zeichen (aber nicht sehr zuverlässig).
+
+(Hinweis: der Datensatz besteht aus allen Zeichen des Klartexts mit Zuordnung zum Geheimtext, wobei derselbe Datenpunkt/dasselbe Zeichen genau so oft im Datensatz enthalten ist, wie in der Datei `a2_2_translation.csv`).
+
+#### Performance
+
+Die Trainingsdauer der beiden Netze für Ver- und Entschlüsselung beträgt insgesamt mit dem gewählten Hidden Layer etwa 350 ms, während die Variante ohne Hidden Layer nur etwa 50 ms benötigt.
+Die Ver- und Entschlüsselung der 3 Zeile mithilfe des trainierten Modells dauert in Summe ca. 7 ms.
+(Der Test fand in der Code-Basis zur Implementierung des Super-Neurons statt, welches noch nicht unvollständig implementiert ist und eine etwas schlechtere Performance zur Folge hat.)
+
+#### Fazit
+
+Ein neuronales Netzwerk lässt sich sehr gut auf eine konkrete monoalphabetische Substitution trainieren, wenn der Datensatz sowohl den Klartext als auch den Geheimtext enthält.
+Das Problem entspricht im Grunde einer Klassifikation, sodass die One-Hot-Codierung für Input sowie Output, Binary/Categorical Cross-Entropy Loss als Verlustfunktion und die Sigmoid-/Softmax-Aktivierungsfunktion verwendet werden können.
+Da es sich hierbei um keine binäre Klassifikation handelt, sollte die Implementierung jedoch noch um den Categorical Cross-Entropy Loss und die Softmax-Aktivierungsfunktion erweitert werden.
+
+Es hat sich bei der Verwendung der One-Hot-Codierung gezeigt, dass es sehr sinnvoll oder sogar notwendig sein kann, die Daten vor dem Training passend vorzubereiten, um das Ergebnis wesentlich zu verbessern.
+Ein neuronales Netzwerk kann also nicht immer ohne Vorüberlegungen bzw. Vorarbeiten auf beliebige Probleme angewendet werden.
