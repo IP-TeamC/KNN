@@ -1,12 +1,13 @@
 package de.fhdw.knn.network;
 
-import de.fhdw.knn.data.Pair;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.io.Exporter;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.layer.InputLayer;
 import de.fhdw.knn.network.connection.Connection;
 import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
+import de.fhdw.knn.network.neuron.OutputsDerived;
+import de.fhdw.knn.network.neuron.OutputDerived;
 
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -40,18 +41,14 @@ public class Network {
 
     public double[][] predict(double[][] inputs) {
         double[][] predictions = new double[inputs.length][];
-        IntStream.range(0, inputs.length).parallel().forEach(i -> {
-            double[][] outputs = feedForward(inputs[i]).x;
-            predictions[i] = outputs[outputs.length - 1];
-        });
+        IntStream.range(0, inputs.length).parallel().forEach(i -> predictions[i] = feedForward(inputs[i]).lastOutput());
         return predictions;
     }
 
     public double[] predictSingles(double[][] inputs) {
         double[] predictions = new double[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
-            double[][] outputs = feedForward(inputs[i]).x;
-            predictions[i] = outputs[outputs.length - 1][0];
+            predictions[i] = feedForward(inputs[i]).lastOutput()[0];
         }
         return predictions;
     }
@@ -59,13 +56,12 @@ public class Network {
     public double[] predictSingles(double[] inputs) {
         double[] predictions = new double[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
-            double[][] outputs = feedForward(new double[]{inputs[i]}).x;
-            predictions[i] = outputs[outputs.length - 1][0];
+            predictions[i] = feedForward(new double[]{inputs[i]}).lastOutput()[0];
         }
         return predictions;
     }
 
-    public Pair<double[][], double[][]> feedForward(double[] input) {
+    public OutputsDerived feedForward(double[] input) {
         double[][] output = new double[denseLayers.length][];
         double[][] derived = new double[denseLayers.length][];
 
@@ -74,7 +70,7 @@ public class Network {
             calculateOutput(layer, output[layer - 1], output, derived);
         }
 
-        return new Pair<>(output, derived);
+        return new OutputsDerived(output, derived);
     }
 
     private void calculateOutput(int layer, double[] input, double[][] output, double[][] derived) {
@@ -84,9 +80,9 @@ public class Network {
 
         for (int neuron = 0; neuron < neurons.length; neuron++) {
             AbstractDenseNeuron dn = denseLayers[layer].neurons[neuron];
-            Pair<Double, Double> neuronOutput = dn.compute(input);
-            output[layer][neuron] = neuronOutput.x;
-            derived[layer][neuron] = neuronOutput.y;
+            OutputDerived neuronOutput = dn.compute(input);
+            output[layer][neuron] = neuronOutput.output();
+            derived[layer][neuron] = neuronOutput.derived();
         }
     }
 

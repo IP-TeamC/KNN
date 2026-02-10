@@ -1,6 +1,5 @@
 package de.fhdw.knn.network.neuron;
 
-import de.fhdw.knn.data.Pair;
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.Connection;
@@ -23,6 +22,8 @@ public class SuperNeuron extends AbstractDenseNeuron {
     public SuperNeuron(Network network, double[] adapterBias, double[][] adapterWeights) {
         if (network.denseLayers[network.denseLayers.length - 1].neurons.length != 1) {
             throw new IllegalArgumentException("invalid super neuron network output layer size: expected 1");
+        } else if (network.inputLayer.neurons.length != adapterBias.length || adapterBias.length != adapterWeights.length) {
+            throw new IllegalArgumentException("invalid super neuron adapter or network size: requiring network input neurons = adapter bias/weights size");
         }
 
         // (new)[AdapterInputLayer ->] ActualInputLayer -> FirstDenseLayer
@@ -55,9 +56,11 @@ public class SuperNeuron extends AbstractDenseNeuron {
     }
 
     @Override
-    public Pair<Double, Double> compute(double[] input) {
-        Pair<double[][], double[][]> output = network.feedForward(input);
-        return new Pair<>(output.x[output.x.length - 1][0], output.y[output.y.length - 1][0]); // evtl. Index 0 statt output.y.length (1. oder letzter Layer?)
+    public OutputDerived compute(double[] input) {
+        OutputsDerived outputDerived = network.feedForward(input);
+        double[][] output = outputDerived.output();
+        double[][] derived = outputDerived.derived();
+        return new OutputDerived(output[output.length - 1][0], derived[derived.length - 1][0]); // evtl. Index 0 statt output.y.length (1. oder letzter Layer?)
     }
 
     public void insert(Network network, int layer, int neuron) {
