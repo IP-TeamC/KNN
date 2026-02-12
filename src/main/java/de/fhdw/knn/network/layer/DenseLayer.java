@@ -1,12 +1,13 @@
 package de.fhdw.knn.network.layer;
 
 import de.fhdw.knn.network.activation.ActivationFunction;
+import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.network.neuron.Neuron;
 
 public class DenseLayer extends Layer {
 
-    public DenseNeuron[] neurons;
+    public AbstractDenseNeuron[] neurons;
 
     @Override
     public Neuron[] neurons() {
@@ -14,15 +15,15 @@ public class DenseLayer extends Layer {
     }
 
     public DenseLayer(int neurons) {
-        this.neurons = new DenseNeuron[neurons];
+        this.neurons = new AbstractDenseNeuron[neurons];
         for (int i = 0; i < neurons; i++) {
             this.neurons[i] = new DenseNeuron();
         }
     }
 
     public DenseLayer withActivationFunction(ActivationFunction activationFunction) {
-        for (DenseNeuron neuron : neurons) {
-            neuron.activationFunction = activationFunction;
+        for (AbstractDenseNeuron neuron : neurons) {
+            ((DenseNeuron) neuron).activationFunction = activationFunction;
         }
         return this;
     }

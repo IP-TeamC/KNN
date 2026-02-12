@@ -9,6 +9,7 @@ import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.io.Importer;
 import de.fhdw.knn.network.layer.DenseLayer;
+import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.trainer.Trainer;
 import de.fhdw.knn.trainer.learningrate.DecayLearningRate;
 import de.fhdw.knn.trainer.loss.LossFunction;
@@ -39,8 +40,9 @@ public class DataPoints {
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SNAKE, ActivationFunction.LINEAR, 5, 5, data.outputSize);
         for (DenseLayer layer : denseLayers) {
             for (int i = 0; i < Math.min(50, layer.neurons.length); i++) {
-                if (layer.neurons[i].activationFunction == ActivationFunction.SNAKE) {
-                    layer.neurons[i].activationFunction = ActivationFunction.SWISH;
+                DenseNeuron dn = (DenseNeuron) layer.neurons[i];
+                if (dn.activationFunction == ActivationFunction.SNAKE) {
+                    dn.activationFunction = ActivationFunction.SWISH;
                 }
             }
         }
@@ -50,7 +52,7 @@ public class DataPoints {
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = EarlyStopping.NEVER;
         // learning rate zu klein oder decay zu groß (bzw. zu klein: näher an 1 - ist ja 1 - decay eig...)
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new DecayLearningRate(0.001, 0.995));
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new DecayLearningRate(0.001, 0.995));
 
         Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);
         //trainer.train(data, "target/models/divx0_dp_swishlt90_snake_gr_2x100_mse_0001dlr_%d.knn", 10);

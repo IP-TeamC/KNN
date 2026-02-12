@@ -24,7 +24,6 @@ public class GradientDescentTest {
         // 1 Input -> 2 Hidden -> 1 Output
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -33,7 +32,7 @@ public class GradientDescentTest {
         double[] expectedOutput = {1.0};
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(input, expectedOutput, 1);
+        Adjustments adj = gradientDescent.compute(network, input, expectedOutput, 1);
 
         assertNotNull(adj.adjustmentsWeight());
         assertNotNull(adj.adjustmentsBias());
@@ -45,7 +44,6 @@ public class GradientDescentTest {
         // 1 Input -> 3 Hidden -> 3 Output
         Network network = createNetworkWithHiddenLayer(1, 3, 3);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -54,7 +52,7 @@ public class GradientDescentTest {
         double[] expectedOutput = {0.8, 0.2, 0.5};
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(input, expectedOutput, 1);
+        Adjustments adj = gradientDescent.compute(network, input, expectedOutput, 1);
 
         assertEquals(2, adj.adjustmentsWeight().length);
         assertEquals(2, adj.adjustmentsBias().length);
@@ -66,7 +64,6 @@ public class GradientDescentTest {
         // 2 Input -> 3 Hidden -> 1 Output
         Network network = createNetworkWithMultipleHiddenLayers(2, new int[]{3, 2}, 1);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -75,7 +72,7 @@ public class GradientDescentTest {
         double[] expectedOutput = {0.8};
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(input, expectedOutput, 1);
+        Adjustments adj = gradientDescent.compute(network, input, expectedOutput, 1);
 
         // 3 Layer total: Input -> 3 Hidden -> 2 Hidden -> 1 Output
         assertEquals(3, adj.adjustmentsWeight().length);
@@ -105,16 +102,15 @@ public class GradientDescentTest {
         double[] output = {0.5};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
 
         gradientDescent.epoch(0, 0);
-        Adjustments adjBatch1 = gradientDescent.compute(input, output, 1);
+        Adjustments adjBatch1 = gradientDescent.compute(network, input, output, 1);
 
         gradientDescent.epoch(0, 0);
-        Adjustments adjBatch32 = gradientDescent.compute(input, output, 32);
+        Adjustments adjBatch32 = gradientDescent.compute(network, input, output, 32);
 
         // Mit 32x Batch sollten Adjustments 1/32 sein
         if (Math.abs(adjBatch32.adjustmentsBias()[1][0]) > 1e-10) {
@@ -132,13 +128,12 @@ public class GradientDescentTest {
         double[] output = {0.5};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.0)
         );
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(input, output, 1);
+        Adjustments adj = gradientDescent.compute(network, input, output, 1);
 
         assertTrue(allAdjustmentsZero(adj));
     }
@@ -150,13 +145,12 @@ public class GradientDescentTest {
         double[] output = {1.0};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(largeInput, output, 1);
+        Adjustments adj = gradientDescent.compute(network, largeInput, output, 1);
 
         assertFalse(containsNaN(adj), "Gradient contains NaN values");
         assertFalse(containsInfinity(adj), "Gradient contains Infinity values");
@@ -169,13 +163,12 @@ public class GradientDescentTest {
         double[] output = {0.5};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(1e-8)
         );
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(input, output, 1);
+        Adjustments adj = gradientDescent.compute(network, input, output, 1);
 
         assertFalse(containsNaN(adj), "Gradient with tiny learning rate contains NaN");
         assertFalse(containsInfinity(adj), "Gradient with tiny learning rate contains Infinity");
@@ -188,13 +181,12 @@ public class GradientDescentTest {
         double[] output = {0.0};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(negativeInput, output, 1);
+        Adjustments adj = gradientDescent.compute(network, negativeInput, output, 1);
 
         assertFalse(containsNaN(adj));
         assertFalse(containsInfinity(adj));
@@ -207,7 +199,6 @@ public class GradientDescentTest {
         // 2 Input -> 3 Hidden -> 3 Output
         Network network = createNetworkWithHiddenLayer(2, 3, 3);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -216,7 +207,7 @@ public class GradientDescentTest {
         double[] expectedOutput = {0.8, 0.2, 0.5};
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(input, expectedOutput, 1);
+        Adjustments adj = gradientDescent.compute(network, input, expectedOutput, 1);
 
         // Prüfe dass beide Layer Gradienten haben
         assertEquals(2, adj.adjustmentsWeight().length);
@@ -231,7 +222,6 @@ public class GradientDescentTest {
         // 2 Input -> 4 Hidden -> 2 Hidden -> 2 Output (3 Dense Layers)
         Network network = createNetworkWithMultipleHiddenLayers(2, new int[]{4, 2}, 2);
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -240,7 +230,7 @@ public class GradientDescentTest {
         double[] expectedOutput = {0.8, 0.2};
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(input, expectedOutput, 1);
+        Adjustments adj = gradientDescent.compute(network, input, expectedOutput, 1);
 
         // 3 Dense Layers (2 hidden + 1 output)
         assertEquals(3, adj.adjustmentsWeight().length);
@@ -261,13 +251,12 @@ public class GradientDescentTest {
         double[] output = {0.5};
 
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
 
         gradientDescent.epoch(0, 0);
-        Adjustments adj = gradientDescent.compute(input, output, 1);
+        Adjustments adj = gradientDescent.compute(network, input, output, 1);
 
         // Gradienten sollten nicht extremer groß sein
         for (double[][] layerWeights : adj.adjustmentsWeight()) {
@@ -283,7 +272,6 @@ public class GradientDescentTest {
 
     private Adjustments computeWithLearningRate(Network network, double lr) {
         gradientDescent = new GradientDescent(
-                network,
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(lr)
         );
@@ -292,7 +280,7 @@ public class GradientDescentTest {
         double[] output = {0.5};
 
         gradientDescent.epoch(0, 0);
-        return gradientDescent.compute(input, output, 1);
+        return gradientDescent.compute(network, input, output, 1);
     }
 
     private boolean allAdjustmentsZero(Adjustments adj) {

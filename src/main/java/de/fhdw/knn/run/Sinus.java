@@ -29,7 +29,7 @@ public class Sinus {
 
         LossFunction lossFunction = LossFunction.MEAN_ABSOLUTE_ERROR;
         StopFunction stopFunction = new EarlyStopping(1e-9, 50);
-        OptimizationFunction optimizationFunction = new GradientDescent(network, lossFunction, new DecayLearningRate(0.001, 0.995));
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new DecayLearningRate(0.001, 0.995));
 
         Trainer trainer = new Trainer(network, 10000, true, 1, lossFunction, stopFunction, optimizationFunction);
         trainer.train(data);

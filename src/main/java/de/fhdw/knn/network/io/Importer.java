@@ -5,6 +5,8 @@ import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.layer.InputLayer;
+import de.fhdw.knn.network.neuron.DenseNeuron;
+import de.fhdw.knn.network.neuron.SuperNeuron;
 import lombok.SneakyThrows;
 
 import java.nio.ByteBuffer;
@@ -34,17 +36,27 @@ public class Importer {
     // Anzahl Neuronen
     // }
     // { je Neuron je Layer (0 -> n)
-    // ActivationFunction
+    // ActivationFunction (Integer.MAX_VALUE = Super-Neuron)
+    // { wenn DenseNeuron
     // BIAS
+    // }
+    // { sonst wenn SuperNeuron
+    // Network-Size
+    // Network
+    // }
     // Weights... je Connection (0 -> n)
     // }
-    @SneakyThrows
-    public Network load(String fileName) {
-        ByteBuffer buffer = ByteBuffer.wrap(Files.readAllBytes(Paths.get(fileName)));
+    public Network load(byte[] data) {
+        ByteBuffer buffer = ByteBuffer.wrap(data);
         while (buffer.position() != buffer.capacity()) {
             state.accept(buffer);
         }
         return network;
+    }
+
+    @SneakyThrows
+    public Network load(String fileName) {
+        return load(Files.readAllBytes(Paths.get(fileName)));
     }
 
     private void createInputLayer(ByteBuffer buffer) {
@@ -67,8 +79,25 @@ public class Importer {
     }
 
     private void updateActivationFunctionAndBias(ByteBuffer buffer) {
-        denseLayers[denseLayer].neurons[neuron].activationFunction = ActivationFunction.FUNCTIONS.get(buffer.getInt());
-        denseLayers[denseLayer].neurons[neuron].bias = buffer.getDouble();
+        int activationFunction = buffer.getInt();
+        if (activationFunction == Integer.MAX_VALUE) {
+            state = this::updateSuperNeuron;
+            return;
+        }
+
+        DenseNeuron dn = (DenseNeuron) denseLayers[denseLayer].neurons[neuron];
+        dn.activationFunction = ActivationFunction.FUNCTIONS.get(activationFunction);
+        dn.bias = buffer.getDouble();
+        state = this::updateWeights;
+    }
+
+    private void updateSuperNeuron(ByteBuffer buffer) {
+        int subnetSize = buffer.getInt();
+        byte[] subnetRaw = new byte[subnetSize];
+        buffer.get(subnetRaw);
+        Network subnet = new Importer().load(subnetRaw);
+
+        new SuperNeuron(subnet).insert(network, denseLayer, neuron);
         state = this::updateWeights;
     }
 

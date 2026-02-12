@@ -4,7 +4,7 @@ import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.connection.Connection;
 import de.fhdw.knn.network.io.Importer;
 import de.fhdw.knn.network.layer.DenseLayer;
-import de.fhdw.knn.network.neuron.DenseNeuron;
+import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
 import de.fhdw.knn.network.neuron.Neuron;
 import eu.hansolo.fx.charts.SankeyPlot;
 import eu.hansolo.fx.charts.data.PlotItem;
@@ -124,7 +124,7 @@ public class NetworkToSankeyConverter extends Application {
 
     private static void createConnectionsReversed(PlotItem[] rightItems, PlotItem[] leftItems, DenseLayer rightLayer) {
         for (int rIdx = 0; rIdx < rightItems.length; rIdx++) {
-            DenseNeuron rightNeuron = rightLayer.neurons[rIdx];
+            AbstractDenseNeuron rightNeuron = rightLayer.neurons[rIdx];
             Connection[] incomingFromLeft = rightNeuron.incoming;
 
             for (int lIdx = 0; lIdx < leftItems.length; lIdx++) {
