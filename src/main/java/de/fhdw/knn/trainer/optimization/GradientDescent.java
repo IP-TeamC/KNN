@@ -30,12 +30,12 @@ public class GradientDescent implements OptimizationFunction {
         double[][] outputs = feedForward.output();
         double[][] derived = feedForward.derived();
         double[] predictions = outputs[outputs.length - 1];
-
         double[] derivedOutput = derived[derived.length - 1];
+
         double adjustmentBase = learningRate / batchSize;
         double[] adjustmentsBase = new double[output.length];
         for (int outputNeuron = 0; outputNeuron < adjustmentsBase.length; outputNeuron++) {
-            adjustmentsBase[outputNeuron] = adjustmentBase * derivedOutput[outputNeuron] * lossFunction.derivedLoss(output, predictions, outputNeuron);
+            adjustmentsBase[outputNeuron] = adjustmentBase * lossFunction.derivedLoss(output, predictions, outputNeuron) * derivedOutput[outputNeuron];
         }
 
         return compute(network, input, outputs, derived, adjustmentsBase);
@@ -61,7 +61,8 @@ public class GradientDescent implements OptimizationFunction {
             if (dn instanceof SuperNeuron sn) {
                 double[] subnetInput = outputLayer == 0 ? input : outputs[outputLayer - 1];
                 OutputsDerived subnetResults = sn.network.feedForward(subnetInput);
-                double[] subAdjustmentBias = compute(sn.network, subnetInput, subnetResults.output(), subnetResults.derived(), adjustmentsBase).adjustmentsBias()[0];
+                double[] subAdjustmentBias = compute(sn.network, subnetInput, subnetResults.output(), subnetResults.derived(),
+                        adjustmentsBase).adjustmentsBias()[0];
                 AbstractDenseNeuron[] subLayerNeurons = sn.network.denseLayers[0].neurons;
 
                 adapterAdjustmentBias[outputLayer][neuron] = new double[sn.network.inputLayer.neurons.length];
@@ -120,7 +121,6 @@ public class GradientDescent implements OptimizationFunction {
                 OutputsDerived subnetResults = sn.network.feedForward(layerInput);
                 double[] subAdjustmentBias = compute(sn.network, layerInput, subnetResults.output(), subnetResults.derived(),
                         new double[] { adjustmentBias }).adjustmentsBias()[0];
-
                 AbstractDenseNeuron[] subLayerNeurons = sn.network.denseLayers[0].neurons;
 
                 adapterAdjustmentsBias[neuron] = new double[sn.network.inputLayer.neurons.length];
