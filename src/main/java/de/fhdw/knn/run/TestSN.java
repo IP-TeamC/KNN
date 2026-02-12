@@ -23,8 +23,9 @@ import java.io.IOException;
 
 public class TestSN {
 
-    // TODO Ich will hier einmal das SuperNeuron testen:
-    // Funktion 69*sin(x)+42x, wobei sin(x) das Super-Neuron ist
+    // Super-Neuron Test
+    // Funktion 69*sin(3*x)+42x, wobei sin(x) das Super-Neuron ist (mit Snake-Aktivierungsfunktion trainiert)
+    // Super-Neuron funktioniert ähnlich gut wie Sinus-Aktivierungsfunktion
 
     public static void main(String[] args) throws IOException {
         DataSet data = generate(10000, -10, 10);
@@ -33,10 +34,12 @@ public class TestSN {
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.LINEAR, 2, data.outputSize);
         Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, data.inputSize, denseLayers);
         new SuperNeuron(Importer.importNetwork("models/sin_snake.knn"), new double[]{0}, new double[][]{new double[]{1}}).insert(network, 0, 0);
-        //new SuperNeuron(Importer.importNetwork("models/sin_snake.knn"), new double[]{0}, new double[][]{new double[]{1}}).insert(network, 0, 1);
-
-        network.denseLayers[0].neurons[0].incoming[0].weight = 3;
         //((DenseNeuron)network.denseLayers[0].neurons[0]).activationFunction=ActivationFunction.SIN;
+
+        //network.denseLayers[0].neurons[0].incoming[0].weight = 3;
+        //network.denseLayers[0].neurons[1].incoming[0].weight = 1;
+        //network.denseLayers[1].neurons[0].incoming[0].weight = 69;
+        //network.denseLayers[1].neurons[0].incoming[1].weight = 42;
 
         for (DenseLayer layer : network.denseLayers) {
             for (AbstractDenseNeuron dn : layer.neurons) {
@@ -50,9 +53,10 @@ public class TestSN {
 
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = new EarlyStopping(1e-9, 5000);
-        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.0000_0_3));
+        // kleine Learning Rate, sonst Exploding Gradient (weil Sinus periodisch?)
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.0000_0000_0_2));
 
-        Trainer trainer = new Trainer(network, 1000, true, 1, lossFunction, stopFunction, optimizationFunction);
+        Trainer trainer = new Trainer(network, 3000, true, 1, lossFunction, stopFunction, optimizationFunction);
         trainer.train(data);
 
         long trainStop = System.currentTimeMillis();
