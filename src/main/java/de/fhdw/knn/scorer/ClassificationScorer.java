@@ -1,9 +1,9 @@
-package de.fhdw.knn.classification;
+package de.fhdw.knn.scorer;
 
 import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.network.Network;
 
-public record ClassificationScorer(Network network) {
+public record ClassificationScorer(Network network) implements Scorer {
 
     public Score score(DataSet data) {
         int truePositives = 0;
@@ -29,7 +29,7 @@ public record ClassificationScorer(Network network) {
         return new Score(truePositives, trueNegatives, falsePositives, falseNegatives);
     }
 
-    public static class Score {
+    public static class Score implements de.fhdw.knn.scorer.Score {
 
         public final int truePositives;
         public final int trueNegatives;

@@ -1,6 +1,6 @@
 package de.fhdw.knn.util;
 
-import de.fhdw.knn.classification.ClassificationScorer;
+import de.fhdw.knn.scorer.ClassificationScorer;
 import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.io.Importer;
