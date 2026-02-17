@@ -1,7 +1,6 @@
 package de.fhdw.knn.visualization;
 
 import de.fhdw.knn.network.Network;
-import de.fhdw.knn.trainer.Trainer;
 import javafx.application.Platform;
 
 public class LiveViewManager {

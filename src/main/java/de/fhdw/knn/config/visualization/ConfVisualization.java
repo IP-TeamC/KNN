@@ -1,7 +1,6 @@
 package de.fhdw.knn.config.visualization;
 
 import de.fhdw.knn.network.Network;
-import de.fhdw.knn.trainer.Trainer;
 import de.fhdw.knn.visualization.LiveViewManager;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
 import lombok.Data;
