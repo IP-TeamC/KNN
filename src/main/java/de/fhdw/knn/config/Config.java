@@ -39,7 +39,7 @@ public class Config implements TomlSerializable {
         if (getTrainer() != null) {
             Trainer trainer = getTrainer().create(network);
             if (getVisualization() != null && getVisualization().isEnabled()) {
-                trainer.setLiveViewManager(visualization.create(network));
+                trainer.setLiveViewManager(getVisualization().create(network));
             }
 
             trainStart = System.currentTimeMillis();
