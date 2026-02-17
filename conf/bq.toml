@@ -33,3 +33,7 @@ visualization = false
 
 [scorer]
 type = "ClassificationScorer"
+
+[visualization]
+heatmapInterval = 10
+sankeyInterval = 10

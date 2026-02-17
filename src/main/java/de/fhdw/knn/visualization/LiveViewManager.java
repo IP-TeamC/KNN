@@ -1,51 +1,48 @@
 package de.fhdw.knn.visualization;
 
+import de.fhdw.knn.network.Network;
 import de.fhdw.knn.trainer.Trainer;
 import javafx.application.Platform;
 
 public class LiveViewManager {
 
-    // Einstellung: Alle wie viele Epochen soll die Heatmap/Sankey aktualisiert werden?
-    public static final int HEATMAP_INTERVAL = 5;
-    public static final int SANKEY_INTERVAL = 10;
+    private final int heatmapInterval;
+    private final int sankeyInterval;
 
-    private final Trainer trainer;
-    private final HeatmapWindow heatmapWindow;
-    private final SankeyLiveView sankeyView;
+    private HeatmapWindow heatmapWindow;
+    private SankeyLiveView sankeyView;
 
-    public LiveViewManager(final Trainer trainer) {
-        this.trainer = trainer;
+    public LiveViewManager(final int heatmapInterval, final int sankeyInterval, Network network) {
+        this.heatmapInterval = heatmapInterval;
+        this.sankeyInterval = sankeyInterval;
 
-        if (HEATMAP_INTERVAL > 0) {
+        if (this.heatmapInterval > 0) {
             this.heatmapWindow = new HeatmapWindow();
         }
 
-        if (SANKEY_INTERVAL > 0) {
+        if (this.sankeyInterval > 0) {
             try {
-                Platform.startup(() -> {});
-            } catch (IllegalStateException ignored) {} // Falls es schon läuft
+                Platform.startup(() -> {}); // JavaFx initialisieren
+            } catch (IllegalStateException ignored) {} // Ignorieren, falls es schon läuft
 
             this.sankeyView = new SankeyLiveView();
-            this.sankeyView.show(this.trainer.network);
+            this.sankeyView.show(network);
         }
     }
 
-    public void nextEpoch(final int epoch) {
+    public void nextEpoch(final int epoch, Network network, int maxEpochs) {
         // Heatmap Update
-        if (HEATMAP_INTERVAL > 0 && heatmapWindow != null) {
-            if (epoch == 1 || epoch % HEATMAP_INTERVAL == 0 || epoch == trainer.maxEpochs) {
-                heatmapWindow.addEpoch("Epoche " + epoch, new HeatmapData(trainer.network));
-                System.out.println("Heatmap-Update bei Epoche " + epoch);
-            }
+        if (heatmapWindow != null && shouldUpdate(epoch, heatmapInterval, maxEpochs)) {
+            heatmapWindow.addEpoch("Epoche " + epoch, new HeatmapData(network));
         }
 
         // Sankey Update
-        if (SANKEY_INTERVAL > 0 && sankeyView != null) {
-            if (epoch == 1 || epoch % SANKEY_INTERVAL == 0 || epoch == trainer.maxEpochs) {
-                sankeyView.update(trainer.network, epoch);
-                System.out.println("Sankey-Update bei Epoche " + epoch);
-            }
+        if (sankeyView != null&& shouldUpdate(epoch, sankeyInterval, maxEpochs)) {
+            sankeyView.update(network, epoch);
         }
     }
 
+    private boolean shouldUpdate(int epoch, int interval, int maxEpochs) {
+        return epoch == 1 || epoch % interval == 0 || epoch == maxEpochs;
+    }
 }

@@ -8,6 +8,7 @@ import de.fhdw.knn.trainer.optimization.Adjustments;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import de.fhdw.knn.visualization.LiveViewManager;
+import lombok.Setter;
 
 import java.util.stream.IntStream;
 
@@ -22,13 +23,14 @@ public class Trainer {
     public final StopFunction stopFunction;
     public final OptimizationFunction optimizationFunction;
 
-    private final LiveViewManager liveViewManager;
+    @Setter
+    private LiveViewManager liveViewManager;
 
     public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction) {
-        this(network, maxEpochs, shuffleEpoch, batchSize, lossFunction, stopFunction, optimizationFunction, false);
+        this(network, maxEpochs, shuffleEpoch, batchSize, lossFunction, stopFunction, optimizationFunction, null);
     }
 
-    public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction, boolean visualization) {
+    public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction, LiveViewManager liveViewManager) {
         this.network = network;
         this.maxEpochs = maxEpochs;
         this.shuffleEpoch = shuffleEpoch;
@@ -36,7 +38,7 @@ public class Trainer {
         this.lossFunction = lossFunction;
         this.stopFunction = stopFunction;
         this.optimizationFunction = optimizationFunction;
-        this.liveViewManager = visualization ? new LiveViewManager(this) : null;
+        this.liveViewManager = liveViewManager;
     }
 
     public void train(DataSet data) {
@@ -53,7 +55,7 @@ public class Trainer {
 
             // Visualization
             if (liveViewManager != null) {
-                liveViewManager.nextEpoch(epoch);
+                liveViewManager.nextEpoch(epoch, network, maxEpochs);
             }
 
             // Export

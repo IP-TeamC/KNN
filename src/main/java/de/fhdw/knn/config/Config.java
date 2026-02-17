@@ -33,6 +33,10 @@ public class Config implements TomlSerializable {
         Network network = getNetwork().create(data.train);
         Trainer trainer = getTrainer().create(network);
 
+        if (visualization != null && visualization.isEnabled()) {
+            trainer.setLiveViewManager(visualization.create(network));
+        }
+
         long trainStart = System.currentTimeMillis();
         trainer.train(data.train);
         long trainStop = System.currentTimeMillis();

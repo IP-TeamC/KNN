@@ -52,7 +52,7 @@ public class A22T {
         StopFunction stopFunction = EarlyStopping.NEVER;
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(10));
 
-        Trainer trainer = new Trainer(network, 1, false, 1, lossFunction, stopFunction, optimizationFunction, true);
+        Trainer trainer = new Trainer(network, 1, false, 1, lossFunction, stopFunction, optimizationFunction);
         trainer.train(data);
         return network;
     }
@@ -65,7 +65,7 @@ public class A22T {
         StopFunction stopFunction = EarlyStopping.NEVER;
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.1));
 
-        Trainer trainer = new Trainer(network, 10, true, 1, lossFunction, stopFunction, optimizationFunction, false);
+        Trainer trainer = new Trainer(network, 10, true, 1, lossFunction, stopFunction, optimizationFunction);
         trainer.train(data);
         return network;
     }

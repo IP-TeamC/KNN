@@ -32,7 +32,7 @@ public class ConfTrainer implements TomlSerializable {
                 .map(value -> (StopFunction) value)
                 .orElse(StopFunction.NEVER);
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(learningRate));
-        return new Trainer(network, maxEpochs, shuffleEpoch, batchSize, lossFunction, stopFunction, optimizationFunction, visualization);
+        return new Trainer(network, maxEpochs, shuffleEpoch, batchSize, lossFunction, stopFunction, optimizationFunction);
     }
 
 }
