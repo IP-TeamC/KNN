@@ -40,7 +40,7 @@ public class SankeyLiveView {
             sankey.setStreamFillMode(SankeyPlot.StreamFillMode.GRADIENT);
             sankey.setShowFlowDirection(false);
 
-            this.stage.setTitle("Sankey Live Training View");
+            this.stage.setTitle("Sankey - Live Training View");
             this.stage.setScene(new Scene(root, 1200, 800));
 
             this.stage.show();
