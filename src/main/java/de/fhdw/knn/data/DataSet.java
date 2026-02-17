@@ -70,17 +70,23 @@ public class DataSet {
         int testSize = (int) (testShare * size);
         int trainSize = size - testSize;
 
+        DataSet train = null;
         double[][] inputsTrain = new double[trainSize][];
         double[][] outputsTrain = new double[trainSize][];
         System.arraycopy(inputs, 0, inputsTrain, 0, trainSize);
         System.arraycopy(outputs, 0, outputsTrain, 0, trainSize);
-        DataSet train = new DataSet(inputsTrain, outputsTrain);
+        if (testShare < 1) {
+            train = new DataSet(inputsTrain, outputsTrain);
+        }
 
+        DataSet test = null;
         double[][] inputsTest = new double[testSize][];
         double[][] outputsTest = new double[testSize][];
         System.arraycopy(inputs, trainSize, inputsTest, 0, testSize);
         System.arraycopy(outputs, trainSize, outputsTest, 0, testSize);
-        DataSet test = new DataSet(inputsTest, outputsTest);
+        if (testShare > 0) {
+            test = new DataSet(inputsTest, outputsTest);
+        }
 
         return new TrainTestSplit(train, test);
     }

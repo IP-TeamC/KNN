@@ -26,6 +26,8 @@ public class ConfTrainer implements TomlSerializable {
     private double learningRate;
     private boolean visualization;
 
+    private String exportFile;
+
     public Trainer create(Network network) {
         LossFunction lossFunction = Config.getStaticField(LossFunction.class, this.lossFunction);
         StopFunction stopFunction = Optional.ofNullable(earlyStopping)
@@ -33,6 +35,12 @@ public class ConfTrainer implements TomlSerializable {
                 .orElse(StopFunction.NEVER);
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(learningRate));
         return new Trainer(network, maxEpochs, shuffleEpoch, batchSize, lossFunction, stopFunction, optimizationFunction);
+    }
+
+    public void export(Network network) {
+        if (exportFile != null) {
+            network.export(exportFile);
+        }
     }
 
 }
