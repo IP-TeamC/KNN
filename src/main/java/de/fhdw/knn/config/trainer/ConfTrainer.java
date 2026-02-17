@@ -24,7 +24,6 @@ public class ConfTrainer implements TomlSerializable {
     private boolean shuffleEpoch;
     private int batchSize;
     private double learningRate;
-    private boolean visualization;
 
     private String exportFile;
 

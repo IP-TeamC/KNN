@@ -30,7 +30,6 @@ maxEpochs = 20
 shuffleEpoch = true
 batchSize = 1
 learningRate = 0.04
-visualization = false
 #exportFile = "models/test.knn"
 
 [scorer]
