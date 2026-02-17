@@ -11,12 +11,13 @@ testShare = 0.2
 seed = 42
 weightInitializer = "GLOROT_UNIFORM"
 
+# 300 - 300 - 0.03 LR geht auch gut
 [[network.layer]]
-neurons = 200
+neurons = 50
 activationFunction = "SWISH"
 
 [[network.layer]]
-neurons = 200
+neurons = 50
 activationFunction = "SWISH"
 
 [[network.layer]]
@@ -28,8 +29,10 @@ lossFunction = "CROSS_ENTROPY_LOSS"
 maxEpochs = 20
 shuffleEpoch = true
 batchSize = 1
-learningRate = 0.05
+learningRate = 0.04
 visualization = false
+#exportFile = "models/test.knn"
 
 [scorer]
+lossFunction = "CROSS_ENTROPY_LOSS"
 type = "ClassificationScorer"

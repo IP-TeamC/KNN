@@ -8,7 +8,9 @@ import de.fhdw.knn.config.visualization.ConfVisualization;
 import de.fhdw.knn.data.TrainTestSplit;
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.scorer.Score;
+import de.fhdw.knn.scorer.Scorer;
 import de.fhdw.knn.trainer.Trainer;
+import de.fhdw.knn.trainer.loss.LossFunction;
 import io.github.wasabithumb.jtoml.JToml;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
 import io.github.wasabithumb.jtoml.value.table.TomlTable;
@@ -31,27 +33,42 @@ public class Config implements TomlSerializable {
     public void execute() throws IOException {
         TrainTestSplit data = getData().create();
         Network network = getNetwork().create(data.train);
-        Trainer trainer = getTrainer().create(network);
 
-        long trainStart = System.currentTimeMillis();
-        trainer.train(data.train);
-        long trainStop = System.currentTimeMillis();
+        long trainStart = 0;
+        long trainStop = 0;
+        if (getTrainer() != null) {
+            Trainer trainer = getTrainer().create(network);
 
-        long testStart = System.currentTimeMillis();
-        Optional<Score> score = Optional.ofNullable(getScorer())
-                .flatMap(conf -> conf.create(network))
-                .map(scorer -> scorer.score(data.test));
-        double[][] testPredictions = network.predict(data.test.inputs);
-        double testLoss = trainer.lossFunction.totalLoss(data.test.outputs, testPredictions);
-        long testStop = System.currentTimeMillis();
-        System.out.println();
-        score.ifPresent(Score::print);
-        System.out.println("Test Loss: " + testLoss);
+            trainStart = System.currentTimeMillis();
+            trainer.train(data.train);
+            trainStop = System.currentTimeMillis();
+
+            getTrainer().export(network);
+        }
+
+        long testStart = 0;
+        long testStop = 0;
+        if (getScorer() != null) {
+            Optional<LossFunction> lossFunction = getScorer().getLossFunction();
+            Optional<Scorer> scorer = Optional.of(getScorer())
+                    .flatMap(conf -> conf.create(network));
+
+            testStart = System.currentTimeMillis();
+            Optional<Score> score = scorer.map(scorerLocal -> scorerLocal.score(data.test));
+            double[][] testPredictions = network.predict(data.test.inputs);
+            Optional<Double> testLoss = lossFunction.map(scorerLocal -> scorerLocal.totalLoss(data.test.outputs, testPredictions));
+            testStop = System.currentTimeMillis();
+
+            System.out.println();
+            score.ifPresent(Score::print);
+            testLoss.ifPresent(testLossLocal -> System.out.println("Test Loss: " + testLossLocal));
+        }
 
         long trainTime = trainStop - trainStart;
         long testTime = testStop - testStart;
-        System.out.printf("\nTrain Time: %d ms (%.2f s)%n", trainTime, trainTime / 1000.0);
-        System.out.printf("Test Time: %d ms (%.2f s)%n", testTime, testTime / 1000.0);
+        System.out.println();
+        if (trainStart > 0) System.out.printf("Train Time: %d ms (%.2f s)%n", trainTime, trainTime / 1000.0);
+        if (testStart > 0) System.out.printf("Test Time: %d ms (%.2f s)%n", testTime, testTime / 1000.0);
     }
 
     public static Config read(final String filePath) {
