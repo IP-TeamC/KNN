@@ -4,7 +4,7 @@ import de.fhdw.knn.network.Network;
 
 import java.util.Random;
 
-public class GlorotWeightInitializer implements WeightInitializer {
+class GlorotWeightInitializer implements WeightInitializer {
 
     @Override
     public double nextWeight(Random random, Network network, int layer) {

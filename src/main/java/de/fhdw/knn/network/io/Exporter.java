@@ -17,8 +17,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Exporter zum Speichern des Netzwerks in einer kompakten Datei (binäres Format)
+ */
 public class Exporter {
 
+    /**
+     * Exportiert das Netzwerk zu einem Byte-Array
+     */
     // Anzahl Input-Neurons
     // Anzahl Dense Layer
     // { je Layer
@@ -84,6 +90,9 @@ public class Exporter {
         return buffer.array();
     }
 
+    /**
+     * Exportiert das Netzwerk und schreibt das Ergebnis als Datei in den übergebenen Pfad
+     */
     @SneakyThrows
     public static void export(Network network, String fileName) {
         byte[] exported = export(network);

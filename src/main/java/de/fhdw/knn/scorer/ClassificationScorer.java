@@ -3,8 +3,18 @@ package de.fhdw.knn.scorer;
 import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.network.Network;
 
+/**
+ * Evaluiert das Netzwerk für Klassifikationsprobleme anhand folgender Metriken:
+ * True Positives - True Negatives - False Positives - False Negatives
+ * - Accuracy - Error - Precision - Recall - F1-Score
+ * @param network
+ */
 public record ClassificationScorer(Network network) implements Scorer {
 
+    /**
+     * Evaluierung anhand des übergebenen Datensatzes
+     * @param data Test-Datensatz
+     */
     public Score score(DataSet data) {
         int truePositives = 0;
         int trueNegatives = 0;
@@ -29,8 +39,11 @@ public record ClassificationScorer(Network network) implements Scorer {
         return new Score(truePositives, trueNegatives, falsePositives, falseNegatives);
     }
 
+    /**
+     * Enthält die Metriken des {@link ClassificationScorer}
+     * @see ClassificationScorer
+     */
     public static class Score implements de.fhdw.knn.scorer.Score {
-
         public final int truePositives;
         public final int trueNegatives;
         public final int falsePositives;
@@ -42,6 +55,10 @@ public record ClassificationScorer(Network network) implements Scorer {
         public final double recall;
         public final double f1;
 
+        /**
+         * Berechnet die zusätzlichen Metriken auf Basis der Parameter
+         * @see ClassificationScorer
+         */
         public Score(int truePositives, int trueNegatives, int falsePositives, int falseNegatives) {
             this.truePositives = truePositives;
             this.trueNegatives = trueNegatives;
@@ -56,6 +73,10 @@ public record ClassificationScorer(Network network) implements Scorer {
             this.f1 = 2 * precision * recall / (precision + recall);
         }
 
+        /**
+         * Gibt alle Metriken im Terminal aus
+         * @see ClassificationScorer
+         */
         public void print() {
             System.out.println();
             System.out.println("TP: " + truePositives);

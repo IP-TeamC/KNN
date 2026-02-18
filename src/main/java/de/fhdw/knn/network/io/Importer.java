@@ -14,6 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
 
+/**
+ * Importer zum Erzeugen eines {@link Network}-Objekts aus einem exportierten Netzes (KNN-Datei)
+ */
 public class Importer {
 
     private Consumer<ByteBuffer> state = this::createInputLayer;
@@ -26,10 +29,18 @@ public class Importer {
     private int neuron = 0;
     private int conn = 0;
 
+    /**
+     * Importiert das Netzwerk aus dem übergebenen KNN-Datei-Pfad
+     */
     public static Network importNetwork(String fileName) {
         return new Importer().load(fileName);
     }
 
+    /**
+     * Importiert das Netzwerk aus dem übergebenen Byte-Array<br>
+     * <strong>WICHTIG! Diese Methode darf für das gleiche Objekt nur einmal aufgerufen werden.
+     * Jeder Import muss mit einem weiteren {@link Importer}-Objekt passieren.</strong>
+     */
     // Anzahl Input-Neurons
     // Anzahl Dense Layer
     // { je Layer
@@ -54,6 +65,11 @@ public class Importer {
         return network;
     }
 
+    /**
+     * Importiert das Netzwerk aus dem übergebenen KNN-Datei-Pfad
+     * <strong>WICHTIG! Diese Methode darf für das gleiche Objekt nur einmal aufgerufen werden.
+     * Jeder Import muss mit einem weiteren {@link Importer}-Objekt passieren.</strong>
+     */
     @SneakyThrows
     public Network load(String fileName) {
         return load(Files.readAllBytes(Paths.get(fileName)));

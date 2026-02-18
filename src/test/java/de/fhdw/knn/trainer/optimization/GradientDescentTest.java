@@ -1,7 +1,5 @@
 package de.fhdw.knn.trainer.optimization;
 
-import de.fhdw.knn.network.activation.LinearActivationFunction;
-import de.fhdw.knn.network.activation.ReLUActivationFunction;
 import de.fhdw.knn.trainer.learningrate.ConstantLearningRate;
 import org.junit.jupiter.api.Test;
 
@@ -335,8 +333,8 @@ public class GradientDescentTest {
 
     private Network createNetworkWithHiddenLayer(int inputSize, int hiddenSize, int outputSize) {
         // inputSize Input -> hiddenSize Hidden -> outputSize Output
-        ActivationFunction relu = new ReLUActivationFunction();
-        ActivationFunction linear = new LinearActivationFunction();
+        ActivationFunction relu = ActivationFunction.RELU;
+        ActivationFunction linear = ActivationFunction.LINEAR;
 
         DenseLayer[] layers = new DenseLayer[]{
                 new DenseLayer(hiddenSize).withActivationFunction(relu),
@@ -348,8 +346,8 @@ public class GradientDescentTest {
 
     private Network createNetworkWithMultipleHiddenLayers(int inputSize, int[] hiddenSizes, int outputSize) {
         // inputSize Input -> hiddenSizes[0] Hidden -> hiddenSizes[1] Hidden -> ... -> outputSize Output
-        ActivationFunction relu = new ReLUActivationFunction();
-        ActivationFunction linear = new LinearActivationFunction();
+        ActivationFunction relu = ActivationFunction.RELU;
+        ActivationFunction linear = ActivationFunction.LINEAR;
 
         // Berechne Anzahl der Dense Layers (alle Hidden Layers + Output Layer)
         DenseLayer[] layers = new DenseLayer[hiddenSizes.length + 1];

@@ -4,7 +4,7 @@ import de.fhdw.knn.network.Network;
 
 import java.util.Random;
 
-public class HeWeightInitializer implements WeightInitializer {
+class HeWeightInitializer implements WeightInitializer {
 
     @Override
     public double nextWeight(Random random, Network network, int layer) {

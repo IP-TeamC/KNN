@@ -1,6 +1,6 @@
 package de.fhdw.knn.network.activation;
 
-public class SwishActivationFunction implements ActivationFunction {
+class SwishActivationFunction implements ActivationFunction {
 
     @Override
     public double calc(double input) {

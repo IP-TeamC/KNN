@@ -1,6 +1,6 @@
 package de.fhdw.knn.network.activation;
 
-public class TanhActivationFunction implements ActivationFunction {
+class TanhActivationFunction implements ActivationFunction {
 
     @Override
     public double calc(double input) {

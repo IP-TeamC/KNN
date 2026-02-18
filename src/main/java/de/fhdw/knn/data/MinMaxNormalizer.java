@@ -1,18 +1,29 @@
 package de.fhdw.knn.data;
 
+/**
+ * Normalisiert Daten linear zwischen einem Minimum und Maximum
+ */
 public class MinMaxNormalizer implements Normalizer {
 
     public double min;
     public double max;
 
-    public double dataMin[];
-    public double dataMax[];
+    public double[] dataMin;
+    public double[] dataMax;
 
+    /**
+     * @see MinMaxNormalizer
+     */
     public MinMaxNormalizer(double min, double max) {
         this.min = min;
         this.max = max;
     }
 
+    /**
+     * Normalisiert die Daten.
+     *
+     * @param data wird dabei verändert
+     */
     @Override
     public void normalize(double[][] data) {
         dataMin = new double[data[0].length];
@@ -39,6 +50,11 @@ public class MinMaxNormalizer implements Normalizer {
         }
     }
 
+    /**
+     * Denormalisiert die Daten.
+     *
+     * @param data wird dabei verändert
+     */
     @Override
     public void denormalize(double[][] data) {
         double diff = max - min;
