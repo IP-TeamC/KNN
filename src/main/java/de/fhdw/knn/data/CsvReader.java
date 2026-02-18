@@ -8,12 +8,23 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+/**
+ * Ermöglicht mit der readFile-Methode das Einlesen von CSV-Dateien
+ */
 public class CsvReader {
 
+    /**
+     * Liest die CSV-Datei ein, ohne Zeilen zu überspringen
+     *
+     * @see CsvReader#readFile(String, int, int, int, int, int)
+     */
     public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize) throws IOException {
         return readFile(fileName, inputStart, inputSize, outputStart, outputSize, 0);
     }
 
+    /**
+     * Liest die CSV-Datei ein und überspringt dabei ersten angegebenen Zeilen
+     */
     public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize, int skip) throws IOException {
         return readFile(fileName, skip, line -> {
                     double[] dataset = Arrays.stream(line.split(",")).mapToDouble(CsvReader::parseDoubleOrNaN).toArray();
@@ -33,10 +44,19 @@ public class CsvReader {
                 });
     }
 
+    /**
+     * Liest die CSV-Datei ein.
+     * Jede Zeile muss vom lineParser in ein Paar/Entry aus Eingabe-Array und Ausgabe-Array konvertiert werden.
+     */
     public static DataSet readFile(String fileName, int skip, Function<String, Stream<Map.Entry<double[], double[]>>> lineParser) throws IOException {
         return readFile(fileName, skip, lineParser, null);
     }
 
+    /**
+     * Liest die CSV-Datei ein.
+     * Jede Zeile muss vom lineParser in ein Paar/Entry aus Eingabe-Array und Ausgabe-Array konvertiert werden.
+     * Der labelParser verarbeitet die Header-Zeile (erste Zeile, wenn skip > 0) und kann das DataSet dabei anpassen.
+     */
     public static DataSet readFile(String fileName, int skip,
                                    Function<String, Stream<Map.Entry<double[], double[]>>> lineParser,
                                    BiConsumer<DataSet, String> labelParser) throws IOException {

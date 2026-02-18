@@ -3,6 +3,9 @@ package de.fhdw.knn.data;
 import java.util.Random;
 import java.util.function.BiConsumer;
 
+/**
+ * Kapselt einen Datensatz mit Eingabe-/Ausgabe-Daten, Labels, Größe und Normalisierung.
+ */
 public class DataSet {
 
     public final int size;
@@ -18,6 +21,12 @@ public class DataSet {
     private Normalizer normalizerInputs;
     private Normalizer normalizerOutputs;
 
+    /**
+     * Erzeugt aus dem Eingabe-/Ausgabe-Array einen Datensatz.
+     * @param inputs enthält alle Eingabe-Zeilen (inneres Array entspricht einer Zeile)
+     * @param outputs enthält alle Ausgabe-Zeilen (inneres Array entspricht einer Zeile)
+     * @see DataSet
+     */
     public DataSet(double[][] inputs, double[][] outputs) {
         if (inputs.length != outputs.length) {
             throw new IllegalArgumentException("input.length != output.length");
@@ -31,12 +40,19 @@ public class DataSet {
         this.outputs = outputs;
     }
 
+    /**
+     * Führt den Preprocessor für jede Zeile (Eingabe/Ausgabe) des DataSets aus
+     */
     public void preprocess(BiConsumer<double[], double[]> preprocessor) {
         for (int i = 0; i < size; i++) {
             preprocessor.accept(inputs[i], outputs[i]);
         }
     }
 
+    /**
+     * Erzeugt einen Datensatz, der in der Eingabe nur einen Teil der Spalten enthält.
+     * Die Reihenfolge der Spalten entspricht der Reihenfolge der als Parameter übergebenen Spalten-Indizes.
+     */
     public DataSet subsetInputs(int... columns) {
         double[][] subset = new double[inputs.length][];
         for (int i = 0; i < inputs.length; i++) {
@@ -50,6 +66,9 @@ public class DataSet {
         return new DataSet(subset, outputs);
     }
 
+    /**
+     * Mischt die Zeilen zufällig und verwendet für den RNG den übergebenen Seed (dadurch deterministisch).
+     */
     public void shuffle(long seed) {
         Random random = new Random(seed);
         for (int i = 0; i < inputs.length; i++) {
@@ -65,6 +84,12 @@ public class DataSet {
         }
     }
 
+    /**
+     * Mischt die Zeilen zufällig und verwendet für den RNG den übergebenen Seed (dadurch deterministisch).
+     * Teilt danach den letzten Anteil der Daten (testShare zwischen 0 und 1) den Test-Daten zu.
+     * Der vordere Teil wird als Trainings-Daten verwendet.
+     * @see DataSet#shuffle(long)
+     */
     public TrainTestSplit shuffleAndSplit(long seed, double testShare) {
         shuffle(seed);
         int testSize = (int) (testShare * size);
@@ -91,20 +116,32 @@ public class DataSet {
         return new TrainTestSplit(train, test);
     }
 
+    /**
+     * Normalisiert alle Eingabe-Daten mit dem Normalizer und speichert diesen, um eine spätere Denormalisierung zu ermöglichen.
+     */
     public void normalizeInputs(Normalizer normalizer) {
         normalizerInputs = normalizer;
         normalizerInputs.normalize(inputs);
     }
 
+    /**
+     * Normalisiert alle Ausgabe-Daten mit dem Normalizer und speichert diesen, um eine spätere Denormalisierung zu ermöglichen.
+     */
     public void normalizeOutputs(Normalizer normalizer) {
         normalizerOutputs = normalizer;
         normalizerOutputs.normalize(outputs);
     }
 
+    /**
+     * Denormalisiert alle Eingabe-Daten mit dem Normalizer, der zuvor beim Aufruf von {@link DataSet#normalizeInputs(Normalizer)} übergeben wurde.
+     */
     public void denormalizeInputs() {
         normalizerInputs.denormalize(inputs);
     }
 
+    /**
+     * Denormalisiert alle Ausgabe-Daten mit dem Normalizer, der zuvor beim Aufruf von {@link DataSet#normalizeOutputs(Normalizer)} übergeben wurde.
+     */
     public void denormalizeOutputs() {
         normalizerOutputs.denormalize(outputs);
     }
