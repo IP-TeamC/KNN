@@ -224,7 +224,7 @@ Der Abschnitt [scorer] definiert die Bewertungsmethode des trainierten Modells.
 # Die zur Wertung verwendete Verlustfunktion
 #
 # - "MEAN_SQUARED_ERROR"  : Klassische Verlustfunktion für Regression, berechnet den mittleren quadratischen Fehler.
-# - "CROSS_ENTROPY_LOSS"  : Verlustfunktion für Klassifikation, misst, wie gut die Wahrscheinlichkeiten zu den Labels passen.
+# - "CROSS_ENTROPY_LOSS"  : Binary Cross Entropy Loss; Verlustfunktion für Klassifikation, misst, wie gut die Wahrscheinlichkeiten zu den Labels passen.
 # - "MEAN_ABSOLUTE_ERROR" : Alternativer Regressionsverlust, berechnet den mittleren absoluten Fehler.
 #
 lossFunction = "CROSS_ENTROPY_LOSS"
