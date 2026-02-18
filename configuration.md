@@ -9,7 +9,7 @@ Zusätzlich besteht die Möglichkeit des Modellimports und -exports, sodass best
 ### Dateiformat
 Das unterstützte Dateiformati ist [TOML](https://toml.io/en/).
 
-TOML erlaubt Abschnisttsdefinitionen wie bspw. `[network]` sowie wiederholbare Blöcke wie `[[network.layer]]`, die hier vor allem für die Definition mehrerer Netzwerkschichten verwendet werden. 
+TOML erlaubt Abschnittsdefinitionen wie bspw. `[network]` sowie wiederholbare Blöcke wie `[[network.layer]]`, die hier vor allem für die Definition mehrerer Netzwerkschichten verwendet werden. 
 
 <br>
 
@@ -105,7 +105,7 @@ public class ConfRun {
 ## Verfügbare Konfigurationsoptionen 
 
 ### Daten
-Der Abschnitt [data] definiert die Datenquelle sowie Aufteilung in Trainings- und Testdaten.
+Der Abschnitt [data] definiert die Datenquelle sowie die Aufteilung in Trainings- und Testdaten.
 ``` toml
 [data]
 
@@ -137,7 +137,7 @@ Der Abschnitt [network] definiert die globalen Einstellungen des Netzwerkes.
 ``` toml
 [network]
 
-# Das Saatgut für reproduzierbare Initalisierungen. Pflanze weise. 
+# Das Saatgut für reproduzierbare Initialisierungen. Pflanze weise. 
 seed = 42
 
 # Methode zur Initialisierung der Gewichte
@@ -152,12 +152,12 @@ weightInitializer = "GLOROT_UNIFORM"
 
 # Optionaler Pfad zum Laden eines (trainierten) Modells
 # Wird ein Pfad angegeben, wird das Netzwerk aus der gespeicherten Datei geladen.
-# Da die Netzstruktur bereits definiert ist, dürfen in diesm Fall KEINE weiteren [network] Einstelungen angegeben werden.
+# Da die Netzstruktur bereits definiert ist, dürfen in diesem Fall KEINE weiteren [network]-Einstellungen angegeben werden.
 importFile = "models/example.knn"
 ```
 
 Die einzelnen Schichten werden sequentiell über wiederholbare Blöcke definiert.
-Die Input-Layer wird automatisch erstellt und ist nicht mit anzugeben. Die letzte Block beschreibt folglich den Output-Layer. 
+Die Input-Layer wird automatisch erstellt und ist nicht mit anzugeben. Der letzte Block beschreibt folglich den Output-Layer. 
 ``` toml
 [[network.layer]]
 
@@ -180,7 +180,7 @@ activationFunction = "SWISH"
 <br>
 
 ### Trainer
-Der Abschnit [trainer] definiert das Lernverhalten des Netzes.
+Der Abschnitt [trainer] definiert das Lernverhalten des Netzes.
 ``` toml
 [trainer]
 
@@ -249,7 +249,7 @@ Der Abschnitt [visualization] steuert optionale Trainingsvisualisierungen.
 # Default: 0 (deaktiviert)
 heatmapInterval = 10
 
-# Bestimmt, in welchem Epochenintervall das Sankey-Diagramm aktuallisiert wird
+# Bestimmt, in welchem Epochenintervall das Sankey-Diagramm aktualisiert wird
 #
 # Default: 0 (deaktiviert)
 sankeyInterval = 10
