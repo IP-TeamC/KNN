@@ -124,10 +124,10 @@ outputStart = 7
 # Anzahl der Zielwerte
 outputSize = 1
 
-# Seed für Shuffel und Test-Split
+# Seed für Shuffle und Test-Split
 seed = 42
 
-# Anteil der Testdaten in %
+# Anteil der Testdaten
 testShare = 0.2
 ```
 <br>
@@ -187,7 +187,7 @@ Der Abschnit [trainer] definiert das Lernverhalten des Netzes.
 # Anzuwendene Verlustfunktion
 #
 # - "MEAN_SQUARED_ERROR"  : Klassische Verlustfunktion für Regression, berechnet den mittleren quadratischen Fehler.
-# - "CROSS_ENTROPY_LOSS"  : Verlustfunktion für Klassifikation, misst, wie gut die Wahrscheinlichkeiten zu den Labels passen.
+# - "CROSS_ENTROPY_LOSS"  : Binary Cross Entropy Loss; Verlustfunktion für Klassifikation, misst, wie gut die Wahrscheinlichkeiten zu den Labels passen.
 # - "MEAN_ABSOLUTE_ERROR" : Alternativer Regressionsverlust, berechnet den mittleren absoluten Fehler.
 #
 lossFunction = "CROSS_ENTROPY_LOSS"
@@ -201,8 +201,7 @@ shuffleEpoch = true
 
 # Batchgröße
 #
-# Gibt an, wie viele Trainingsbeispiele gleichzeitig verarbeitet werden, bevor die Gewichte
-# des Netzwerks angepasst werden. 
+# Gibt an, wie viele Trainingsbeispiele gleichzeitig verarbeitet werden, bevor die Gewichte des Netzwerks angepasst werden. 
 #
 # batchSize = 1 : Stochastisches Training (SGD); das Netzwerk passt die Gewichte nach jedem Beispiel an.
 # batchSize > 1 : Mini-Batch Training; das Netzwerk sammelt mehrere Beispiele und passt dann die Gewichte gemeinsam an.
