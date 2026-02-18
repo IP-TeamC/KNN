@@ -2,6 +2,9 @@ package de.fhdw.knn.network.connection;
 
 import de.fhdw.knn.network.neuron.Neuron;
 
+/**
+ * Verbindung zu einem Neuron
+ */
 public class Connection {
 
     public final boolean guard;

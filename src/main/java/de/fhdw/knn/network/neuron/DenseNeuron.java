@@ -2,11 +2,17 @@ package de.fhdw.knn.network.neuron;
 
 import de.fhdw.knn.network.activation.ActivationFunction;
 
+/**
+ * Konventionelles Dense Neuron, das lediglich gewichtete eingehende Verbindungen, einen Bias und eine Aktivierungsfunktion besitzt.
+ */
 public class DenseNeuron extends AbstractDenseNeuron {
 
 	public double bias = 0.000_000_000_1;
 	public ActivationFunction activationFunction;
 
+	/**
+	 * @see AbstractDenseNeuron
+	 */
 	@Override
 	public OutputDerived compute(double[] input) {
 		double weightedSum = bias;

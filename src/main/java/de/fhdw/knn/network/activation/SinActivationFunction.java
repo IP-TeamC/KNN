@@ -1,6 +1,6 @@
 package de.fhdw.knn.network.activation;
 
-public class SinActivationFunction implements ActivationFunction {
+class SinActivationFunction implements ActivationFunction {
 
     @Override
     public double calc(double input) {

@@ -1,6 +1,6 @@
 package de.fhdw.knn.network.activation;
 
-public class ReLUActivationFunction implements ActivationFunction {
+class ReLUActivationFunction implements ActivationFunction {
 
     @Override
     public double calc(double input) {

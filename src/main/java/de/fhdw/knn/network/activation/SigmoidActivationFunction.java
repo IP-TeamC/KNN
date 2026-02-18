@@ -1,6 +1,6 @@
 package de.fhdw.knn.network.activation;
 
-public class SigmoidActivationFunction implements ActivationFunction {
+class SigmoidActivationFunction implements ActivationFunction {
 
     @Override
     public double calc(double input) {

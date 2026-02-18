@@ -23,7 +23,8 @@ public class DataSet {
 
     /**
      * Erzeugt aus dem Eingabe-/Ausgabe-Array einen Datensatz.
-     * @param inputs enthält alle Eingabe-Zeilen (inneres Array entspricht einer Zeile)
+     *
+     * @param inputs  enthält alle Eingabe-Zeilen (inneres Array entspricht einer Zeile)
      * @param outputs enthält alle Ausgabe-Zeilen (inneres Array entspricht einer Zeile)
      * @see DataSet
      */
@@ -88,6 +89,7 @@ public class DataSet {
      * Mischt die Zeilen zufällig und verwendet für den RNG den übergebenen Seed (dadurch deterministisch).
      * Teilt danach den letzten Anteil der Daten (testShare zwischen 0 und 1) den Test-Daten zu.
      * Der vordere Teil wird als Trainings-Daten verwendet.
+     *
      * @see DataSet#shuffle(long)
      */
     public TrainTestSplit shuffleAndSplit(long seed, double testShare) {

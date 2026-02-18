@@ -21,6 +21,7 @@ public class MinMaxNormalizer implements Normalizer {
 
     /**
      * Normalisiert die Daten.
+     *
      * @param data wird dabei verändert
      */
     @Override
@@ -51,6 +52,7 @@ public class MinMaxNormalizer implements Normalizer {
 
     /**
      * Denormalisiert die Daten.
+     *
      * @param data wird dabei verändert
      */
     @Override
