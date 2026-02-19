@@ -1,5 +1,9 @@
 package de.fhdw.knn.trainer.loss;
 
+/**
+ * Verlustfunktion Binary Cross Entropy Loss für die Verwendung bei binären Klassifikationsproblemen
+ * oder bei Klassifikationsproblemen mit voneinander unabhängigen Klassen.
+ */
 public class BinaryCrossEntropyLoss implements LossFunction {
 
     public static final Double DELTA_0 = 0.000_000_000_000_1;

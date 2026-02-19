@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
+/**
+ * Ausführbare Konfiguration mithilfe einer TOML-Datei
+ */
 @Data
 public class Config implements TomlSerializable {
 
@@ -30,6 +33,9 @@ public class Config implements TomlSerializable {
     private ConfScorer scorer;
     private ConfVisualization visualization;
 
+    /**
+     * Führt das Programm (Daten einlesen, Netzwerk erzeugen/trainieren/evaluieren) entsprechend der Konfiguration aus
+     */
     public void execute() throws IOException {
         TrainTestSplit data = getData().create();
         Network network = getNetwork().create(data.train);
@@ -74,6 +80,12 @@ public class Config implements TomlSerializable {
         if (testStart > 0) System.out.printf("Test Time: %d ms (%.2f s)%n", testTime, testTime / 1000.0);
     }
 
+    /**
+     * Liest eine TOML-Konfigurationsdatei und erstellt aus dieser ein Config-Objekt
+     *
+     * @param filePath Dateipfad zur TOML-Config
+     * @return Config-Objekt, das mit {@link Config#execute()} ausgeführt werden kann
+     */
     public static Config read(final String filePath) {
         JToml jtoml = JToml.jToml();
         TomlTable rawConf = jtoml.read(Path.of(filePath)).asTable();

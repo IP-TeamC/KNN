@@ -1,5 +1,9 @@
 package de.fhdw.knn.trainer.loss;
 
+/**
+ * Verlustfunktion Mean Absolute Error gibt die mittlere absolute Abweichung an.
+ * Diese Verlustfunktion ist im Gegensatz zu {@link MeanSquaredError} weniger anfällig gegenüber Ausreißern.
+ */
 public class MeanAbsoluteError implements LossFunction {
 
     @Override

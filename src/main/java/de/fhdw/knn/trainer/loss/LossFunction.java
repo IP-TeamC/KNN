@@ -1,5 +1,12 @@
 package de.fhdw.knn.trainer.loss;
 
+/**
+ * Die Verlustfunktion ist ein Maß für den Fehler des Modells/KNNs im Vergleich zum Datensatz.<br>
+ * Für den Optimierungsalgorithmus wird lediglich {@link LossFunction#derivedLoss(double[], double[], int)} benötigt.
+ * Diese Methode leitet die Verlustfunktion für ein Output-Neuron nach predicted (der Vorhersage/Output) ab.<br>
+ * Die Methoden {@link LossFunction#loss(double[], double[])} sowie {@link LossFunction#totalLoss(double[][], double[][])}
+ * ermitteln den Loss für eine Eingabe-Zeile bzw. den gesamten Datensatz.
+ */
 public interface LossFunction {
 
     LossFunction MEAN_SQUARED_ERROR = new MeanSquaredError();

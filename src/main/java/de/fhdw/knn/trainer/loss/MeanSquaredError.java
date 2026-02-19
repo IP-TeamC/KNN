@@ -1,5 +1,10 @@
 package de.fhdw.knn.trainer.loss;
 
+/**
+ * Verlustfunktion Mean Squared Error gibt die mittlere quadratische Abweichung an.
+ * Diese Verlustfunktion ist im Gegensatz zu {@link MeanAbsoluteError} anfälliger gegenüber Ausreißer,
+ * funktioniert aber häufig sehr gut und sollte bei Nicht-Klassifikationsproblemen wahrscheinlich bevorzugt werden.
+ */
 public class MeanSquaredError implements LossFunction {
 
     @Override
