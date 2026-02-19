@@ -50,9 +50,10 @@ public class DenseLayer extends Layer {
 
     /**
      * Erstellt mehrere Hidden Layer mit der gleichen Aktivierungsfunktion sowie einen Output Layer.
+     *
      * @param hiddenActivationFunction Aktivierungsfunktion aller Hidden Layer
      * @param outputActivationFunction Aktivierungsfunktion des Output Layers
-     * @param neurons Anzahl der Neuronen in den Layern (1. Wert = 1. Layer, letzter Wert = Output Layer)
+     * @param neurons                  Anzahl der Neuronen in den Layern (1. Wert = 1. Layer, letzter Wert = Output Layer)
      * @return Array, das die Hidden Layer sowie den Output Layer enthält
      */
     public static DenseLayer[] createLayers(ActivationFunction hiddenActivationFunction, ActivationFunction outputActivationFunction, int... neurons) {

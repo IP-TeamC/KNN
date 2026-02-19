@@ -58,6 +58,7 @@ public class Network {
 
     /**
      * Ermittelt für mehrere Zeilen/Eingaben alle Ausgabe-Zeilen bei Verwendung des Netzwerks
+     *
      * @param inputs außen Eingabe-Zeile - innen Spalte/Feature/Merkmal (Ausgabe des Input-Neurons)
      * @return außen Ausgabe-Zeile - innen Spalte/Feature/Merkmal (Ausgabe des Output-Neurons)
      */
@@ -70,6 +71,7 @@ public class Network {
     /**
      * Ermittelt für mehrere Zeilen/Eingaben alle Ausgabe-Zeilen bei Verwendung des Netzwerks.
      * Es wird jedoch nur das erste/einzige Output-Neuron beachtet.
+     *
      * @param inputs außen Eingabe-Zeile - innen Spalte/Feature/Merkmal (Ausgabe des Input-Neurons)
      * @return Ausgabe-Zeilen mit je nur einem Output-Neuron
      */
@@ -92,6 +94,7 @@ public class Network {
 
     /**
      * Berechnet die Ausgaben/Aktivierungen aller DenseNeuronen sowie deren Ableitungen bei Eingabe einer Zeile (Feed-Forward).
+     *
      * @param input eine Eingabe-Zeile
      * @return Ausgaben/Aktivierungen aller DenseNeuronen sowie deren Ableitungen (außen Layer - innen Neuron im Layer)
      */
@@ -157,6 +160,7 @@ public class Network {
 
     /**
      * Exportiert das neuronale Netz in eine Datei
+     *
      * @param fileName Dateipfad
      */
     public void export(String fileName) {
