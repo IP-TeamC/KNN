@@ -3,7 +3,7 @@ package de.fhdw.knn.trainer.learningrate;
 /**
  * Die Learning Rate gibt an, wie stark eine Epoche (bzw. konkret jede Daten-Zeile innerhalb einer Epoche)
  * die Gewichte und den Bias der Neuronen beeinflusst. Dazu wird der Gradient beim Optimierungsalgorithmus Gradient Descent
- * mit diesem Faktor multipliziert, um den Einfluss in der Regel zu verringern (0 < Learning Rate < 1).<br>
+ * mit diesem Faktor multipliziert, um den Einfluss in der Regel zu verringern (0 &lt; Learning Rate &lt; 1).<br>
  * Die LearningRateFunction gibt für jede Epoche die zu verwendende Learning Rate an.
  */
 public interface LearningRateFunction {
