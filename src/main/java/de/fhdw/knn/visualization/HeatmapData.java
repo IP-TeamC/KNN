@@ -2,6 +2,7 @@ package de.fhdw.knn.visualization;
 
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.layer.DenseLayer;
+
 import java.util.Arrays;
 
 public class HeatmapData {

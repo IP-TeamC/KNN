@@ -2,45 +2,16 @@ package de.fhdw.knn.visualization;
 
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.connection.Connection;
-import de.fhdw.knn.network.io.Importer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.neuron.AbstractDenseNeuron;
 import de.fhdw.knn.network.neuron.Neuron;
-import eu.hansolo.fx.charts.SankeyPlot;
 import eu.hansolo.fx.charts.data.PlotItem;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NetworkToSankeyConverter extends Application {
-
-    @Override
-    public void start(Stage primaryStage) {
-        // Network network = Importer.importNetwork("models/datapoints_small.knn");
-        Network network = Importer.importNetwork("models/datapoints_small5.knn");
-        // Network network = Importer.importNetwork("models/datapoints.knn");
-        // Network network = Importer.importNetwork("models/bq.knn");
-        // Network network = Importer.importNetwork("models/sin_snake.knn");
-
-        List<PlotItem> items = convertNetworkToItems(network);
-
-        SankeyPlot sankey = new SankeyPlot();
-        sankey.setItems(items);
-        sankey.setStreamFillMode(SankeyPlot.StreamFillMode.GRADIENT);
-        sankey.setShowFlowDirection(false);
-
-        StackPane root = new StackPane(sankey);
-        Scene scene = new Scene(root, 1200, 800);
-
-        primaryStage.setTitle("Sankey Viewer");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
+public class SankeyData {
 
     public static List<PlotItem> convertNetworkToItems(Network network) {
         List<PlotItem> allItems = new ArrayList<>();
@@ -142,7 +113,4 @@ public class NetworkToSankeyConverter extends Application {
         return colors[Math.min(colorIndex, colors.length - 1)];
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

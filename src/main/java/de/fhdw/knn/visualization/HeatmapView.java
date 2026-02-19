@@ -13,13 +13,13 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeatmapWindow extends JFrame {
+public class HeatmapView extends JFrame {
 
     private final JTabbedPane tabs;
     private static final double THRESHOLD = 0.1;
 
-    public HeatmapWindow() {
-        super("Heatmap – Training Live View");
+    public HeatmapView() {
+        super("Heatmap – Network View");
 
         this.tabs = new JTabbedPane();
         this.tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -82,7 +82,7 @@ public class HeatmapWindow extends JFrame {
         }
 
         double[][] dataArr = new double[3][xList.size()];
-        for(int i=0; i<xList.size(); i++){
+        for (int i = 0; i < xList.size(); i++) {
             dataArr[0][i] = xList.get(i);
             dataArr[1][i] = yList.get(i);
             dataArr[2][i] = zList.get(i);
@@ -120,8 +120,15 @@ public class HeatmapWindow extends JFrame {
         renderer.setBlockAnchor(org.jfree.chart.ui.RectangleAnchor.CENTER);
 
         renderer.setPaintScale(new PaintScale() {
-            @Override public double getLowerBound() { return min; }
-            @Override public double getUpperBound() { return max; }
+            @Override
+            public double getLowerBound() {
+                return min;
+            }
+
+            @Override
+            public double getUpperBound() {
+                return max;
+            }
 
             @Override
             public Paint getPaint(double value) {
@@ -134,9 +141,9 @@ public class HeatmapWindow extends JFrame {
                 // Grün (negativ) -> Weiß (0) -> Rot (positiv)
                 double ratio = Math.min(Math.abs(value), 1.0);
                 if (value > 0) {
-                    return new Color(1.0f, (float)(1-ratio), (float)(1-ratio)); // Rot
+                    return new Color(1.0f, (float) (1 - ratio), (float) (1 - ratio)); // Rot
                 } else {
-                    return new Color((float)(1-ratio), 1.0f, (float)(1-ratio)); // Grün
+                    return new Color((float) (1 - ratio), 1.0f, (float) (1 - ratio)); // Grün
                 }
             }
         });

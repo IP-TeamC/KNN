@@ -37,7 +37,7 @@ public class Config implements TomlSerializable {
      * Führt das Programm (Daten einlesen, Netzwerk erzeugen/trainieren/evaluieren) entsprechend der Konfiguration aus
      */
     public void execute() throws IOException {
-        TrainTestSplit data = getData().create();
+        TrainTestSplit data = getData() != null ? getData().create() : new TrainTestSplit(null, null);
         Network network = getNetwork().create(data.train);
 
         long trainStart = 0;
@@ -45,7 +45,7 @@ public class Config implements TomlSerializable {
         if (getTrainer() != null) {
             Trainer trainer = getTrainer().create(network);
             if (getVisualization() != null && getVisualization().isEnabled()) {
-                trainer.setLiveViewManager(getVisualization().create(network));
+                trainer.setViewManager(getVisualization().create(network));
             }
 
             trainStart = System.currentTimeMillis();
@@ -53,6 +53,8 @@ public class Config implements TomlSerializable {
             trainStop = System.currentTimeMillis();
 
             getTrainer().export(network);
+        } else if (getVisualization() != null && getVisualization().isEnabled()) {
+            getVisualization().create(network).nextEpoch(1, network, 1);
         }
 
         long testStart = 0;

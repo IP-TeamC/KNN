@@ -3,40 +3,42 @@ package de.fhdw.knn.visualization;
 import de.fhdw.knn.network.Network;
 import javafx.application.Platform;
 
-public class LiveViewManager {
+public class ViewManager {
 
     private final int heatmapInterval;
     private final int sankeyInterval;
 
-    private HeatmapWindow heatmapWindow;
-    private SankeyLiveView sankeyView;
+    private HeatmapView heatmapView;
+    private SankeyView sankeyView;
 
-    public LiveViewManager(final int heatmapInterval, final int sankeyInterval, Network network) {
+    public ViewManager(final int heatmapInterval, final int sankeyInterval, Network network) {
         this.heatmapInterval = heatmapInterval;
         this.sankeyInterval = sankeyInterval;
 
         if (this.heatmapInterval > 0) {
-            this.heatmapWindow = new HeatmapWindow();
+            this.heatmapView = new HeatmapView();
         }
 
         if (this.sankeyInterval > 0) {
             try {
-                Platform.startup(() -> {}); // JavaFx initialisieren
-            } catch (IllegalStateException ignored) {} // Ignorieren, falls es schon läuft
+                Platform.startup(() -> {
+                }); // JavaFx initialisieren
+            } catch (IllegalStateException ignored) {
+            } // Ignorieren, falls es schon läuft
 
-            this.sankeyView = new SankeyLiveView();
+            this.sankeyView = new SankeyView();
             this.sankeyView.show(network);
         }
     }
 
     public void nextEpoch(final int epoch, Network network, int maxEpochs) {
         // Heatmap Update
-        if (heatmapWindow != null && shouldUpdate(epoch, heatmapInterval, maxEpochs)) {
-            heatmapWindow.addEpoch("Epoche " + epoch, new HeatmapData(network));
+        if (heatmapView != null && shouldUpdate(epoch, heatmapInterval, maxEpochs)) {
+            heatmapView.addEpoch("Epoche " + epoch, new HeatmapData(network));
         }
 
         // Sankey Update
-        if (sankeyView != null&& shouldUpdate(epoch, sankeyInterval, maxEpochs)) {
+        if (sankeyView != null && shouldUpdate(epoch, sankeyInterval, maxEpochs)) {
             sankeyView.update(network, epoch);
         }
     }

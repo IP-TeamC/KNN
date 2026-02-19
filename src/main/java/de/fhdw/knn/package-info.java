@@ -4,7 +4,7 @@
  * einem {@link de.fhdw.knn.network.Network} zum Erzeugen der Netzstruktur,<br>
  * einem {@link de.fhdw.knn.trainer.Trainer} zum Trainieren des Modells,<br>
  * einem {@link de.fhdw.knn.scorer.Scorer} zum Evaluieren der Ergebnisse sowie<br>
- * einem {@link de.fhdw.knn.visualization.LiveViewManager} zum Darstellen der Netzstruktur.<br>
+ * einem {@link de.fhdw.knn.visualization.ViewManager} zum Darstellen der Netzstruktur.<br>
  * <br>
  * Alle relevanten Klassen, die hierfür zusätzlich verwendet werden müssen,
  * sowie alle öffentlichen Methoden und Attribute verfügen über eine Javadoc-Dokumentation.

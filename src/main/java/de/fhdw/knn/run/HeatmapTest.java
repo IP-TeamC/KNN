@@ -6,7 +6,7 @@ import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.layer.InputLayer;
 import de.fhdw.knn.visualization.HeatmapData;
-import de.fhdw.knn.visualization.HeatmapWindow;
+import de.fhdw.knn.visualization.HeatmapView;
 
 public class HeatmapTest {
     public static void main(String[] args) {
@@ -16,7 +16,7 @@ public class HeatmapTest {
 
         HeatmapData heatmapData = new HeatmapData(network);
 
-        HeatmapWindow window = new HeatmapWindow();
+        HeatmapView window = new HeatmapView();
         window.showSingleMatrix("Manuelle Gewichtsmatrix", heatmapData);
     }
 }

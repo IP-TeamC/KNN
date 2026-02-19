@@ -16,7 +16,7 @@ import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import de.fhdw.knn.visualization.HeatmapData;
-import de.fhdw.knn.visualization.HeatmapWindow;
+import de.fhdw.knn.visualization.HeatmapView;
 
 import java.io.IOException;
 
@@ -54,7 +54,7 @@ public class BananaQuality {
         System.out.printf("Test Time: %d ms (%.2f s)%n", testTime, testTime / 1000.0);
 
         HeatmapData heatmapData = new HeatmapData(network);
-        HeatmapWindow window = new HeatmapWindow();
+        HeatmapView window = new HeatmapView();
         window.showSingleMatrix("Manuelle Gewichtsmatrix", heatmapData);
     }
 

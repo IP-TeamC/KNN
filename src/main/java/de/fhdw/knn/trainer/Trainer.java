@@ -8,7 +8,7 @@ import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.Adjustments;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.StopFunction;
-import de.fhdw.knn.visualization.LiveViewManager;
+import de.fhdw.knn.visualization.ViewManager;
 import lombok.Setter;
 
 import java.util.stream.IntStream;
@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
  * Führt die Epochen des Trainings aus ({@link OptimizationFunction}),
  * steuert die vorzeitige Beendigung ({@link StopFunction}),
  * gibt den Loss aus ({@link LossFunction}),
- * visualisiert das Netzwerk ({@link LiveViewManager}) und
+ * visualisiert das Netzwerk ({@link ViewManager}) und
  * umfasst alle Parameter des Trainings.
  */
 public class Trainer {
@@ -33,7 +33,7 @@ public class Trainer {
     private final OptimizationFunction optimizationFunction;
 
     @Setter
-    private LiveViewManager liveViewManager;
+    private ViewManager viewManager;
 
     /**
      * Erzeugt einen neuen Trainer ohne Visualisierung
@@ -61,10 +61,10 @@ public class Trainer {
      * @param lossFunction         Verlustfunktion für die Ausgabe des Loss (nicht zum Training selbst, diese muss in der OptimizationFunction definiert werden)
      * @param stopFunction         Vorzeitige Beendigung des Trainings
      * @param optimizationFunction Optimierungsfunktion (in der Regel {@link GradientDescent} )
-     * @param liveViewManager      Visualisierung des Netzwerks während des Trainings
+     * @param viewManager      Visualisierung des Netzwerks während des Trainings
      * @see Trainer
      */
-    public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction, LiveViewManager liveViewManager) {
+    public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction, ViewManager viewManager) {
         this.network = network;
         this.maxEpochs = maxEpochs;
         this.shuffleEpoch = shuffleEpoch;
@@ -72,7 +72,7 @@ public class Trainer {
         this.lossFunction = lossFunction;
         this.stopFunction = stopFunction;
         this.optimizationFunction = optimizationFunction;
-        this.liveViewManager = liveViewManager;
+        this.viewManager = viewManager;
     }
 
     /**
@@ -98,8 +98,8 @@ public class Trainer {
             totalLoss = trainEpoch(data);
 
             // Visualization
-            if (liveViewManager != null) {
-                liveViewManager.nextEpoch(epoch, network, maxEpochs);
+            if (viewManager != null) {
+                viewManager.nextEpoch(epoch, network, maxEpochs);
             }
 
             // Export

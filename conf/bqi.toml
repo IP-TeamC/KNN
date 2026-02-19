@@ -10,5 +10,9 @@ testShare = 0.2
 [network]
 importFile = "models/bq.knn"
 
+[visualization]
+sankeyInterval = 1
+heatmapInterval = 1
+
 [scorer]
 type = "ClassificationScorer"
