@@ -32,7 +32,6 @@ Visualisierungsmethoden der KNNs und die Möglichkeit, Dateien einzulesen.
 
 Mit dem CSV-Reader ist es möglich, CSV-Dateien in ein DataSet umzuwandeln. Hier muss einmal der 
 Dateipfad und jeweils der Startindex und die größe des Inputs und Outputs angegeben werden.
-Weitere Varianten der `readFile`-Methode lassen sich unter `data/CsvReader.java` einzusehen.
 In der nun vorliegenden Form sind die Daten dann bereit, in Train und Test-Splits aufgeteilt zu werden.
 Dabei kann ein Random-Seed und den Anteil der Daten im Test-Set angegeben werden.
 ````java
@@ -51,6 +50,8 @@ sowie die Anzahl der Ein- und Ausgabewerte pro Zeile. Darüber hinaus stellt die
 zur Vorverarbeitung bereit, etwa zum Mischen der Daten, Aufteilen in Trainings- und Testdaten 
 oder zur Normalisierung.
 
+#### Normalizer
+
 ### Network
 
 Die Netzstruktur wird in der Network-Klasse aufgebaut. Sie setzt sich aus
@@ -62,8 +63,13 @@ Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 7, denseLaye
 #### Weight-Initializer
 
 Bei Erstellung eines Networks müssen am Ende die Gewichte der vorher definierten Kanten initialisiert
-werden. Dafür werden diese Weight-Initializer im Network angegeben. Unter `network/connection` lassen
-sich die verschiedenen Initialisierungsmethoden einsehen.
+werden. Dafür werden diese Weight-Initializer im Network angegeben. Zu den zur Verfügung stehenden
+Initializern gehören:
+- `Zero-`
+- `HE-`
+- `HE-Uniform-`
+- `Glorot-`
+- `Glorot-Uniform-Weightinitializer`.
 
 #### Input-Layer
 
@@ -82,7 +88,16 @@ letzte Wert die Größe des Output-Layers bestimmt.
 ````java
 DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.SIGMOID, 100, 100, 1);
 ````
-Die verschiedenen verwendbaren Aktivierungsfunktionen lassen sich unter `network/activation` einsehen.
+Zu den unterstützten Aktivierungsfunktionen gehören:
+
+- `LinearActivationFunction`
+- `ReLUActivationFunction`
+- `SigmoidActivationFunction`
+- `SinActivationFunction`
+- `SnakeActivationFunction`
+- `SoftplusActivationFunction`
+- `SwishActivationFunction`
+- `TanhActivationFunction`.
 
 #### IO
 
@@ -98,9 +113,9 @@ network = Importer.importNetwork("models/bq.knn");
 ### Trainer
 
 Der Trainer ist dann im endeffekt die Klasse, welche das training ausführt. Für das Training 
-muss man eine vielzahl von Parametern angeben: Network auf dem trainiert wird, die maximale Anzahl
-an Epchen als Integer, ein Boolean ob shuffle an sein soll, die Batchsize, die Loss-Funktion, die Stopmethode
-und die Optimierungsfunktion.
+muss man eine vielzahl von Parametern angeben: `Network` auf dem trainiert wird, die maximale Anzahl
+an `Epchen` als Integer, ein Boolean ob geshufflet werden soll, die `Batchsize`, die `Loss-Funktion`, 
+die `Stopmethode` und die `Optimierungsfunktion`.
 ````java
 LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
 StopFunction stopFunction = EarlyStopping.NEVER;
@@ -112,21 +127,35 @@ trainer.train(train);
 
 #### Learning-Rates
 
-Unter `trainer/learningrate` finden sich verschiedene Implementierungen von Learning-Rate-Verfahren.
-Diese reichen von einfacher Learning-Rate bis zu sich konstant ändernden Learning-Rates.
+Für die Steuerung der Learning-Rate stehen mehrere Strategien zur Verfügung, 
+die das Trainingsverhalten des Modells beeinflussen. Zur Auswahl gehören `Constant`, `Decay`, 
+`Softstart` sowie `SoftstartDecay`.
+
+Bei `Constant` bleibt die Lernrate während des gesamten Trainingsprozesses unverändert. 
+`Decay` reduziert die Lernrate schrittweise über die Trainingszeit hinweg, um gegen Ende 
+stabilere und feinere Anpassungen der Gewichte zu ermöglichen. `Softstart` beginnt mit einer 
+zunächst kleinen Lernrate, die in den ersten Trainingsschritten kontrolliert ansteigt, um 
+ein zu starkes initiales Überschwingen zu vermeiden. `SoftstartDecay` kombiniert beide Ansätze, 
+indem die Lernrate zunächst ansteigt und anschließend im weiteren Verlauf wieder 
+kontinuierlich abgesenkt wird.
 
 #### Loss-Functions
 
-Zu jedem supervised Learning gehört auch eine Verlust-Funktion. Diese kann wie folgt definiert werden:
+Zu jedem supervised Learning gehört auch eine Verlust-Funktion. 
+Diese kann wie folgt definiert werden:
 
 ````java
 LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
 ````
-Unter `trainer/loss` liegen alle zur Verfügung stehenden Funktionen.
+Diese Bibliothek unterstützt klassische Verlust-Funktionen:
+
+- `Binary-Cross-Entropy-Loss`
+- `Mean-Squared-Error`
+- `Mean-Absolute-Error`.
 
 #### Stop-Criteria
 
-Diese Bibliothek unterstützt außerdem das Early-Stopping, um Overfitting vorzubeugen. 
+Diese Bibliothek unterstützt außerdem das `Early-Stopping`, um Overfitting vorzubeugen. 
 Diese Stop-Funktion muss beim Erstellen des Trainers mitgegeben werden. Bislang kann man
 nur Early-Stopping aktivieren und deaktivieren.
 
@@ -138,17 +167,20 @@ StopFunction stopFunction = EarlyStopping.NEVER;
 
 Unter Optimierungs-Funktionen ist hier die forward-Funktion zu verstehen. Also mit welchem Vorgehen
 die kontinuierliche Anpassung der Gewichte passiert. Diese benötigt zur Initialisierung die ausgewählte
-Verlust-Funktion und die gewählte Learning-Rate.
+Verlust-Funktion und die gewählte Learning-Rate. Hier können der `Gradient Descent` und `Adjustments` 
+verwendet werden.
 
 ````java
 OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.03));
 ````
-Unter `trainer/optimization` lassen sich alle verfügbaren Funktionen finden.
 
 
 ### Scorer
 
-macht ... funktioniert so...
+Der Classification-Scorer errechnet anhand eines DataSets, also in dem Fall eines Test- oder Train-Splits, 
+übliche Metriken. Zu diesen Zählen die `Confusion Matrix`, die `Accuracy`, der `Error`, die `Precision`,
+der `Recall` und der `F1-Score` und werden in der `Score`-Klasse zusammengefasst. Diese werden dann 
+durch das print am Ende des Testings ausgegeben.
 
 ````java
 ClassificationScorer scorer = new ClassificationScorer(network);
@@ -160,10 +192,13 @@ score.print();
 
 ### Visualization
 
-so funktioniert visualisierung, etc...
-
+Mithilfe der Networks lassen sich verschiedene Visualisierungen der Ergebnisse darstellen. Dieses
+Beispiel zeigt die Erstellung einer Heatmap Windows:
 ````java
 HeatmapData heatmapData = new HeatmapData(network);
 HeatmapWindow window = new HeatmapWindow();
 window.showSingleMatrix("Manuelle Gewichtsmatrix", heatmapData);
 ````
+Networks lassen sich als `Heatmap` darstellen, in der die x- und y-Achse ein Neuron darstellt, und 
+die Heatmapeinträge dann jeweils die Verbindung vom x-Neuron zum y-Neuron ist. Der `Sankey-Plot` 
+stellt die Verbindungen als Linien dar. Je dicker die Linie, desto gewichteter die Verbindung.
