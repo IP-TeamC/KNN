@@ -5,7 +5,13 @@ package de.fhdw.knn.data;
  */
 public class Pair<X, Y> {
 
+    /**
+     * 1. Wert des Paars (X)
+     */
     public X x;
+    /**
+     * 2. Wert des Paars (Y)
+     */
     public Y y;
 
     /**

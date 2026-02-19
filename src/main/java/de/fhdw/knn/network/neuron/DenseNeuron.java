@@ -7,7 +7,13 @@ import de.fhdw.knn.network.activation.ActivationFunction;
  */
 public class DenseNeuron extends AbstractDenseNeuron {
 
+    /**
+     * Der Bias wird konstant auf die gewichtete Summe der eingehenden Verbindungen addiert
+     */
     public double bias = 0.000_000_000_1;
+    /**
+     * Die Aktivierungsfunktion transformiert die gewichtete Summe
+     */
     public ActivationFunction activationFunction;
 
     /**

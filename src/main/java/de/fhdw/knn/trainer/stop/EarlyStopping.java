@@ -9,9 +9,9 @@ import java.util.List;
  */
 public class EarlyStopping implements StopFunction {
 
-    public final double minDelta;
-    public final int patience;
-    public final List<Double> losses = new LinkedList<>(List.of(Double.MAX_VALUE));
+    private final double minDelta;
+    private final int patience;
+    private final List<Double> losses = new LinkedList<>(List.of(Double.MAX_VALUE));
 
     /**
      * Beendet das Training, wenn sich der Loss für ausreichend viele Epochen nicht ausreichend verbessert hat

@@ -8,6 +8,10 @@ import de.fhdw.knn.network.connection.Connection;
  */
 public abstract class AbstractDenseNeuron extends Neuron {
 
+    /**
+     * Enthält alle eingehenden Verbindungen.<br>
+     * Die Connection mit Index i entspricht der Verbindung vom Neuron i des vorherigen Layers.
+     */
     public Connection[] incoming;
 
     /**

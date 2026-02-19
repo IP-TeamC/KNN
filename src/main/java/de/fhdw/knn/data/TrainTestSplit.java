@@ -5,7 +5,13 @@ package de.fhdw.knn.data;
  */
 public class TrainTestSplit {
 
+    /**
+     * Trainings-Datensatz
+     */
     public DataSet train;
+    /**
+     * Test-Datensatz
+     */
     public DataSet test;
 
     /**

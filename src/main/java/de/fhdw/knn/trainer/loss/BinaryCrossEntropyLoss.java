@@ -6,8 +6,8 @@ package de.fhdw.knn.trainer.loss;
  */
 public class BinaryCrossEntropyLoss implements LossFunction {
 
-    public static final Double DELTA_0 = 0.000_000_000_000_1;
-    public static final Double DELTA_1 = 1.000_000_000_000_1;
+    private static final Double DELTA_0 = 0.000_000_000_000_1;
+    private static final Double DELTA_1 = 1.000_000_000_000_1;
 
     @Override
     public double loss(double[] expected, double[] predicted) {

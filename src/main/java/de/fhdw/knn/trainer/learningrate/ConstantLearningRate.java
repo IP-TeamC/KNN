@@ -5,6 +5,9 @@ package de.fhdw.knn.trainer.learningrate;
  */
 public class ConstantLearningRate implements LearningRateFunction {
 
+    /**
+     * Konstante Learning Rate
+     */
     private final double learningRate;
 
     /**

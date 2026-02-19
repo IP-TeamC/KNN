@@ -6,9 +6,21 @@ package de.fhdw.knn.trainer.learningrate;
  */
 public class SoftstartDecayLearningRate implements LearningRateFunction {
 
+    /**
+     * Learning Rate zu Beginn
+     */
     private double learningRate;
+    /**
+     * Faktor, mit dem die Learning Rate während softEpochs multipliziert ist (konstante Learning Rate während softEpochs)
+     */
     private final double softness;
+    /**
+     * Anzahl Epochen, während der die Learning Rate konstant durch softness verändert wird
+     */
     private final int softEpochs;
+    /**
+     * Faktor, mit dem die Learning Rate jede Epoche (nach softEpochs) multipliziert wird
+     */
     private final double decay;
 
     /**

@@ -16,9 +16,18 @@ import de.fhdw.knn.trainer.loss.LossFunction;
  */
 public class GradientDescent implements OptimizationFunction {
 
+    /**
+     * Beim Training zu optimierende Verlustfunktion
+     */
     private final LossFunction lossFunction;
 
+    /**
+     * Funktion zur Bestimmung der Learning Rate jeder Epoche
+     */
     private final LearningRateFunction learningRateFunction;
+    /**
+     * Durch die LearningRateFunction zu Beginn jeder Epoche gesetzte Learning Rate
+     */
     private double learningRate;
 
     /**
