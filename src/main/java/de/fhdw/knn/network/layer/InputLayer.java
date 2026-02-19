@@ -8,6 +8,9 @@ import de.fhdw.knn.network.neuron.Neuron;
  */
 public class InputLayer extends Layer {
 
+    /**
+     * Neuronen des Input Layers
+     */
     public InputNeuron[] neurons;
 
     @Override

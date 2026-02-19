@@ -5,7 +5,13 @@ package de.fhdw.knn.trainer.learningrate;
  */
 public class DecayLearningRate implements LearningRateFunction {
 
+    /**
+     * Learning Rate zu Beginn
+     */
     private double learningRate;
+    /**
+     * Faktor mit dem die Learning Rate jede Epoche multipliziert wird
+     */
     private final double decay;
 
     /**

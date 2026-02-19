@@ -80,7 +80,7 @@ type = "ClassificationScorer"
 ## Konfigurationen ausführen
 
 ### Option 1: ConfigExecutor
-Im Paket `de.fhdw.knn.run` befindet sich die Klasse `ConfigExecutor`, welche interaktiv verwendet werden kann, um entsprechende Konfigurationen über die Eingabeaufforderung zu laden und auszuführen:
+Im Paket `de.fhdw.knn` befindet sich die Klasse `ConfigExecutor`, welche interaktiv verwendet werden kann, um entsprechende Konfigurationen über die Eingabeaufforderung zu laden und auszuführen:
 
 ``` cpp
 Config (.toml-Dateiendung optional): example.toml

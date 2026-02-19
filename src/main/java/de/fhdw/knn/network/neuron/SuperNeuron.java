@@ -8,6 +8,9 @@ import de.fhdw.knn.network.layer.InputLayer;
 
 public class SuperNeuron extends AbstractDenseNeuron {
 
+    /**
+     * Das im SuperNeuron enthaltene Netzwerk (bereits inklusive Adapter)
+     */
     public final Network network;
 
     /**

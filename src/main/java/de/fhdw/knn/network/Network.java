@@ -18,9 +18,18 @@ import java.util.stream.IntStream;
  */
 public class Network {
 
+    /**
+     * RNG für die deterministische Erzeugung der Gewichte und des Bias der Neuronen
+     */
     public final Random random;
 
+    /**
+     * Input Layer des Netzwerks
+     */
     public InputLayer inputLayer;
+    /**
+     * Hidden Layer und Output Layer des Netzwerks
+     */
     public DenseLayer[] denseLayers;
 
     /**

@@ -7,12 +7,14 @@ import de.fhdw.knn.network.Network;
  * Evaluiert das Netzwerk für Klassifikationsprobleme anhand folgender Metriken:
  * True Positives - True Negatives - False Positives - False Negatives
  * - Accuracy - Error - Precision - Recall - F1-Score
+ *
  * @param network
  */
 public record ClassificationScorer(Network network) implements Scorer {
 
     /**
      * Evaluierung anhand des übergebenen Datensatzes
+     *
      * @param data Test-Datensatz
      */
     public Score score(DataSet data) {
@@ -41,22 +43,51 @@ public record ClassificationScorer(Network network) implements Scorer {
 
     /**
      * Enthält die Metriken des {@link ClassificationScorer}
+     *
      * @see ClassificationScorer
      */
     public static class Score implements de.fhdw.knn.scorer.Score {
+        /**
+         * korrekt als positiv erkannt
+         */
         public final int truePositives;
+        /**
+         * korrekt als negativ erkannt
+         */
         public final int trueNegatives;
+        /**
+         * fälschlich als positiv erkannt
+         */
         public final int falsePositives;
+        /**
+         * fälschlich als negativ erkannt
+         */
         public final int falseNegatives;
 
+        /**
+         * (TP + TN) / Anzahl
+         */
         public final double accuracy;
+        /**
+         * (FP + FN) / Anzahl
+         */
         public final double error;
+        /**
+         * TP / (TP + FP)
+         */
         public final double precision;
+        /**
+         * TP / (TP + FN)
+         */
         public final double recall;
+        /**
+         * 2 * Precision * Recall / (Precision + Recall)
+         */
         public final double f1;
 
         /**
          * Berechnet die zusätzlichen Metriken auf Basis der Parameter
+         *
          * @see ClassificationScorer
          */
         public Score(int truePositives, int trueNegatives, int falsePositives, int falseNegatives) {
@@ -75,6 +106,7 @@ public record ClassificationScorer(Network network) implements Scorer {
 
         /**
          * Gibt alle Metriken im Terminal aus
+         *
          * @see ClassificationScorer
          */
         public void print() {

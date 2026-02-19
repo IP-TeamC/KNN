@@ -8,14 +8,35 @@ import java.util.function.BiConsumer;
  */
 public class DataSet {
 
+    /**
+     * Anzahl Zeilen im Datensatz
+     */
     public final int size;
+    /**
+     * Anzahl Spalten in der Eingabe
+     */
     public final int inputSize;
+    /**
+     * Anzahl Spalten in der Ausgabe
+     */
     public final int outputSize;
 
+    /**
+     * Eingabe-Daten: außen Zeile - innen Spalte
+     */
     public double[][] inputs;
+    /**
+     * Ausgabe-Daten: außen Zeile - innen Spalte
+     */
     public double[][] outputs;
 
+    /**
+     * Eingabe-Label je Spalte
+     */
     public String[] inputLabels;
+    /**
+     * Ausgabe-Label je Spalte
+     */
     public String[] outputLabels;
 
     private Normalizer normalizerInputs;

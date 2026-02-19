@@ -23,14 +23,14 @@ import java.util.stream.IntStream;
  */
 public class Trainer {
 
-    public final Network network;
-    public final int maxEpochs;
-    public final boolean shuffleEpoch;
-    public int batchSize;
+    private final Network network;
+    private final int maxEpochs;
+    private final boolean shuffleEpoch;
+    private final int batchSize;
 
-    public final LossFunction lossFunction;
-    public final StopFunction stopFunction;
-    public final OptimizationFunction optimizationFunction;
+    private final LossFunction lossFunction;
+    private final StopFunction stopFunction;
+    private final OptimizationFunction optimizationFunction;
 
     @Setter
     private LiveViewManager liveViewManager;

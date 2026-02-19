@@ -15,6 +15,9 @@ import de.fhdw.knn.network.neuron.Neuron;
  */
 public class DenseLayer extends Layer {
 
+    /**
+     * Neuronen des DenseLayers
+     */
     public AbstractDenseNeuron[] neurons;
 
     @Override
