@@ -97,7 +97,10 @@ network = Importer.importNetwork("models/bq.knn");
 
 ### Trainer
 
-Der Trainer ...
+Der Trainer ist dann im endeffekt die Klasse, welche das training ausführt. Für das Training 
+muss man eine vielzahl von Parametern angeben: Network auf dem trainiert wird, die maximale Anzahl
+an Epchen als Integer, ein Boolean ob shuffle an sein soll, die Batchsize, die Loss-Funktion, die Stopmethode
+und die Optimierungsfunktion.
 ````java
 LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
 StopFunction stopFunction = EarlyStopping.NEVER;
@@ -109,11 +112,38 @@ trainer.train(train);
 
 #### Learning-Rates
 
-#### Loss-Function
+Unter `trainer/learningrate` finden sich verschiedene Implementierungen von Learning-Rate-Verfahren.
+Diese reichen von einfacher Learning-Rate bis zu sich konstant ändernden Learning-Rates.
+
+#### Loss-Functions
+
+Zu jedem supervised Learning gehört auch eine Verlust-Funktion. Diese kann wie folgt definiert werden:
+
+````java
+LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
+````
+Unter `trainer/loss` liegen alle zur Verfügung stehenden Funktionen.
 
 #### Stop-Criteria
 
+Diese Bibliothek unterstützt außerdem das Early-Stopping, um Overfitting vorzubeugen. 
+Diese Stop-Funktion muss beim Erstellen des Trainers mitgegeben werden. Bislang kann man
+nur Early-Stopping aktivieren und deaktivieren.
+
+````java
+StopFunction stopFunction = EarlyStopping.NEVER;
+````
+
 #### Optimization-Function
+
+Unter Optimierungs-Funktionen ist hier die forward-Funktion zu verstehen. Also mit welchem Vorgehen
+die kontinuierliche Anpassung der Gewichte passiert. Diese benötigt zur Initialisierung die ausgewählte
+Verlust-Funktion und die gewählte Learning-Rate.
+
+````java
+OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.03));
+````
+Unter `trainer/optimization` lassen sich alle verfügbaren Funktionen finden.
 
 
 ### Scorer
