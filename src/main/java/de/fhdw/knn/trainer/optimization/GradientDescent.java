@@ -7,6 +7,13 @@ import de.fhdw.knn.network.neuron.SuperNeuron;
 import de.fhdw.knn.trainer.learningrate.LearningRateFunction;
 import de.fhdw.knn.trainer.loss.LossFunction;
 
+/**
+ * Beim KNN-Training üblicherweise verwendeter Optimierungsalgorithmus Gradient Descent.
+ * Dieser ermittelt die Gradienten (Ableitung der Verlustfunktion nach einem Gewicht bzw. Bias),
+ * passt diesen auf Basis der Learning Rate an und subtrahiert diesen von den jeweiligen Werten im Netzwerk.
+ *
+ * @see OptimizationFunction
+ */
 public class GradientDescent implements OptimizationFunction {
 
     private final LossFunction lossFunction;
@@ -14,6 +21,12 @@ public class GradientDescent implements OptimizationFunction {
     private final LearningRateFunction learningRateFunction;
     private double learningRate;
 
+    /**
+     * @see GradientDescent
+     * @see OptimizationFunction
+     * @see LossFunction
+     * @see LearningRateFunction
+     */
     public GradientDescent(LossFunction lossFunction, LearningRateFunction learningRateFunction) {
         this.lossFunction = lossFunction;
         this.learningRateFunction = learningRateFunction;
@@ -120,7 +133,7 @@ public class GradientDescent implements OptimizationFunction {
             if (dn instanceof SuperNeuron sn) {
                 OutputsDerived subnetResults = sn.network.feedForward(layerInput);
                 double[] subAdjustmentBias = compute(sn.network, layerInput, subnetResults.output(), subnetResults.derived(),
-                        new double[] { adjustmentBias }).adjustmentsBias()[0];
+                        new double[]{adjustmentBias}).adjustmentsBias()[0];
                 AbstractDenseNeuron[] subLayerNeurons = sn.network.denseLayers[0].neurons;
 
                 adapterAdjustmentsBias[neuron] = new double[sn.network.inputLayer.neurons.length];

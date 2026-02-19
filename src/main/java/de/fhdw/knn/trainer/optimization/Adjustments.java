@@ -7,8 +7,18 @@ import de.fhdw.knn.network.neuron.DenseNeuron;
 
 import java.util.stream.IntStream;
 
+/**
+ * Kapselt die notwendigen Anpassungen (Gradienten der Verlustfunktion mit Berücksichtigung der Learning Rate)
+ * zur Anpassung des Netzwerks
+ *
+ * @param adjustmentsWeight außen Layer - Neuron - eingehendes Neuron innen
+ * @param adjustmentsBias   außen Layer - Neuron innen
+ */
 public record Adjustments(double[][][] adjustmentsWeight, double[][] adjustmentsBias) {
 
+    /**
+     * Passt das Netzwerk entsprechend an (Subtraktion der Gradienten)
+     */
     public void adjust(Network network) {
         IntStream.range(0, network.denseLayers.length).parallel().forEach(layer -> {
             AbstractDenseNeuron[] neurons = network.denseLayers[layer].neurons;
