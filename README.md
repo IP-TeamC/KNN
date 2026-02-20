@@ -69,6 +69,7 @@ data.normalizeInputs(normalizerOutputs);
 
 Die Netzstruktur wird in der Network-Klasse aufgebaut. Sie setzt sich aus
 mehreren Dense-Layern, einem Random-Seed und einem sog. Weight-Initializer zusammen.
+Jedes erstellte Network ist ein fully-connected Network.
 ````java
 Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 7, denseLayers);
 ````
@@ -114,6 +115,17 @@ Zu den unterstützten Aktivierungsfunktionen gehören:
 - `SoftplusActivationFunction`
 - `SwishActivationFunction`
 - `TanhActivationFunction`.
+
+#### Neuronen
+
+Diese Bibliothek liefert eine vielzahl an verschiedenen Neuronen, welche zur Erstellung von
+KNNs verwendet werden können. 
+- `InputNeuron`: Neuronen des Input-Layers.
+- `DenseNeuron`: Hat eine eingehende `Connection`, einen Bias und eine Aktivierungsfunktion. Verhält sich wie ein klassisches künstliches Neuron.
+- `SuperNeuron`: Neuron, welches ein ganzes anderes importiertes `Network` beinhaltet. Somit verhält sich dieses Neuron wie dieses Network und ist nicht von der Optimierungsfunktion des Hauptnetzwerks betroffen.
+
+Bei Bedarf können weitere Neuronen unter Berücksichtigung des `AbstractDenseNeurons` implementiert werden.
+Weitere Informationen finden sich in den Java-Docs.
 
 #### IO
 
