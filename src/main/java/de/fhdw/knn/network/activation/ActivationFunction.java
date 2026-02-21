@@ -63,6 +63,10 @@ public interface ActivationFunction {
      */
     ActivationFunction SIN = new SinActivationFunction();
 
+    /**
+     * Liste aller Aktivierungsfunktionen,
+     * mit welcher über den Index eine Zuordnung der Aktivierungsfunktionen für den Import/Export von Netzwerken ermöglicht wird
+     */
     List<ActivationFunction> FUNCTIONS = List.of(SIGMOID, RELU, LINEAR, TANH, SWISH, SOFTPLUS, SNAKE, SIN);
 
     /**

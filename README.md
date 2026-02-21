@@ -2,7 +2,7 @@
 
 Dokumentation zur KNN-Bibliothek von Team C.
 Hier wird die grundlegende Dokumentation anhand von Beispielen erklärt.
-Detaillierte Informationen zu einzelnen Klassen bzw. Interfaces sind der beiliegenden Javadoc zu entnehmen.
+Detaillierte Informationen zu einzelnen Klassen bzw. Interfaces sind der beiliegenden [Javadoc](javadoc/de/fhdw/knn/package-summary.html) zu entnehmen.
 
 ## Was ist dieses Projekt?
 
