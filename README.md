@@ -30,7 +30,7 @@ Visualisierungsmethoden der KNNs und die Möglichkeit, Dateien einzulesen.
 
 #### CsvReader
 
-Mit dem CSV-Reader ist es möglich, CSV-Dateien in ein DataSet umzuwandeln. Hier muss einmal der 
+Mit dem CSV-Reader ist es möglich, CSV-Dateien in ein `DataSet` umzuwandeln. Hier muss einmal der 
 Dateipfad und jeweils der Startindex und die größe des Inputs und Outputs angegeben werden.
 In der nun vorliegenden Form sind die Daten dann bereit, in Train und Test-Splits aufgeteilt zu werden.
 Dabei kann ein Random-Seed und den Anteil der Daten im Test-Set angegeben werden.
@@ -52,10 +52,24 @@ oder zur Normalisierung.
 
 #### Normalizer
 
+Der Normalizer dient dazu, Eingabe- oder Ausgabedaten vor dem Training auf einen 
+einheitlichen Wertebereich zu skalieren. Dadurch werden unterschiedliche Größenordnungen 
+der Features ausgeglichen, was die Stabilität und Konvergenz des Lernalgorithmus verbessert. 
+Der verwendete Normalizer speichert dabei die berechneten Parameter, sodass die Daten bei Bedarf wieder 
+denormalisiert werden können. `MinMaxNormalizer` orientiert sich dabei an den Min- und Max-Werten
+der Daten. Bei Bedarf lassen sich weitere Normalizer unter Implementierung des `Normalizer`-Interfaces
+implementieren. Weitere Informationen dazu sind in den Java-Docs zu finden.
+
+````java
+data.normalizeInputs(normalizerInputs);
+data.normalizeInputs(normalizerOutputs);
+````
+
 ### Network
 
 Die Netzstruktur wird in der Network-Klasse aufgebaut. Sie setzt sich aus
 mehreren Dense-Layern, einem Random-Seed und einem sog. Weight-Initializer zusammen.
+Jedes erstellte Network ist ein fully-connected Network.
 ````java
 Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 7, denseLayers);
 ````
@@ -65,11 +79,11 @@ Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 7, denseLaye
 Bei Erstellung eines Networks müssen am Ende die Gewichte der vorher definierten Kanten initialisiert
 werden. Dafür werden diese Weight-Initializer im Network angegeben. Zu den zur Verfügung stehenden
 Initializern gehören:
-- `Zero-`
-- `HE-`
-- `HE-Uniform-`
-- `Glorot-`
-- `Glorot-Uniform-Weightinitializer`.
+- `WeightInitializer::ZERO`
+- `WeightInitializer::HE`
+- `WeightInitializer::HE_UNIFORM`
+- `WeightInitializer::GLOROT`
+- `WeightInitializer::GLOROT_UNIFORM`.
 
 #### Input-Layer
 
@@ -79,11 +93,14 @@ zu verstehen.
 #### Dense-Layer
 
 Der Dense-Layer bildet sowohl die Hidden-Layer als auch den Output-Layer eines neuronalen Netzes
-ab. Bei der Erstellung werden eine Aktivierungsfunktion für die interne Verarbeitung innerhalb
-der Neuronen sowie eine Aktivierungsfunktion für die Ausgabe definiert. Zusätzlich wird eine 
+ab. Bei der Erstellung werden zwei Aktivierungsfunktionen benötigt. Die Erste ist für jeden Hidden-Layer.
+Die Zweite ist für den Output-Layer, da es sich als hilfreich erwiesen hat, diese zu unterscheiden.
 beliebige Anzahl von Integer-Werten übergeben, die jeweils die Anzahl der Neuronen pro Schicht
 festlegen. Jeder dieser Integer-Werte steht für eine eigene Schicht im Netzwerk, wobei der 
 letzte Wert die Größe des Output-Layers bestimmt.
+
+Bei Bedarf können weitere Akivierungsfunktion unter Implementierung des `ActivationFunction`-
+Interfaces eingebaut werden. Weitere Informationen sind in den Java-Docs zu finden.
 
 ````java
 DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.SIGMOID, 100, 100, 1);
@@ -99,10 +116,22 @@ Zu den unterstützten Aktivierungsfunktionen gehören:
 - `SwishActivationFunction`
 - `TanhActivationFunction`.
 
+#### Neuronen
+
+Diese Bibliothek liefert eine vielzahl an verschiedenen Neuronen, welche zur Erstellung von
+KNNs verwendet werden können. 
+- `InputNeuron`: Neuronen des Input-Layers.
+- `DenseNeuron`: Hat eine eingehende `Connection`, einen Bias und eine Aktivierungsfunktion. Verhält sich wie ein klassisches künstliches Neuron.
+- `SuperNeuron`: Neuron, welches ein ganzes anderes importiertes `Network` beinhaltet. Somit verhält sich dieses Neuron wie dieses Network und ist nicht von der Optimierungsfunktion des Hauptnetzwerks betroffen.
+
+Bei Bedarf können weitere Neuronen unter Berücksichtigung des `AbstractDenseNeurons` implementiert werden.
+Weitere Informationen finden sich in den Java-Docs.
+
 #### IO
 
-Es besteht auch die Möglichkeit, bestehende Networks zu exporten und diese dann an anderen Stellen
-wieder zu importen.
+Es besteht auch die Möglichkeit, bestehende Networks zu exportieren und diese dann an anderen Stellen
+wieder zu importieren. Exportiert wird in ein binäres Format, da es viel kompakter ist, als ein
+menschenlesbares Format.
 
 ````java
 Export.export(network);
@@ -127,7 +156,7 @@ trainer.train(train);
 
 #### Learning-Rates
 
-Für die Steuerung der Learning-Rate stehen mehrere Strategien zur Verfügung, 
+Für die Steuerung der Learningrate stehen mehrere Strategien zur Verfügung, 
 die das Trainingsverhalten des Modells beeinflussen. Zur Auswahl gehören `Constant`, `Decay`, 
 `Softstart` sowie `SoftstartDecay`.
 
@@ -139,6 +168,9 @@ ein zu starkes initiales Überschwingen zu vermeiden. `SoftstartDecay` kombinier
 indem die Lernrate zunächst ansteigt und anschließend im weiteren Verlauf wieder 
 kontinuierlich abgesenkt wird.
 
+Weitere Learningrates können unter Berücksichtigung des LearningRateFunction-Interfaces 
+implementiert werden. Weitere Details sind in den Java-Docs zu finden.
+
 #### Loss-Functions
 
 Zu jedem supervised Learning gehört auch eine Verlust-Funktion. 
@@ -149,9 +181,12 @@ LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
 ````
 Diese Bibliothek unterstützt klassische Verlust-Funktionen:
 
-- `Binary-Cross-Entropy-Loss`
-- `Mean-Squared-Error`
-- `Mean-Absolute-Error`.
+- `LossFunction::CROSS_ENTROPY_LOSS` (Binary)
+- `LossFunction::MEAN_SQUARED_ERROR`
+- `LossFunction::MEAN_ABSOLUTE_ERROR`.
+
+Bei Bedarf können unter Implementierung des `LossFunction`-Interfaces weitere Loss-Funktionen
+hinzugefügt werden. Weitere Informationen sind in den Java-Docs zu finden.
 
 #### Stop-Criteria
 
@@ -163,6 +198,9 @@ nur Early-Stopping aktivieren und deaktivieren.
 StopFunction stopFunction = EarlyStopping.NEVER;
 ````
 
+Bei Bedarf können weitere Stop-Funktionen unter Berücksichtigung des `StopFunction`-Interfaces
+implementiert werden. Weitere Informationen sind unter den Java-Docs zu finden.
+
 #### Optimization-Function
 
 Unter Optimierungs-Funktionen ist hier die forward-Funktion zu verstehen. Also mit welchem Vorgehen
@@ -173,6 +211,10 @@ verwendet werden.
 ````java
 OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.03));
 ````
+
+Bei Bedarf können weitere Optimierungsfunktionen hinzugefügt werden. Dafür muss das 
+OptimizationFunction`-Interface implementiert werden. Weitere Implementierungsdetails sind in
+den Java-Docs zu finden.
 
 
 ### Scorer
