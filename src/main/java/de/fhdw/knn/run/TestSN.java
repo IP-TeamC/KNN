@@ -36,10 +36,10 @@ public class TestSN {
         new SuperNeuron(Importer.importNetwork("models/sin_snake.knn"), new double[]{0}, new double[][]{new double[]{1}}).insert(network, 0, 0);
         //((DenseNeuron)network.denseLayers[0].neurons[0]).activationFunction=ActivationFunction.SIN;
 
-        //network.denseLayers[0].neurons[0].incoming[0].weight = 3;
+        //network.denseLayers[0].neurons[0].incoming[0].weight = 3.3;
         //network.denseLayers[0].neurons[1].incoming[0].weight = 1;
-        //network.denseLayers[1].neurons[0].incoming[0].weight = 69;
-        //network.denseLayers[1].neurons[0].incoming[1].weight = 42;
+        //network.denseLayers[1].neurons[0].incoming[0].weight = 68;
+        //network.denseLayers[1].neurons[0].incoming[1].weight = 43;
 
         for (DenseLayer layer : network.denseLayers) {
             for (AbstractDenseNeuron dn : layer.neurons) {

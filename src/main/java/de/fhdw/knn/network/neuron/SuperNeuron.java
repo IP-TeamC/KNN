@@ -22,6 +22,17 @@ public class SuperNeuron extends AbstractDenseNeuron {
         this.network = network;
     }
 
+    /**
+     * Erzeuge ein Super-Neuron aus einem vorhandenen Netzwerk und setze vor dieses einen Adapter<br>
+     * (neu)[AdapterInputLayer ->] ActualInputLayer (wird DenseLayer) -> FirstDenseLayer
+     *
+     * @param network        vorhandenes Netzwerk
+     * @param adapterBias    beschreibt den Bias der Neuronen des tatsächlichen Input-Layers des vorhandenen Netzwerks, der nun zum 1. DenseLayer wird und vorher keinen Bias hatte
+     * @param adapterWeights beschreibt für jedes Neuron des tatsächlichen Input-Layers des vorhandenen Netzwerks (Array außen)
+     *                       die Gewichte von den eingehenden Neuronen des Adapter-Input-Layers
+     *                       (hier ist jeweils nur genau das n-te Neuron des Layers vor dem Super-Neuron mit dem n-ten Neuron des Adapter-Input-Layers verbunden
+     *                       und von dort aus über das hier im inneren Array angegebene Gewicht mit den tatsächlichen Input-Neuronen, die nun im DenseLayer liegen)
+     */
     public SuperNeuron(Network network, double[] adapterBias, double[][] adapterWeights) {
         if (network.denseLayers[network.denseLayers.length - 1].neurons.length != 1) {
             throw new IllegalArgumentException("invalid super neuron network output layer size: expected 1");
@@ -30,24 +41,25 @@ public class SuperNeuron extends AbstractDenseNeuron {
         }
 
         // (new)[AdapterInputLayer ->] ActualInputLayer -> FirstDenseLayer
-        InputLayer adapterInputLayer = new InputLayer(adapterBias.length);
+        int adapterSize = adapterWeights[0].length;
+        InputLayer adapterInputLayer = new InputLayer(adapterSize);
         DenseLayer actualInputLayer = new DenseLayer(network.inputLayer.neurons.length);
 
-        for (int neuron = 0; neuron < network.denseLayers[0].neurons.length; neuron++) {
-            DenseNeuron dn = (DenseNeuron) network.denseLayers[0].neurons[neuron];
-            for (int conn = 0; conn < dn.incoming.length; conn++) {
-                dn.incoming[conn].inputNeuron = actualInputLayer.neurons[conn];
+        for (int denseNeuron = 0; denseNeuron < network.denseLayers[0].neurons.length; denseNeuron++) {
+            AbstractDenseNeuron dn = network.denseLayers[0].neurons[denseNeuron];
+            for (int actualInputNeuron = 0; actualInputNeuron < dn.incoming.length; actualInputNeuron++) {
+                dn.incoming[actualInputNeuron].inputNeuron = actualInputLayer.neurons[actualInputNeuron];
             }
         }
 
-        for (int neuron = 0; neuron < actualInputLayer.neurons.length; neuron++) {
-            DenseNeuron dn = (DenseNeuron) actualInputLayer.neurons[neuron];
-            dn.activationFunction = ActivationFunction.LINEAR;
-            dn.bias = adapterBias[neuron];
-            dn.incoming = new Connection[adapterBias.length];
-            for (int conn = 0; conn < dn.incoming.length; conn++) {
-                dn.incoming[conn] = new Connection(adapterWeights[conn][neuron]);
-                dn.incoming[conn].inputNeuron = adapterInputLayer.neurons[conn];
+        for (int actualInputNeuronIndex = 0; actualInputNeuronIndex < actualInputLayer.neurons.length; actualInputNeuronIndex++) {
+            DenseNeuron actualInputNeuron = (DenseNeuron) actualInputLayer.neurons[actualInputNeuronIndex];
+            actualInputNeuron.activationFunction = ActivationFunction.LINEAR;
+            actualInputNeuron.bias = adapterBias[actualInputNeuronIndex];
+            actualInputNeuron.incoming = new Connection[adapterSize];
+            for (int adapterNeuron = 0; adapterNeuron < adapterSize; adapterNeuron++) {
+                actualInputNeuron.incoming[adapterNeuron] = new Connection(adapterWeights[actualInputNeuronIndex][adapterNeuron]);
+                actualInputNeuron.incoming[adapterNeuron].inputNeuron = adapterInputLayer.neurons[adapterNeuron];
             }
         }
 
@@ -73,6 +85,13 @@ public class SuperNeuron extends AbstractDenseNeuron {
         return new OutputDerived(output[output.length - 1][0], derived[derived.length - 1][0]); // evtl. Index 0 statt output.y.length (1. oder letzter Layer?)
     }
 
+    /**
+     * Setze dieses Super-Neuron in ein vorhandenes Netzwerk ein
+     *
+     * @param network bereits vorhandenes Netzwerk, in dem ein Neuron durch dieses Super-Neuron ausgetauscht werden soll
+     * @param layer   Index des Dense-Layers, in den das Super-Neuron eingefügt werden soll
+     * @param neuron  Index des Neurons im Dense-Layer, das durch das Super-Neuron ersetzt werden soll
+     */
     public void insert(Network network, int layer, int neuron) {
         incoming = network.denseLayers[layer].neurons[neuron].incoming;
         if (layer != network.denseLayers.length - 1) {
