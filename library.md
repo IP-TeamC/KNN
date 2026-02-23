@@ -292,7 +292,7 @@ OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, ne
 ```
 
 Bei Bedarf können weitere Optimierungsfunktionen hinzugefügt werden. Dafür muss das
-OptimizationFunction`-Interface implementiert werden. Weitere Implementierungsdetails sind in
+`OptimizationFunction`-Interface implementiert werden. Weitere Implementierungsdetails sind in
 den Java-Docs zu finden.
 
 ## Scorer
