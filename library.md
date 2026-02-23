@@ -284,7 +284,7 @@ implementiert werden. Weitere Informationen sind unter den Java-Docs zu finden.
 
 Unter Optimierungs-Funktionen ist hier die Backpropagation-Funktion zu verstehen. Also mit welchem Vorgehen
 die kontinuierliche Anpassung der Gewichte passiert.
-Hier wird aktuell nur der `GradientDescent`-Algorithmus verwendet werden.
+Hier kann aktuell nur der `GradientDescent`-Algorithmus verwendet werden.
 Dieser benötigt zur Initialisierung die ausgewählte Verlust-Funktionsowie Learning-Rate.
 
 ```java
@@ -300,7 +300,6 @@ den Java-Docs zu finden.
 Das `Scorer`-Interface kann für einen Datensatz einen `Score` ermitteln, der ausgegeben werden kann.
 
 Implementiert ist bisher nur der `ClassificationScorer`, welcher anhand eines DataSets übliche Metriken für Klassifikationsprobleme errechnet.
-übliche Metriken.
 Zu diesen zählen die `Confusion Matrix`, `Accuracy`, `Error`, `Precision`, `Recall`, `F1-Score`
 und werden in der `ClassificationScorer.Score`-Klasse zusammengefasst.
 Diese werden dann durch das am Ende des Testings ausgegeben.
