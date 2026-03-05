@@ -20,7 +20,7 @@ import de.fhdw.knn.visualization.HeatmapView;
 
 import java.io.IOException;
 
-public class BananaQuality {
+class BananaQuality {
 
     public static void main(String[] args) throws IOException {
         DataSet data = CsvReader.readFile("data/banana_quality.csv", 0, 7, 7, 1);

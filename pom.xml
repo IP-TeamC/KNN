@@ -87,7 +87,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>de.fhdw.knn.run.Main</mainClass>
+                            <mainClass>de.fhdw.knn.ConfigExecutor</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

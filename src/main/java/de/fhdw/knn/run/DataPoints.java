@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public class DataPoints {
+class DataPoints {
 
     public static void main(String[] args) throws IOException {
         DataSet data = CsvReader.readFile("data/datapoints.csv", 1, 10, 0, 1, 1);

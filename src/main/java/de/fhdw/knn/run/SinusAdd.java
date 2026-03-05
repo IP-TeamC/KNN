@@ -21,7 +21,7 @@ import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 
-public class SinusAdd {
+class SinusAdd {
 
     public static void main(String[] args) throws IOException {
         DataSet data = generate(10000, -10, 10);

@@ -4,7 +4,7 @@ import de.fhdw.knn.config.Config;
 
 import java.io.IOException;
 
-public class ConfBQ {
+class ConfBQ {
 
     public static void main(String[] args) throws IOException {
         Config config = Config.read("conf/bq.toml");

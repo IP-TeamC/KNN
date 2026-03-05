@@ -18,7 +18,7 @@ import de.fhdw.knn.trainer.stop.StopFunction;
 
 import java.io.IOException;
 
-public class Mails {
+class Mails {
 
     public static void main(String[] args) throws IOException {
         DataSet data = CsvReader.readFile("data/emails.csv", 1, 3000, 3001, 1);

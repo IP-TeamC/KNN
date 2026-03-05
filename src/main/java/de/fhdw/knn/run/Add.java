@@ -15,7 +15,7 @@ import de.fhdw.knn.trainer.stop.StopFunction;
 
 import java.io.IOException;
 
-public class Add {
+class Add {
 
     public static void main(String[] args) throws IOException {
         DataSet data = generate(9973, -100, 100);

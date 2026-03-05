@@ -8,7 +8,7 @@ import de.fhdw.knn.network.layer.InputLayer;
 import de.fhdw.knn.visualization.HeatmapData;
 import de.fhdw.knn.visualization.HeatmapView;
 
-public class HeatmapTest {
+class HeatmapTest {
     public static void main(String[] args) {
         InputLayer inputLayer = new InputLayer(1);
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.LINEAR, 200, 200, 1);

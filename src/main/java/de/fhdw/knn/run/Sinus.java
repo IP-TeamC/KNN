@@ -15,7 +15,7 @@ import de.fhdw.knn.trainer.stop.StopFunction;
 
 import java.io.IOException;
 
-public class Sinus {
+class Sinus {
 
     public static void main(String[] args) throws IOException {
         DataSet data = generate(10000, -10, 10);

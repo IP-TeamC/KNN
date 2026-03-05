@@ -20,7 +20,7 @@ import de.fhdw.knn.trainer.stop.StopFunction;
 
 import java.io.IOException;
 
-public class TestSN {
+class TestSN {
 
     // Super-Neuron Test
     // Funktion 69*sin(3*x)+42x, wobei sin(x) das Super-Neuron ist (mit Snake-Aktivierungsfunktion trainiert)

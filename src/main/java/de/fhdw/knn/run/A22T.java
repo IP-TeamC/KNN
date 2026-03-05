@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-public class A22T {
+class A22T {
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz ,:;-.";
 

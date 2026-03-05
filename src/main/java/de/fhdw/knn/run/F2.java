@@ -16,7 +16,7 @@ import de.fhdw.knn.trainer.stop.StopFunction;
 
 import java.io.IOException;
 
-public class F2 {
+class F2 {
 
     public static void main(String[] args) throws IOException {
         DataSet data = CsvReader.readFile("data/f2_full.csv", 0, 1, 2, 1);
