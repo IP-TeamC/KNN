@@ -39,7 +39,7 @@ public class Exporter {
     // Network-Size
     // Network
     // }
-    // Weights... je Connection (0 -> n)
+    // (Guard, Weight)... je Connection (0 -> n)
     // }
     public static byte[] export(Network network) {
         List<byte[]> exportedSubs = new LinkedList<>();
@@ -59,6 +59,8 @@ public class Exporter {
             size += 4 * network.denseLayers[i].neurons.length;
             // Bias (...1), Weights (...incoming.length)
             size += 8 * network.denseLayers[i].neurons.length * (1 + network.denseLayers[i].neurons[0].incoming.length);
+            // Guard
+            size += network.denseLayers[i].neurons.length * network.denseLayers[i].neurons[0].incoming.length;
         }
         ByteBuffer buffer = ByteBuffer.allocate(size);
         buffer.putInt(network.inputLayer.neurons.length);
@@ -83,6 +85,7 @@ public class Exporter {
                 }
 
                 for (Connection conn : neuron.incoming) {
+                    buffer.put((byte) (conn.guard ? 1 : 0));
                     buffer.putDouble(conn.weight);
                 }
             }

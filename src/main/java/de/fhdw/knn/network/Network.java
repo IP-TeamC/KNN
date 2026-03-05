@@ -35,6 +35,9 @@ public class Network {
     /**
      * Erzeugt ein Netzwerk aus den gegebenen Layern.
      * <strong>Ein hierüber erzeugtes Netz kann keine Verbindungen/Gewichte initialisieren (kein Seed gesetzt).</strong>
+     *
+     * @param inputLayer  Input-Layer des Netzwerks
+     * @param denseLayers Dense-Layer des Netzwerks (mehrere Hidden Layer und Output Layer als letzter Dense Layer)
      */
     public Network(InputLayer inputLayer, DenseLayer[] denseLayers) {
         this.random = null;
@@ -45,6 +48,11 @@ public class Network {
     /**
      * Erzeugt ein Netzwerk aus den gegebenen Layern.
      * Es werden alle Neuronen wie in einem Feedforward-KNN üblich verbunden und die Verbindungen mit Gewichten entsprechend initialisiert.
+     *
+     * @param seed              Seed zur Initialisierung des RNG für die Gewichtsinitialisierung
+     * @param weightInitializer Algorithmus/Methode zur Gewichtsinitialisierung
+     * @param inputLayer        Input-Layer des Netzwerks
+     * @param denseLayers       Dense-Layer des Netzwerks (mehrere Hidden Layer und Output Layer als letzter Dense Layer)
      */
     public Network(long seed, WeightInitializer weightInitializer, InputLayer inputLayer, DenseLayer... denseLayers) {
         this.random = new Random(seed);
@@ -57,6 +65,11 @@ public class Network {
      * Erzeugt ein Netzwerk aus den gegebenen Dense Layern.
      * Der Input Layer wird mit der gewünschten Anzahl an Input-Neuronen neu erzeugt.
      * Es werden alle Neuronen wie in einem Feedforward-KNN üblich verbunden und die Verbindungen mit Gewichten entsprechend initialisiert.
+     *
+     * @param seed              Seed zur Initialisierung des RNG für die Gewichtsinitialisierung
+     * @param weightInitializer Algorithmus/Methode zur Gewichtsinitialisierung
+     * @param inputNeurons      Anzahl der gewünschten Neuronen im Input Layer (wird automatisch bei diesem Konstruktor erzeugt)
+     * @param denseLayers       Dense-Layer des Netzwerks (mehrere Hidden Layer und Output Layer als letzter Dense Layer)
      */
     public Network(long seed, WeightInitializer weightInitializer, int inputNeurons, DenseLayer... denseLayers) {
         this.random = new Random(seed);
@@ -79,7 +92,7 @@ public class Network {
 
     /**
      * Ermittelt für mehrere Zeilen/Eingaben alle Ausgabe-Zeilen bei Verwendung des Netzwerks.
-     * Es wird jedoch nur das erste/einzige Output-Neuron beachtet.
+     * Es wird jedoch nur das erste Output-Neuron beachtet (für Netzwerke mit nur einem Output-Neuron).
      *
      * @param inputs außen Eingabe-Zeile - innen Spalte/Feature/Merkmal (Ausgabe des Input-Neurons)
      * @return Ausgabe-Zeilen mit je nur einem Output-Neuron
@@ -88,15 +101,6 @@ public class Network {
         double[] predictions = new double[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
             predictions[i] = feedForward(inputs[i]).lastOutput()[0];
-        }
-        return predictions;
-    }
-
-    @Deprecated
-    public double[] predictSingles(double[] inputs) {
-        double[] predictions = new double[inputs.length];
-        for (int i = 0; i < inputs.length; i++) {
-            predictions[i] = feedForward(new double[]{inputs[i]}).lastOutput()[0];
         }
         return predictions;
     }
@@ -121,6 +125,11 @@ public class Network {
 
     /**
      * Berechnet die Ausgaben/Aktivierungen aller DenseNeuronen sowie deren Ableitungen innerhalb eines Layers auf Basis der Aktivierungen des vorherigen Layers
+     *
+     * @param layer   Index des DenseLayers
+     * @param input   Ausgabe des vorherigen Layers bzw. Eingabe in den Input Layer (bei layer = 0)
+     * @param output  Array mit den Ausgaben aller Layer/Neuronen (außen Layer - innen Neuron je Layer): output[layer] wird überschrieben
+     * @param derived Array mit den Ableitungen der Ausgabe/Aktivierung aller Layer/Neuronen (außen Layer - innen Neuron je Layer): derived[layer] wird überschrieben
      */
     private void calculateOutput(int layer, double[] input, double[][] output, double[][] derived) {
         AbstractDenseNeuron[] neurons = denseLayers[layer].neurons;
@@ -137,6 +146,9 @@ public class Network {
 
     /**
      * Es werden alle Neuronen wie in einem Feedforward-KNN üblich verbunden und die Verbindungen mit Gewichten entsprechend initialisiert.
+     * Jedes Neuron wird mit allen Neuronen des vorherigen Layers verbunden.
+     *
+     * @param weightInitializer Algorithmus/Methode zur Gewichtsinitialisierung (wird für alle Neuronen vom vordersten Dense Layer zum Output Layer und vom geringsten Neuronen-Index zum größten Neuronen-Index aufgerufen)
      */
     private void connectAll(WeightInitializer weightInitializer) {
         for (AbstractDenseNeuron denseNeuron : denseLayers[0].neurons) {

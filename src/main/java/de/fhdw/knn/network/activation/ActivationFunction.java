@@ -4,10 +4,10 @@ import java.util.List;
 
 /**
  * Interface für die Implementierung der Aktivierungsfunktionen von Neuronen.
- * Eine Aktivierungsfunktion berechnet eine Eingabe (gewichtete Summe der Verbindungen ins Neuron) eine Ausgabe (Aktivierung).
+ * Eine Aktivierungsfunktion berechnet für eine Eingabe (gewichtete Summe der Verbindungen ins Neuron) eine Ausgabe (Aktivierung).
  * Diese Ausgabe wird mit {@link ActivationFunction#calc(double)} berechnet.<br>
- * Für den Optimierungsalgorithmus Gradient Descent muss zusätzlich Ableitung der Aktivierungsfunktion an einem bestimmten Punkt berechnet werden.
- * Die Ableitung wird mit {@link ActivationFunction#derived(double, double)} berechnet, wobei der zweite Parameter calc die bereits berechnete Aktivierung mitliefert (zur Optimierung der Performance).
+ * Für den Optimierungsalgorithmus Gradient Descent muss zusätzlich die Ableitung der Aktivierungsfunktion an einem bestimmten Punkt berechnet werden.
+ * Die Ableitung wird mit {@link ActivationFunction#derived(double, double)} berechnet, wobei der zweite Parameter calc die bereits berechnete Aktivierung mitliefert (zur Optimierung der Performance in einigen Fällen).
  */
 public interface ActivationFunction {
 
@@ -65,7 +65,8 @@ public interface ActivationFunction {
 
     /**
      * Liste aller Aktivierungsfunktionen,
-     * mit welcher über den Index eine Zuordnung der Aktivierungsfunktionen für den Import/Export von Netzwerken ermöglicht wird
+     * mit welcher über den Index eine Zuordnung der Aktivierungsfunktionen für den Import/Export von Netzwerken ermöglicht wird.
+     * Eine Änderung der Reihenfolge führt zur Inkompatibilität der Datenformate beim Import/Export.
      */
     List<ActivationFunction> FUNCTIONS = List.of(SIGMOID, RELU, LINEAR, TANH, SWISH, SOFTPLUS, SNAKE, SIN);
 

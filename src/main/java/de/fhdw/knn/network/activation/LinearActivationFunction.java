@@ -1,5 +1,8 @@
 package de.fhdw.knn.network.activation;
 
+/**
+ * @see ActivationFunction#LINEAR
+ */
 class LinearActivationFunction implements ActivationFunction {
 
     @Override

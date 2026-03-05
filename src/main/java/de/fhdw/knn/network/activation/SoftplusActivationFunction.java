@@ -1,5 +1,8 @@
 package de.fhdw.knn.network.activation;
 
+/**
+ * @see ActivationFunction#SOFTPLUS
+ */
 class SoftplusActivationFunction implements ActivationFunction {
 
     @Override

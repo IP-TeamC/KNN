@@ -1,5 +1,8 @@
 package de.fhdw.knn.network.activation;
 
+/**
+ * @see ActivationFunction#TANH
+ */
 class TanhActivationFunction implements ActivationFunction {
 
     @Override

@@ -4,6 +4,9 @@ import de.fhdw.knn.network.Network;
 
 import java.util.Random;
 
+/**
+ * @see WeightInitializer#GLOROT
+ */
 class GlorotWeightInitializer implements WeightInitializer {
 
     @Override

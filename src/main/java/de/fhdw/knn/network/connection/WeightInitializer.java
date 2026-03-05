@@ -5,7 +5,10 @@ import de.fhdw.knn.network.Network;
 import java.util.Random;
 
 /**
- * Interface zur Implementierung der Gewichtsinitialisierung bei Erstellung eines neuen Netzes
+ * Interface zur Implementierung der Gewichtsinitialisierung bei Erstellung eines neuen Netzes.<br>
+ * Der WeightInitializer wird bei der Netzwerk-Erstellung standardmäßig für jedes Neuron vom vordersten Dense Layer zum Output Layer
+ * und vom Neuron mit dem geringsten zum höchsten Index aufgerufen.
+ *
  */
 public interface WeightInitializer {
 

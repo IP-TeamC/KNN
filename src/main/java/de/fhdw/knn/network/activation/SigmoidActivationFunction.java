@@ -1,5 +1,8 @@
 package de.fhdw.knn.network.activation;
 
+/**
+ * @see ActivationFunction#SIGMOID
+ */
 class SigmoidActivationFunction implements ActivationFunction {
 
     @Override

@@ -4,6 +4,9 @@ import de.fhdw.knn.network.Network;
 
 import java.util.Random;
 
+/**
+ * @see WeightInitializer#HE_UNIFORM
+ */
 class HeUniformWeightInitializer implements WeightInitializer {
 
     @Override

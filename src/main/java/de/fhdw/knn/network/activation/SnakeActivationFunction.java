@@ -1,5 +1,8 @@
 package de.fhdw.knn.network.activation;
 
+/**
+ * @see ActivationFunction#SNAKE
+ */
 class SnakeActivationFunction implements ActivationFunction {
 
     @Override

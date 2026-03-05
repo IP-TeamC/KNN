@@ -1,5 +1,8 @@
 package de.fhdw.knn.network.activation;
 
+/**
+ * @see ActivationFunction#SIN
+ */
 class SinActivationFunction implements ActivationFunction {
 
     @Override

@@ -55,7 +55,7 @@ public class Importer {
     // Network-Size
     // Network
     // }
-    // Weights... je Connection (0 -> n)
+    // (Guard, Weight)... je Connection (0 -> n)
     // }
     public Network load(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data);
@@ -118,6 +118,7 @@ public class Importer {
     }
 
     private void updateWeights(ByteBuffer buffer) {
+        denseLayers[denseLayer].neurons[neuron].incoming[conn].guard = buffer.get() >= 1;
         denseLayers[denseLayer].neurons[neuron].incoming[conn++].weight = buffer.getDouble();
         if (conn >= denseLayers[denseLayer].neurons[neuron].incoming.length) {
             neuron += 1;

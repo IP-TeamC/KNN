@@ -1,5 +1,8 @@
 package de.fhdw.knn.network.activation;
 
+/**
+ * @see ActivationFunction#RELU
+ */
 class ReLUActivationFunction implements ActivationFunction {
 
     @Override

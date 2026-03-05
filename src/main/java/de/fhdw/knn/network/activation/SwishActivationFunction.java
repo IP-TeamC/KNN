@@ -1,5 +1,8 @@
 package de.fhdw.knn.network.activation;
 
+/**
+ * @see ActivationFunction#SWISH
+ */
 class SwishActivationFunction implements ActivationFunction {
 
     @Override
