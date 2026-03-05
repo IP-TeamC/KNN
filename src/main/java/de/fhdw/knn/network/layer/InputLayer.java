@@ -20,6 +20,8 @@ public class InputLayer extends Layer {
 
     /**
      * Erstellt einen InputLayer mit der angegebenen Anzahl Neuronen
+     *
+     * @param neurons Anzahl der Neuronen, die dieser InputLayer haben soll
      */
     public InputLayer(int neurons) {
         this.neurons = new InputNeuron[neurons];

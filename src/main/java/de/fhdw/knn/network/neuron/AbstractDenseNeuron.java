@@ -16,6 +16,9 @@ public abstract class AbstractDenseNeuron extends Neuron {
 
     /**
      * Berechnet die Ausgabe/Aktivierung des Neurons für die gegebenen (noch ungewichteten) Eingaben in dieses Neuron sowie der Ableitung
+     *
+     * @param input Ausgabe/Aktivierung aller Neuronen des vorherigen Layers als Eingabe in dieses Neuron (noch ungewichtet)
+     * @return Ausgabe/Aktivierung dieses Neurons und die Ableitung der Aktivierung
      */
     public abstract OutputDerived compute(double[] input);
 

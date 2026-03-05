@@ -16,9 +16,6 @@ public class DenseNeuron extends AbstractDenseNeuron {
      */
     public ActivationFunction activationFunction;
 
-    /**
-     * @see AbstractDenseNeuron
-     */
     @Override
     public OutputDerived compute(double[] input) {
         double weightedSum = bias;

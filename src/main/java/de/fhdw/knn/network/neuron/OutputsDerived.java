@@ -10,6 +10,8 @@ public record OutputsDerived(double[][] output, double[][] derived) {
 
     /**
      * Liefert die Ausgaben des Output Layers zurück
+     *
+     * @return Ausgaben des Output Layers
      */
     public double[] lastOutput() {
         return output[output.length - 1];

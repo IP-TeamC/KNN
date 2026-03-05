@@ -42,6 +42,7 @@ public class DenseLayer extends Layer {
      * Setzt die Aktivierungsfunktion jedes Neurons im Layer auf die übergebene Aktivierungsfunktion.<br>
      * <strong>Der Layer darf keine anderen Neuronen-Arten außer {@link DenseNeuron} enthalten (z.B. {@link SuperNeuron} ist nicht erlaubt).</strong>
      *
+     * @param activationFunction Aktivierungsfunktion, die für alle Neuronen dieses Layers gesetzt werden soll
      * @return Die Rückgabe kann ignoriert werden, da diese nur sich selbst zurückgibt.
      */
     public DenseLayer withActivationFunction(ActivationFunction activationFunction) {

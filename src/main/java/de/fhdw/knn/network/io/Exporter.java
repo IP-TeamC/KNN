@@ -23,24 +23,28 @@ import java.util.List;
 public class Exporter {
 
     /**
-     * Exportiert das Netzwerk zu einem Byte-Array
+     * Exportiert das Netzwerk zu einem Byte-Array.
+     * Das Format entspricht folgendem:<br><br>
+     * Anzahl Input-Neurons<br>
+     * Anzahl Dense Layer<br>
+     * { je Layer<br>
+     * Anzahl Neuronen<br>
+     * }<br>
+     * { je Neuron je Layer (0 -> n)<br>
+     * ActivationFunction (Integer.MAX_VALUE = Super-Neuron)<br>
+     * { wenn DenseNeuron<br>
+     * BIAS<br>
+     * }<br>
+     * { sonst wenn SuperNeuron<br>
+     * Network-Size<br>
+     * Network<br>
+     * }<br>
+     * (Guard als byte, Weight)... je Connection (0 -> n)<br>
+     * }
+     *
+     * @param network zu exportierendes Netzwerk
+     * @return exportiertes Netzwerk als serialisiertes Byte-Array
      */
-    // Anzahl Input-Neurons
-    // Anzahl Dense Layer
-    // { je Layer
-    // Anzahl Neuronen
-    // }
-    // { je Neuron je Layer (0 -> n)
-    // ActivationFunction (Integer.MAX_VALUE = Super-Neuron)
-    // { wenn DenseNeuron
-    // BIAS
-    // }
-    // { sonst wenn SuperNeuron
-    // Network-Size
-    // Network
-    // }
-    // (Guard, Weight)... je Connection (0 -> n)
-    // }
     public static byte[] export(Network network) {
         List<byte[]> exportedSubs = new LinkedList<>();
         for (DenseLayer layer : network.denseLayers) {
@@ -95,6 +99,9 @@ public class Exporter {
 
     /**
      * Exportiert das Netzwerk und schreibt das Ergebnis als Datei in den übergebenen Pfad
+     *
+     * @param network  zu exportierendes Netzwerk
+     * @param fileName Datei-Pfad, in den das exportierte Netzwerk geschrieben werden soll (Datei wird erstellt, wenn nicht vorhanden - sonst überschrieben)
      */
     @SneakyThrows
     public static void export(Network network, String fileName) {
