@@ -1,6 +1,5 @@
-package de.fhdw.knn.util;
+package de.fhdw.knn.run;
 
-import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.network.Network;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -17,7 +16,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.awt.*;
 import java.util.Arrays;
 
-public class Chart extends ApplicationFrame {
+class Chart extends ApplicationFrame {
 
     public ChartPanel chartPanel;
     public JFreeChart chart;

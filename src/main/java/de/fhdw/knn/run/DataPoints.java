@@ -7,7 +7,6 @@ import de.fhdw.knn.data.Normalizer;
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
-import de.fhdw.knn.network.io.Importer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.trainer.Trainer;

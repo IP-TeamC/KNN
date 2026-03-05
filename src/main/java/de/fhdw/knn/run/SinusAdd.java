@@ -20,7 +20,6 @@ import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
-import de.fhdw.knn.util.Chart;
 
 public class SinusAdd {
 
