@@ -6,7 +6,13 @@ package de.fhdw.knn.trainer.loss;
  */
 public class BinaryCrossEntropyLoss implements LossFunction {
 
+    /**
+     * Konstante zur Vermeidung von NaN-Werten (Logarithmus von 0)
+     */
     private static final Double DELTA_0 = 0.000_000_000_000_1;
+    /**
+     * Konstante zur Vermeidung von NaN-Werten (Logarithmus von 0)
+     */
     private static final Double DELTA_1 = 1.000_000_000_000_1;
 
     @Override

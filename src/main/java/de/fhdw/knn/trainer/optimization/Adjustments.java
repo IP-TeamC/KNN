@@ -18,6 +18,8 @@ public record Adjustments(double[][][] adjustmentsWeight, double[][] adjustments
 
     /**
      * Passt das Netzwerk entsprechend an (Subtraktion der Gradienten)
+     *
+     * @param network anzupassendes Netzwerk
      */
     public void adjust(Network network) {
         IntStream.range(0, network.denseLayers.length).parallel().forEach(layer -> {

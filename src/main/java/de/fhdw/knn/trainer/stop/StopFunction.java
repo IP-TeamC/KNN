@@ -15,6 +15,7 @@ public interface StopFunction {
     /**
      * Diese Methode war nach dem Durchlauf einer Epoche mit dem aktuellen Total-Loss aufgerufen.
      *
+     * @param loss Verlust der zuletzt abgeschlossenen Epoche
      * @return true, wenn das Training jetzt beendet werden soll
      */
     boolean isFinished(double loss);

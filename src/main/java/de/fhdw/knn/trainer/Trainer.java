@@ -23,15 +23,40 @@ import java.util.stream.IntStream;
  */
 public class Trainer {
 
+    /**
+     * Zu trainierendes Netzwerk
+     */
     private final Network network;
+    /**
+     * Maximale Anzahl zu trainierender Epochen
+     */
     private final int maxEpochs;
+    /**
+     * Gibt an, ob die Reihenfolge der Zeilen im Datensatz vor jeder Epoche zufällig durchmischt werden soll
+     */
     private final boolean shuffleEpoch;
+    /**
+     * Größe der zu berechnenden Gewichts-/Bias-Anpassungen vor einer tatsächlichen Anpassung (z.B. für Mini-Batching, wenn &gt;1)
+     */
     private final int batchSize;
 
+    /**
+     * Zu verwendende Verlustfunktion (nur zur Ausgabe des aktuellen Verlusts/Loss und für die StopFunction)<br>
+     * Kann null sein, um die Ausgabe zu deaktivieren
+     */
     private final LossFunction lossFunction;
+    /**
+     * Zu verwendende Funktion für das vorzeitige Beenden des Trainings
+     */
     private final StopFunction stopFunction;
+    /**
+     * Zu verwendende Optimierungsfunktion (nur Gradient Descent ist bisher verfügbar)
+     */
     private final OptimizationFunction optimizationFunction;
 
+    /**
+     * Verwaltung der Visualisierung während des Trainings
+     */
     @Setter
     private ViewManager viewManager;
 
@@ -42,7 +67,7 @@ public class Trainer {
      * @param maxEpochs            die maximale Anzahl Epochen, für die trainiert werden soll
      * @param shuffleEpoch         gibt an, ob die Reihenfolge der Zeilen im Datensatz nach jeder Epoche zufällig durchmischt werden soll (empfohlen)
      * @param batchSize            Anzahl gleichzeitig zu verarbeitender Zeilen des Datensatzes ohne Anpassung nach jeder Zeile (Mini-Batching)
-     * @param lossFunction         Verlustfunktion für die Ausgabe des Loss (nicht zum Training selbst, diese muss in der OptimizationFunction definiert werden)
+     * @param lossFunction         Verlustfunktion für die Ausgabe des Loss und für die StopFunction (nicht zum Training selbst, diese muss in der OptimizationFunction definiert werden)
      * @param stopFunction         Vorzeitige Beendigung des Trainings
      * @param optimizationFunction Optimierungsfunktion (in der Regel {@link GradientDescent} )
      * @see Trainer
@@ -58,10 +83,10 @@ public class Trainer {
      * @param maxEpochs            die maximale Anzahl Epochen, für die trainiert werden soll
      * @param shuffleEpoch         gibt an, ob die Reihenfolge der Zeilen im Datensatz nach jeder Epoche zufällig durchmischt werden soll (empfohlen)
      * @param batchSize            Anzahl gleichzeitig zu verarbeitender Zeilen des Datensatzes ohne Anpassung nach jeder Zeile (Mini-Batching)
-     * @param lossFunction         Verlustfunktion für die Ausgabe des Loss (nicht zum Training selbst, diese muss in der OptimizationFunction definiert werden)
+     * @param lossFunction         Verlustfunktion für die Ausgabe des Loss und für die StopFunction (nicht zum Training selbst, diese muss in der OptimizationFunction definiert werden)
      * @param stopFunction         Vorzeitige Beendigung des Trainings
      * @param optimizationFunction Optimierungsfunktion (in der Regel {@link GradientDescent} )
-     * @param viewManager      Visualisierung des Netzwerks während des Trainings
+     * @param viewManager          Visualisierung des Netzwerks während des Trainings
      * @see Trainer
      */
     public Trainer(Network network, int maxEpochs, boolean shuffleEpoch, int batchSize, LossFunction lossFunction, StopFunction stopFunction, OptimizationFunction optimizationFunction, ViewManager viewManager) {
@@ -76,7 +101,10 @@ public class Trainer {
     }
 
     /**
-     * Führt für den gegebenen Datensatz das gesamte Training entsprechend der eigenen Parameter durch
+     * Führt für den gegebenen Datensatz das gesamte Training entsprechend der eigenen Parameter und inkl. Anpassung des Netzwerks durch
+     *
+     * @param data Gesamter Trainings-Datensatz
+     * @see Trainer#train(DataSet, String, int)
      */
     public void train(DataSet data) {
         train(data, null, 0);
@@ -84,7 +112,8 @@ public class Trainer {
 
     /**
      * Führt für den gegebenen Datensatz das gesamte Training entsprechend der eigenen Parameter durch.<br>
-     * Export des KNN in regelmäßigen Abstände.
+     * Das tatsächliche Training einer Epoche findet in {@link Trainer#trainEpoch(DataSet)} statt.<br>
+     * Bei export != null findet ein Export des KNN in regelmäßigen Abständen statt.
      *
      * @param export Dateipfad des exportierten KNNs (mit %d als Platzhalter für die aktuelle Epoche)
      * @param mod    Abstand zwischen Exporten (exportiert immer dann, wenn die aktuelle Epoche durch mod teilbar ist)
@@ -112,6 +141,13 @@ public class Trainer {
         }
     }
 
+    /**
+     * Training des Datensatzes für eine Epoche.
+     * Berechnet für jede Zeile des Datensatzes die Anpassungen des Netzwerks und wendet diese an (unter Beachtung der batchSize).
+     *
+     * @param data Trainings-Datensatz
+     * @return Mit der LossFunction ermittelter Verlust für den gesamten Datensatz
+     */
     private double trainEpoch(DataSet data) {
         if (batchSize > 1) {
             Adjustments[] adjustments = new Adjustments[batchSize];

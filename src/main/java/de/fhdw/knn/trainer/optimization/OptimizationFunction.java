@@ -25,6 +25,7 @@ public interface OptimizationFunction {
      * @param input     Eingabe-Zeile aus dem Datensatz
      * @param output    Ausgabe-Zeile aus dem Datensatz
      * @param batchSize Batch-Size für z.B. Mini-Batching (Learning Rate wird durch batchSize geteilt)
+     * @return berechnete Anpassungen des Netzwerks für die übergebene Zeile des Datensatzes
      */
     Adjustments compute(Network network, double[] input, double[] output, int batchSize);
 

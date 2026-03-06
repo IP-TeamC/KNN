@@ -31,10 +31,12 @@ public class GradientDescent implements OptimizationFunction {
     private double learningRate;
 
     /**
+     * Erzeugt eine Instanz des Gradient Descent Algorithmus
+     *
+     * @param lossFunction         Verlustfunktion für die Ermittlung des Gradienten in der Backpropagation
+     * @param learningRateFunction Funktion zur Bestimmung der Learning Rate für jede Epoche
      * @see GradientDescent
      * @see OptimizationFunction
-     * @see LossFunction
-     * @see LearningRateFunction
      */
     public GradientDescent(LossFunction lossFunction, LearningRateFunction learningRateFunction) {
         this.lossFunction = lossFunction;

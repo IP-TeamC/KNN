@@ -9,10 +9,12 @@ package de.fhdw.knn.trainer.learningrate;
 public interface LearningRateFunction {
 
     /**
-     * Anhand der aktuellen Epoche und des Total-Loss wird die
+     * Anhand der aktuellen Epoche und des Total-Loss wird die Learning Rate bestimmt.<br>
+     * Diese Methode wird zu Beginn jeder Epoche einmalig aufgerufen.
      *
      * @param epoch        Aktuelle Epoche (beginnt mit 1)
      * @param previousLoss Ergebnis der Verlustfunktion über den gesamten Trainings-Datensatz in der vorherigen Epoche (NaN in 1. Epoche)
+     * @return Learning Rate für die aktuelle Epoche
      * @see LearningRateFunction
      */
     double calc(int epoch, double previousLoss);

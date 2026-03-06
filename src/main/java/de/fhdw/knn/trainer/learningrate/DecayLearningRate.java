@@ -15,6 +15,10 @@ public class DecayLearningRate implements LearningRateFunction {
     private final double decay;
 
     /**
+     * Definiert eine exponentiell fallende Learning Rate
+     *
+     * @param learningRate Initiale Learning Rate
+     * @param decay        Faktor, mit dem die Learning Rate jede Epoche multipliziert wird
      * @see DecayLearningRate
      */
     public DecayLearningRate(double learningRate, double decay) {

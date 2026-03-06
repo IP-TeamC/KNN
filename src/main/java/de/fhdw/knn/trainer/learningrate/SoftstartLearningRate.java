@@ -19,6 +19,8 @@ public class SoftstartLearningRate implements LearningRateFunction {
     private final int softEpochs;
 
     /**
+     * Definiert eine zunächst abgeschwächte Learning Rate
+     *
      * @param learningRate Learning Rate nach Ablauf von softEpochs
      * @param softness     Faktor, mit dem die Learning Rate während softEpochs multipliziert wird
      * @param softEpochs   Anzahl der Epochen, für die die Learning Rate mit softness multipliziert wird

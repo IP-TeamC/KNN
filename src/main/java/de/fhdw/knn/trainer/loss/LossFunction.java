@@ -23,19 +23,32 @@ public interface LossFunction {
     LossFunction MEAN_ABSOLUTE_ERROR = new MeanAbsoluteError();
 
     /**
-     * Berechnet den mittleren Verlust über alle Output-Neuronen für einen Datensatz
+     * Berechnet den mittleren Verlust über alle Output-Neuronen für eine Zeile des Datensatzes
+     *
+     * @param expected  erwartete Ausgaben aller Output-Neuronen für diese Zeile des Tranings-Datensatzes
+     * @param predicted produzierte Ausgaben (Feedforward) aller Output-Neuronen für diese Zeile des Tranings-Datensatzes
+     * @return Verlust/Loss für diese Zeile des Datensatzes
      */
     double loss(double[] expected, double[] predicted);
 
     /**
-     * Berechnet die Ableitung der Verlust-Funktion für ein Output-Neuron für einen Datensatz
+     * Berechnet die Ableitung der Verlust-Funktion für ein Output-Neuron für eine Zeile des Datensatzes
+     *
+     * @param expected  erwartete Ausgaben aller Output-Neuronen für diese Zeile des Tranings-Datensatzes
+     * @param predicted produzierte Ausgaben (Feedforward) aller Output-Neuronen für diese Zeile des Tranings-Datensatzes
+     * @param neuron    Index des betrachteten Output-Neurons
+     * @return Ableitung der Verlustfunktion für diese Zeile des Datensatzes für ein Output-Neuron
      */
     double derivedLoss(double[] expected, double[] predicted, int neuron);
 
     /**
-     * Berechnet den mittleren Verlust über alle Output-Neuronen und mehrere Datensätze.<br>
+     * Berechnet den mittleren Verlust über alle Output-Neuronen und den gesamten Datensatz.<br>
      * Diese Methode muss in der Regel für eine Implementierung dieses Interfaces nicht implementiert werden,
      * sondern wird automatisch aus {@link LossFunction#loss(double[], double[])} abgeleitet.
+     *
+     * @param expected  Für den gesamten Datensatz erwartete Ausgaben aller Output-Neuronen
+     * @param predicted Für den gesamten Datensatz produzierte Ausgaben (Feedback) aller Output-Neuronen
+     * @return Mittlerer Verlust/Loss über alle Zeilen des Datensatzes
      */
     default double totalLoss(double[][] expected, double[][] predicted) {
         double sum = 0;
