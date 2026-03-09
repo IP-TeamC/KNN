@@ -12,6 +12,11 @@ public class MinMaxNormalizer implements Normalizer {
     private double[] dataMax;
 
     /**
+     * Erzeugt aus Min- und Max-Wert einen MinMaxNormalizer.
+     *
+     * @param min Minimum für den MinMaxNormalizer
+     * @param max Maximum für den MinMaxNormalizer
+     *
      * @see MinMaxNormalizer
      */
     public MinMaxNormalizer(double min, double max) {
@@ -22,7 +27,7 @@ public class MinMaxNormalizer implements Normalizer {
     /**
      * Normalisiert die Daten.
      *
-     * @param data wird dabei verändert
+     * @param data Daten, die normalisiert werden
      */
     @Override
     public void normalize(double[][] data) {
@@ -53,7 +58,7 @@ public class MinMaxNormalizer implements Normalizer {
     /**
      * Denormalisiert die Daten.
      *
-     * @param data wird dabei verändert
+     * @param data Daten, die denormalisiert werden
      */
     @Override
     public void denormalize(double[][] data) {

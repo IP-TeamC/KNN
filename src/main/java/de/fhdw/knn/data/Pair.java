@@ -15,6 +15,11 @@ public class Pair<X, Y> {
     public Y y;
 
     /**
+     * Erzeugt ein Pair aus zwei beliebigen Datentypen.
+     *
+     * @param x Beliebige Werte
+     * @param y Beliebige Werte
+     *
      * @see Pair
      */
     public Pair(X x, Y y) {

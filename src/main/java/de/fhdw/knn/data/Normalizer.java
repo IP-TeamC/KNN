@@ -8,14 +8,14 @@ public interface Normalizer {
     /**
      * Normalisiert die Daten.
      *
-     * @param data kann dabei verändert werden
+     * @param data Zu normalisierende Daten. Werden dabei verändert
      */
     void normalize(double[][] data);
 
     /**
      * Denormalisiert die Daten.
      *
-     * @param data kann dabei verändert werden
+     * @param data Zu denormalisierende Daten. Werden dabei verändert
      */
     void denormalize(double[][] data);
 
