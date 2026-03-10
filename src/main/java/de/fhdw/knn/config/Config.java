@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 /**
- * Ausführbare Konfiguration mithilfe einer TOML-Datei
+ * Ausführbare Konfiguration mithilfe einer TOML-Datei.
  */
 @Data
 public class Config implements TomlSerializable {
@@ -34,7 +34,9 @@ public class Config implements TomlSerializable {
     private ConfVisualization visualization;
 
     /**
-     * Führt das Programm (Daten einlesen, Netzwerk erzeugen/trainieren/evaluieren) entsprechend der Konfiguration aus
+     * Führt das Programm (Daten einlesen, Netzwerk erzeugen/trainieren/evaluieren) entsprechend der Konfiguration aus.
+     *
+     * @throws IOException Wird geworfen, wenn beim Einlesen der Daten oder bei Operationen auf dem Netzwerk ein Fehler auftritt.
      */
     public void execute() throws IOException {
         TrainTestSplit data = getData() != null ? getData().create() : new TrainTestSplit(null, null);
@@ -94,6 +96,15 @@ public class Config implements TomlSerializable {
         return jtoml.fromToml(Config.class, rawConf);
     }
 
+    /**
+     * Ruft den Wert eines statischen Feldes aus einer angegebenen Klasse ab.
+     *
+     * @param <T>       Der erwartete Typ des Werts des statischen Felds.
+     * @param clazz     Die Klasse, aus der das statische Feld abgerufen werden soll.
+     * @param fieldName Der Name des statischen Feldes, auf das zugegriffen werden soll.
+     *
+     * @return Der Wert des statischen Feldes, in den angegebenen Typ umgewandelt.
+     */
     @SuppressWarnings("unchecked")
     @SneakyThrows
     public static <T> T getStaticField(Class<T> clazz, String fieldName) {
