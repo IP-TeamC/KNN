@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Die Klasse SankeyData bietet Funktionalität zur Umwandlung einer neuronalen Netzwerkstruktur
+ * Die Klasse {@code SankeyData} bietet Funktionalität zur Umwandlung einer neuronalen Netzwerkstruktur
  * in eine Liste von {@code PlotItem}-Instanzen, die zur Erstellung eines Sankey-Diagramms geeignet sind.
  * Sie verarbeitet die Schichten des neuronalen Netzwerks und berechnet die entsprechende visuelle
- * Darstellung, indem sie Neuronen und deren Verbindungen auf {@code PlotItem}s abbildet.
+ * Darstellung, indem sie Neuronen und deren Verbindungen auf {@code PlotItems} abbildet.
  */
 public class SankeyData {
 
@@ -152,7 +152,7 @@ public class SankeyData {
      *
      * @param layer Der Index der Ebene, für die die Farbe bestimmt werden soll.
      * @param colors Ein Array von {@code Color}-Objekten, die die verfügbaren Farben darstellen, aus denen ausgewählt werden kann.
-     * @param totalLayers Die Gesamtzahl der Ebenen in der Struktur, die zur Skalierung der Farbauswahl verwendet wird.
+     * @param totalLayers Die Gesamtzahl der Ebenen in der Struktur, die zur Skalierung der Farbauswahl verwendet werden.
      *
      * @return Die {@code Farbe}, die dem angegebenen Layer-Index entspricht.
      *

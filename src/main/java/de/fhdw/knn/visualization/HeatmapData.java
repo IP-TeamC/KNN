@@ -5,17 +5,51 @@ import de.fhdw.knn.network.layer.DenseLayer;
 
 import java.util.Arrays;
 
+/**
+ * Stellt Daten dar, die für die Visualisierung einer Heatmap der Gewichte eines neuronalen Netzwerks erforderlich sind.
+ */
 public class HeatmapData {
+
+    /**
+     * Die Netzwerkinstanz, die die Struktur eines neuronalen Netzwerks darstellt.
+     */
     private final Network network;
+    /**
+     * Enthält die Gesamtzahl der Neuronen über alle Schichten des zugehörigen neuronalen Netzwerks.
+     */
     private final int totalNeurons;
+    /**
+     * Stellt die Startindizes der Neuronen jeder Schicht in einem Array aller Neuronen
+     * über alle Schichten im Netzwerk dar.
+     *
+     * <p>Jede Schicht im Netzwerk besteht aus einem zusammenhängenden Block von Neuronen.
+     * Das Array {@code layerOffsets} speichert den Startindex jedes Blocks einer Ebene.
+     *
+     * @see HeatmapData#computeLayerOffsets()
+     */
     private final int[] layerOffsets;
 
+    /**
+     * Erstellt eine neue {@code HeatmapData}-Instanz für das angegebene Netzwerk.
+     *
+     * @param network Das neuronale Netzwerk, für das die Heatmap-Daten generiert werden sollen.
+     */
     public HeatmapData(Network network) {
         this.network = network;
         this.totalNeurons = calculateTotalNeurons();
         this.layerOffsets = computeLayerOffsets();
     }
 
+    /**
+     * Erstellt eine vollständige Gewichtsmatrix, die die Gewichte zwischen allen Neuronen im Netzwerk darstellt.
+     * Jedes Element in der Matrix bezeichnet das Gewicht von einem Quellneuron (Zeilenindex) zu einem Zielneuron (Spaltenindex).
+     * Nicht verbundene Neuronenpaare werden mit {@code Double.NaN} dargestellt.
+     *
+     * @return Ein 2D-Array von Double-Werten, das die vollständige Gewichtsmatrix darstellt, wobei die Zeilen die Quellneuronen und
+     *         die Spalten die Zielneuronen repräsentieren. Nicht verbundene Neuronen haben den Wert {@code Double.NaN}.
+     *
+     * @see Double#NaN
+     */
     public double[][] buildFullWeightMatrix() {
         double[][] matrix = new double[this.totalNeurons][this.totalNeurons];
 
@@ -47,6 +81,11 @@ public class HeatmapData {
         return matrix;
     }
 
+    /**
+     * Erzeugt ein Array von Neuronenbezeichnungen, die alle Neuronen im Netzwerk repräsentieren.
+     *
+     * @return Ein Array von Strings, wobei jedes Element der Bezeichnung eines Neurons entspricht.
+     */
     public String[] getNeuronLabels() {
         String[] labels = new String[this.totalNeurons];
         int globalIndex = 0;
@@ -68,6 +107,12 @@ public class HeatmapData {
         return labels;
     }
 
+    /**
+     * Berechnet die Gesamtanzahl der Neuronen im Netzwerk, indem die Neuronen aus dem Input-Layer
+     * sowie allen Dense-Layern summiert werden.
+     *
+     * @return Die Gesamtanzahl der Neuronen im Netzwerk.
+     */
     private int calculateTotalNeurons() {
         int sum = this.network.inputLayer.neurons.length;
         for (DenseLayer layer : this.network.denseLayers) {
@@ -76,7 +121,15 @@ public class HeatmapData {
         return sum;
     }
 
-    // Neuronen haben globale Indizes, hier kurz berechnen, bei welchem Index ein neuer Layer beginnt
+    /**
+     * Berechnet die Startindizes der Neuronen jeder Schicht.
+     *
+     * @return Ein Array von {@code Integer}, wobei jedes Element den Startindex der Neuronen einer Schicht darstellt.
+     *         Das erste Element ist immer 0 (Beginn der Eingabeschicht), und die nachfolgenden Elemente entsprechen
+     *         der kumulativen Anzahl von Neuronen bis zu jeder Schicht.
+     *
+     * @see HeatmapData#layerOffsets
+     */
     private int[] computeLayerOffsets() {
         DenseLayer[] layers = this.network.denseLayers;
 
