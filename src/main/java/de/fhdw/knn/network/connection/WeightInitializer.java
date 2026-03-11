@@ -43,6 +43,7 @@ public interface WeightInitializer {
      * @param random  Zufallsgenerator
      * @param network zur Bestimmung der Eigenschaften des Netzwerks
      * @param layer   Layer, in dem sich das Neuron befindet, zu dem die Verbindung mit dem zu bestimmenden Gewicht erstellt wird
+     * @return Gewicht für die nächste zu initialisierende Verbindung
      */
     double nextWeight(Random random, Network network, int layer);
 

@@ -74,6 +74,7 @@ public interface ActivationFunction {
      * Berechnet die Aktivierung eines Neurons
      *
      * @param input gewichtete Summe der Verbindungen ins Neuron
+     * @return Aktivierung/Ausgabe des Neurons
      * @see ActivationFunction
      */
     double calc(double input);
@@ -83,6 +84,7 @@ public interface ActivationFunction {
      *
      * @param input gewichtete Summe der Verbindungen ins Neuron
      * @param calc  bereits berechnete Aktivierung des Neurons ({@link ActivationFunction#calc(double)})
+     * @return Ableitung der Aktivierungsfunktion des Neurons für die gegebene Eingabe
      * @see ActivationFunction
      */
     double derived(double input, double calc);

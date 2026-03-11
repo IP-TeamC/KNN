@@ -5,6 +5,12 @@ package de.fhdw.knn.network.activation;
  */
 class TanhActivationFunction implements ActivationFunction {
 
+    /**
+     * Die ActivationFunction ist zustandslos und es sollten keine weiteren Instanzen außerhalb von {@link ActivationFunction} erzeugt werden
+     */
+    TanhActivationFunction() {
+    }
+
     @Override
     public double calc(double input) {
         return Math.tanh(input);

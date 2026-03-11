@@ -7,6 +7,12 @@ package de.fhdw.knn.trainer.loss;
  */
 public class MeanSquaredError implements LossFunction {
 
+    /**
+     * Die LossFunction ist zustandslos und es sollten keine weiteren Instanzen außerhalb von {@link LossFunction} erzeugt werden
+     */
+    MeanSquaredError() {
+    }
+
     @Override
     public double loss(double[] expected, double[] predicted) {
         double sum = 0;

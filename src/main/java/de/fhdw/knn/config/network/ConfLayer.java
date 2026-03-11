@@ -21,6 +21,12 @@ import lombok.SneakyThrows;
 public class ConfLayer implements TomlSerializable {
 
     /**
+     * Objekte dieser Klasse sollen nicht manuell instanziiert werden (deshalb package private)
+     */
+    ConfLayer() {
+    }
+
+    /**
      * Stellt die Anzahl der Neuronen in einer bestimmten {@code DenseLayer} dar.
      *
      * @see ConfLayer#create()

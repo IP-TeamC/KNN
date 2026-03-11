@@ -5,4 +5,12 @@ package de.fhdw.knn.network.neuron;
  */
 public class InputNeuron extends Neuron {
 
+    /**
+     * Erzeugt eine neue InputNeuron-Instanz (tut nichts)
+     *
+     * @see InputNeuron
+     */
+    public InputNeuron() {
+    }
+
 }

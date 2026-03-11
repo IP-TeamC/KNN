@@ -20,6 +20,12 @@ import java.util.function.Consumer;
 public class Importer {
 
     /**
+     * Für jeden Import muss eine neue Instanz des Importers erzeugt werden (stateful)
+     */
+    public Importer() {
+    }
+
+    /**
      * Verwendung des State-Pattern zum Deserialisieren einzelner Abschnitte des exportierten Netzwerks
      */
     private Consumer<ByteBuffer> state = this::createInputLayer;
@@ -82,6 +88,9 @@ public class Importer {
      * }<br>
      * (Guard als byte, Weight)... je Connection (0 -> n)<br>
      * }
+     *
+     * @param data binäres Datenformat des KNN (mithilfe von {@link Exporter} erzeugt)
+     * @return importiertes Netzwerk
      */
     public Network load(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data);

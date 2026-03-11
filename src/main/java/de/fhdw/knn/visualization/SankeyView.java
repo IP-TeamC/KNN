@@ -20,6 +20,14 @@ import java.util.List;
 public class SankeyView {
 
     /**
+     * Erzeugt eine Instanz von SankeyView
+     *
+     * @see SankeyView
+     */
+    public SankeyView() {
+    }
+
+    /**
      * Stellt die primäre JavaFX Stage für die Anzeige des Sankey-Diagramms dar.
      * Diese Stufe wird initialisiert und angezeigt, wenn die Methode {@code show} aufgerufen wird,
      * und dient als Container für das Sankey-Diagramm und die zugehörigen UI-Elemente.
@@ -83,7 +91,7 @@ public class SankeyView {
      * Aktualisiert das Sankey-Diagramm mit den neuesten Daten aus dem Netzwerk.
      *
      * @param network Das Netzwerk, dessen Daten im Sankey-Diagramm visualisiert werden.
-     * @param epoch Die aktuelle Epochennummer, die im Label angezeigt werden soll.
+     * @param epoch   Die aktuelle Epochennummer, die im Label angezeigt werden soll.
      */
     public void update(Network network, int epoch) {
         List<PlotItem> items = SankeyData.convertNetworkToItems(network);

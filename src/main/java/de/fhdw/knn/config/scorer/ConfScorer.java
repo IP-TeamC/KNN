@@ -25,6 +25,12 @@ import java.util.Optional;
 public class ConfScorer implements TomlSerializable {
 
     /**
+     * Objekte dieser Klasse sollen nicht manuell instanziiert werden (deshalb package private)
+     */
+    ConfScorer() {
+    }
+
+    /**
      * Stellt die Verlustfunktion dar, die für die Evaluierung des neuronalen Netzwerks verwendet wird.
      *
      * @see ConfScorer#create(Network)
@@ -44,18 +50,17 @@ public class ConfScorer implements TomlSerializable {
      *
      * @param network das neuronale Netzwerk, das vom {@code Scorer} für die Bewertung verwendet wird.
      * @return ein {@code Optional}, das den erstellten {@code Scorer} enthält, wenn der Typ erkannt wird;
-     *         andernfalls ein leeres {@code Optional}.
+     * andernfalls ein leeres {@code Optional}.
      * @throws IllegalArgumentException wenn der angegebene Typ unbekannt ist.
-     *
      * @see Scorer
      */
     public Optional<Scorer> create(Network network) {
         //noinspection SwitchStatementWithTooFewBranches
         return Optional.ofNullable(type).map(type ->
-            switch (type) {
-                case "ClassificationScorer" -> new ClassificationScorer(network);
-                default -> throw new IllegalArgumentException("Unknown scorer type: " + type);
-            }
+                switch (type) {
+                    case "ClassificationScorer" -> new ClassificationScorer(network);
+                    default -> throw new IllegalArgumentException("Unknown scorer type: " + type);
+                }
         );
     }
 
@@ -63,8 +68,7 @@ public class ConfScorer implements TomlSerializable {
      * Ruft die für den {@code Scorer} konfigurierte Verlustfunktion ab.
      *
      * @return ein {@code Optional}, das die aufgelöste {@code LossFunction} enthält, falls verfügbar;
-     *         andernfalls ein leeres {@code Optional}.
-     *
+     * andernfalls ein leeres {@code Optional}.
      * @see LossFunction
      */
     public Optional<LossFunction> getLossFunction() {

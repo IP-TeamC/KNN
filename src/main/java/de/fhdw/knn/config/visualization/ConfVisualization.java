@@ -19,6 +19,12 @@ import lombok.Data;
 public class ConfVisualization implements TomlSerializable {
 
     /**
+     * Objekte dieser Klasse sollen nicht manuell instanziiert werden (deshalb package private)
+     */
+    ConfVisualization() {
+    }
+
+    /**
      * Gibt an, nach wie vielen Epochen eine neue Heatmap generiert werden soll.
      *
      * <p>{@code 0} bedeutet, dass keine Heatmaps generiert werden sollen.
@@ -44,8 +50,7 @@ public class ConfVisualization implements TomlSerializable {
      *
      * @param network die {@code Network}-Instanz, die zum Initialisieren der Visualisierungen verwendet wird.
      * @return eine {@code ViewManager}-Instanz, die mit den Heatmap- und Sankey-Intervallen konfiguriert ist;
-     *         oder {@code null}, wenn die Visualisierung deaktiviert ist.
-     *
+     * oder {@code null}, wenn die Visualisierung deaktiviert ist.
      * @see ViewManager
      */
     public ViewManager create(Network network) {
@@ -59,7 +64,7 @@ public class ConfVisualization implements TomlSerializable {
      * Legt fest, ob die Visualisierung basierend auf der Konfiguration der Heatmap- und Sankey-Intervalle aktiviert ist.
      *
      * @return {@code true}, wenn entweder das Heatmap-Intervall oder das Sankey-Intervall größer als 0 ist,
-     *         was bedeutet, dass mindestens eine Art der Visualisierung aktiviert ist; andernfalls {@code false}.
+     * was bedeutet, dass mindestens eine Art der Visualisierung aktiviert ist; andernfalls {@code false}.
      */
     public boolean isEnabled() {
         return heatmapInterval > 0 || sankeyInterval > 0;

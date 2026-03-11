@@ -115,6 +115,7 @@ public class Trainer {
      * Das tatsächliche Training einer Epoche findet in {@link Trainer#trainEpoch(DataSet)} statt.<br>
      * Bei export != null findet ein Export des KNN in regelmäßigen Abständen statt.
      *
+     * @param data   Gesamter Trainings-Datensatz
      * @param export Dateipfad des exportierten KNNs (mit %d als Platzhalter für die aktuelle Epoche)
      * @param mod    Abstand zwischen Exporten (exportiert immer dann, wenn die aktuelle Epoche durch mod teilbar ist)
      */

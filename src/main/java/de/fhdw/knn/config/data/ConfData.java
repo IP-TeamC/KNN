@@ -19,6 +19,12 @@ import java.io.IOException;
 public class ConfData implements TomlSerializable {
 
     /**
+     * Objekte dieser Klasse sollen nicht manuell instanziiert werden (deshalb package private)
+     */
+    ConfData() {
+    }
+
+    /**
      * Der Pfad oder Dateiname, der auf die zu verarbeitende CSV-Datei verweist.
      *
      * <p>Diese Datei dient als Eingabequelle für Trainings- und Testdatensätze,
@@ -92,7 +98,6 @@ public class ConfData implements TomlSerializable {
      *
      * @return ein {@code TrainTestSplit} Objekt, dass die Trainings- und Testdatensätze enthält.
      * @throws IOException wenn beim Lesen der CSV-Datei ein Fehler auftritt.
-     *
      * @see TrainTestSplit
      */
     public TrainTestSplit create() throws IOException {

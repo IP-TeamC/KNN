@@ -8,6 +8,12 @@ import de.fhdw.knn.network.activation.ActivationFunction;
 public class DenseNeuron extends AbstractDenseNeuron {
 
     /**
+     * Erzeugt ein DenseNeuron mit initialem Bias 0.000_000_000_1, ohne Aktivierungsfunktion (null) und ohne Verbindungen
+     */
+    public DenseNeuron() {
+    }
+
+    /**
      * Der Bias wird konstant auf die gewichtete Summe der eingehenden Verbindungen addiert
      */
     public double bias = 0.000_000_000_1;

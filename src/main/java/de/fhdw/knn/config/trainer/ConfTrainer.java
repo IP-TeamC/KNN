@@ -28,6 +28,12 @@ import java.util.Optional;
 public class ConfTrainer implements TomlSerializable {
 
     /**
+     * Objekte dieser Klasse sollen nicht manuell instanziiert werden (deshalb package private)
+     */
+    ConfTrainer() {
+    }
+
+    /**
      * Stellt die Verlustfunktion dar, die während des Trainings verwendet werden soll.
      *
      * @see ConfTrainer#create(Network)

@@ -20,6 +20,12 @@ import lombok.Data;
 public class ConfEarlyStopping implements TomlSerializable {
 
     /**
+     * Objekte dieser Klasse sollen nicht manuell instanziiert werden (deshalb package private)
+     */
+    ConfEarlyStopping() {
+    }
+
+    /**
      * Stellt die minimale Verbesserung des Verlusts seit der letzten Epoche ein
      *
      * @see ConfEarlyStopping#create()

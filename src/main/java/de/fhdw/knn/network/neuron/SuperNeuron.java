@@ -6,6 +6,12 @@ import de.fhdw.knn.network.connection.Connection;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.layer.InputLayer;
 
+/**
+ * Ein SuperNeuron enthält intern ein gesamtes KNN und funktioniert im Grunde ähnlich zu einer komplexen Aktivierungsfunktion.
+ * Hiermit können vortrainierte Modelle in einem neuen Netzwerk verwendet werden, wobei ein Adapter notwendig sein kann.
+ *
+ * @see SuperNeuron#SuperNeuron(Network, double[], double[][])
+ */
 public class SuperNeuron extends AbstractDenseNeuron {
 
     /**

@@ -27,6 +27,12 @@ import java.util.Optional;
 @Data
 public class Config implements TomlSerializable {
 
+    /**
+     * Objekte dieser Klasse sollen nicht manuell instanziiert werden (deshalb package private)
+     */
+    Config() {
+    }
+
     private ConfData data;
     private ConfNetwork network;
     private ConfTrainer trainer;
@@ -102,7 +108,6 @@ public class Config implements TomlSerializable {
      * @param <T>       Der erwartete Typ des Werts des statischen Felds.
      * @param clazz     Die Klasse, aus der das statische Feld abgerufen werden soll.
      * @param fieldName Der Name des statischen Feldes, auf das zugegriffen werden soll.
-     *
      * @return Der Wert des statischen Feldes, in den angegebenen Typ umgewandelt.
      */
     @SuppressWarnings("unchecked")

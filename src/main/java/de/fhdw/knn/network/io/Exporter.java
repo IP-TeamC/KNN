@@ -23,6 +23,13 @@ import java.util.List;
 public class Exporter {
 
     /**
+     * Wird nie instanziiert (deshalb private)
+     */
+    private Exporter() {
+
+    }
+
+    /**
      * Exportiert das Netzwerk zu einem Byte-Array.
      * Das Format entspricht folgendem:<br><br>
      * Anzahl Input-Neurons<br>

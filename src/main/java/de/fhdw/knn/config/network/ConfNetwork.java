@@ -27,6 +27,12 @@ import java.util.Optional;
 public class ConfNetwork implements TomlSerializable {
 
     /**
+     * Objekte dieser Klasse sollen nicht manuell instanziiert werden (deshalb package private)
+     */
+    ConfNetwork() {
+    }
+
+    /**
      * Stellt den Pfad zu einer externen Datei dar, aus der ein vorkonfiguriertes neuronales Netzwerk
      * importiert werden kann.
      *

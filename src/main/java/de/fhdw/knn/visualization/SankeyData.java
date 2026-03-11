@@ -20,6 +20,12 @@ import java.util.List;
 public class SankeyData {
 
     /**
+     * Wird nie instanziiert
+     */
+    private SankeyData() {
+    }
+
+    /**
      * Stellt den Schwellenwert dar, der zur Bestimmung der Signifikanz bestimmter Verbindungen
      * im Zusammenhang mit Sankeyplot-Visualisierungen verwendet wird.
      *
@@ -33,9 +39,7 @@ public class SankeyData {
      *
      * @param network Das neuronale Netzwerk, das Eingabe-, versteckte und Ausgabeschichten enthält,
      *                die in {@code PlotItems} umgewandelt werden sollen.
-     *
      * @return Eine Liste von {@code PlotItems}, die alle Schichten (Eingabe, versteckt und Ausgabe) des angegebenen Netzwerks darstellen.
-     *
      * @see PlotItem
      */
     public static List<PlotItem> convertNetworkToItems(Network network) {
@@ -127,7 +131,6 @@ public class SankeyData {
      * @param rightLayer Die {@code DenseLayer}, die die Neuronen der rechten Schicht enthält,
      *                   einschließlich ihrer eingehenden Verbindungsgewichte von den Neuronen in der
      *                   linken Schicht.
-     *
      * @see PlotItem
      * @see DenseLayer
      * @see SankeyData#THRESHOLD
@@ -150,12 +153,10 @@ public class SankeyData {
     /**
      * Bestimmt die Farbe für eine bestimmte Ebene basierend auf dem angegebenen Farbarray und der Gesamtzahl der Ebenen.
      *
-     * @param layer Der Index der Ebene, für die die Farbe bestimmt werden soll.
-     * @param colors Ein Array von {@code Color}-Objekten, die die verfügbaren Farben darstellen, aus denen ausgewählt werden kann.
+     * @param layer       Der Index der Ebene, für die die Farbe bestimmt werden soll.
+     * @param colors      Ein Array von {@code Color}-Objekten, die die verfügbaren Farben darstellen, aus denen ausgewählt werden kann.
      * @param totalLayers Die Gesamtzahl der Ebenen in der Struktur, die zur Skalierung der Farbauswahl verwendet werden.
-     *
      * @return Die {@code Farbe}, die dem angegebenen Layer-Index entspricht.
-     *
      * @see Color
      */
     private static Color getColorForLayer(int layer, Color[] colors, int totalLayers) {

@@ -15,6 +15,12 @@ import java.util.Scanner;
 public class ConfigExecutor {
 
     /**
+     * Wird nie instanziiert (deshalb private)
+     */
+    private ConfigExecutor() {
+    }
+
+    /**
      * Startpunkt der Anwendung.
      *
      * <p>Die Konfigurationsdatei kann entweder als Kommandozeilenargument übergeben oder
@@ -30,13 +36,11 @@ public class ConfigExecutor {
      */
     @SneakyThrows
     public static void main(String[] args) {
-
         String filename;
 
         if (args.length > 0) {
             filename = args[0];
-        }
-        else {
+        } else {
             System.out.print("Config (.toml-Dateiendung optional): ./conf/");
             try (Scanner scanner = new Scanner(System.in)) {
                 filename = scanner.nextLine();

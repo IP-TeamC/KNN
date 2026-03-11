@@ -8,6 +8,12 @@ import de.fhdw.knn.network.neuron.Neuron;
 public abstract class Layer {
 
     /**
+     * Kann nicht direkt instanziiert werden (entweder {@link InputLayer} oder {@link DenseLayer})
+     */
+    protected Layer() {
+    }
+
+    /**
      * Liefert die Neuronen des Layers zurück
      *
      * @return alle Neuronen des Layers

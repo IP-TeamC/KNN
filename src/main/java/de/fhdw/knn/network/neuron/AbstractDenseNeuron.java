@@ -9,6 +9,14 @@ import de.fhdw.knn.network.connection.Connection;
 public abstract class AbstractDenseNeuron extends Neuron {
 
     /**
+     * AbstractDenseNeuron ist entweder {@link DenseNeuron} oder {@link SuperNeuron} und kann nicht direkt instanziiert werden.
+     *
+     * @see AbstractDenseNeuron
+     */
+    protected AbstractDenseNeuron() {
+    }
+
+    /**
      * Enthält alle eingehenden Verbindungen.<br>
      * Die Connection mit Index i entspricht der Verbindung vom Neuron i des vorherigen Layers.
      */

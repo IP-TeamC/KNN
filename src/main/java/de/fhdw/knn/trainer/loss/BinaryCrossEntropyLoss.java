@@ -7,6 +7,12 @@ package de.fhdw.knn.trainer.loss;
 public class BinaryCrossEntropyLoss implements LossFunction {
 
     /**
+     * Die LossFunction ist zustandslos und es sollten keine weiteren Instanzen außerhalb von {@link LossFunction} erzeugt werden
+     */
+    BinaryCrossEntropyLoss() {
+    }
+
+    /**
      * Konstante zur Vermeidung von NaN-Werten (Logarithmus von 0)
      */
     private static final Double DELTA_0 = 0.000_000_000_000_1;

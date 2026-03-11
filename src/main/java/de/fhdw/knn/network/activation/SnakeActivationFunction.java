@@ -5,6 +5,12 @@ package de.fhdw.knn.network.activation;
  */
 class SnakeActivationFunction implements ActivationFunction {
 
+    /**
+     * Die ActivationFunction ist zustandslos und es sollten keine weiteren Instanzen außerhalb von {@link ActivationFunction} erzeugt werden
+     */
+    SnakeActivationFunction() {
+    }
+
     @Override
     public double calc(double input) {
         double sin = Math.sin(input);
