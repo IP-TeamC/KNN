@@ -1,6 +1,8 @@
 package de.fhdw.knn.network.activation;
 
 /**
+ * Softplus-Aktivierungsfunktion
+ *
  * @see ActivationFunction#SOFTPLUS
  */
 class SoftplusActivationFunction implements ActivationFunction {

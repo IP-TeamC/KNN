@@ -1,6 +1,8 @@
 package de.fhdw.knn.network.activation;
 
 /**
+ * ReLU-Aktivierungsfunktion
+ *
  * @see ActivationFunction#RELU
  */
 class ReLUActivationFunction implements ActivationFunction {

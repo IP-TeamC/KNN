@@ -1,6 +1,8 @@
 package de.fhdw.knn.network.activation;
 
 /**
+ * Sinus-Aktivierungsfunktion
+ *
  * @see ActivationFunction#SIN
  */
 class SinActivationFunction implements ActivationFunction {

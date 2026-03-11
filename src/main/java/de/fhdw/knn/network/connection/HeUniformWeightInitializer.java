@@ -5,9 +5,17 @@ import de.fhdw.knn.network.Network;
 import java.util.Random;
 
 /**
+ * WeightInitializer He (Uniform)
+ *
  * @see WeightInitializer#HE_UNIFORM
  */
 class HeUniformWeightInitializer implements WeightInitializer {
+
+    /**
+     * Der WeightInitializer ist zustandslos und es sollten keine weiteren Instanzen außerhalb von {@link WeightInitializer} erzeugt werden
+     */
+    HeUniformWeightInitializer() {
+    }
 
     @Override
     public double nextWeight(Random random, Network network, int layer) {

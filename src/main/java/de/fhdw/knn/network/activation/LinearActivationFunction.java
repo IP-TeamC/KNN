@@ -1,6 +1,8 @@
 package de.fhdw.knn.network.activation;
 
 /**
+ * Lineare Aktivierungsfunktion
+ *
  * @see ActivationFunction#LINEAR
  */
 class LinearActivationFunction implements ActivationFunction {

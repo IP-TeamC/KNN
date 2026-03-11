@@ -1,6 +1,8 @@
 package de.fhdw.knn.network.activation;
 
 /**
+ * Snake-Aktivierungsfunktion
+ *
  * @see ActivationFunction#SNAKE
  */
 class SnakeActivationFunction implements ActivationFunction {

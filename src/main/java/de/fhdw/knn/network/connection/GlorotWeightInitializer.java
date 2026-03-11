@@ -5,9 +5,17 @@ import de.fhdw.knn.network.Network;
 import java.util.Random;
 
 /**
+ * WeightInitializer Glorot
+ *
  * @see WeightInitializer#GLOROT
  */
 class GlorotWeightInitializer implements WeightInitializer {
+
+    /**
+     * Der WeightInitializer ist zustandslos und es sollten keine weiteren Instanzen außerhalb von {@link WeightInitializer} erzeugt werden
+     */
+    GlorotWeightInitializer() {
+    }
 
     @Override
     public double nextWeight(Random random, Network network, int layer) {

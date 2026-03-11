@@ -1,6 +1,8 @@
 package de.fhdw.knn.network.activation;
 
 /**
+ * Sigmoid-Aktivierungsfunktion
+ *
  * @see ActivationFunction#SIGMOID
  */
 class SigmoidActivationFunction implements ActivationFunction {

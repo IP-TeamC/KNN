@@ -1,6 +1,8 @@
 package de.fhdw.knn.network.activation;
 
 /**
+ * Tangens hyperbolicus-Aktivierungsfunktion
+ *
  * @see ActivationFunction#TANH
  */
 class TanhActivationFunction implements ActivationFunction {

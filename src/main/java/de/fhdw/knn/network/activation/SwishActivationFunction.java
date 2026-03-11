@@ -1,6 +1,8 @@
 package de.fhdw.knn.network.activation;
 
 /**
+ * Swish-Aktivierungsfunktion
+ *
  * @see ActivationFunction#SWISH
  */
 class SwishActivationFunction implements ActivationFunction {
