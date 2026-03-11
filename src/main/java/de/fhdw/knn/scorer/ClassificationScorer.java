@@ -8,7 +8,7 @@ import de.fhdw.knn.network.Network;
  * True Positives - True Negatives - False Positives - False Negatives
  * - Accuracy - Error - Precision - Recall - F1-Score
  *
- * @param network
+ * @param network Network, von welchem die Kennzahlen ermittelt werden sollen
  */
 public record ClassificationScorer(Network network) implements Scorer {
 

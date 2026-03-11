@@ -14,6 +14,12 @@ import java.util.stream.Stream;
 public class CsvReader {
 
     /**
+     * Erstellt eine CsvReader Instanz
+     */
+    public CsvReader() {
+    }
+
+    /**
      * Liest die CSV-Datei ein, ohne Zeilen zu überspringen
      *
      * @see CsvReader#readFile(String, int, int, int, int, int)
@@ -86,7 +92,9 @@ public class CsvReader {
      * @param fileName Dateipfad zur einzulesenden Datei
      * @param skip Überspringt die ersten skip Zeilen; startet sonst in Header Zeile
      * @param lineParser Funktion, welche jede Zeile der eingelesenen Datei in ein Paar/Entry aus Eingabe- und Ausgabe-Array konvertiert
-     * @param labelParser verarbeitet die Header-Zeile (erste Zeile, wenn skip > 0) und kann das DataSet dabei anpassen. Akzeptiert Dataset, String
+     * @param labelParser Verarbeitet die Header-Zeile (erste Zeile, wenn skip > 0) und kann das DataSet dabei anpassen. Akzeptiert Dataset, String
+     *
+     * @throws java.io.IOException Bei einem Fehler mit dem BufferedReader
      *
      * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert.
      */

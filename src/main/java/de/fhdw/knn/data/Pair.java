@@ -2,6 +2,9 @@ package de.fhdw.knn.data;
 
 /**
  * Paar aus 2 Werten verschiedener Typen
+ *
+ * @param <X> Beliebiger Datentyp
+ * @param <Y> Beliebiger Datentpy
  */
 public class Pair<X, Y> {
 
