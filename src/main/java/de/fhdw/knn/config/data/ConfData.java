@@ -11,7 +11,7 @@ import java.io.IOException;
  * Stellt die Konfigurationsdaten für die Eingabe- und Ausgabeparameter dar, die zur Verarbeitung
  * von CSV-Dateien und zur Erstellung von Trainings- und Testdatensätzen verwendet werden.
  *
- * <p>Implementiert die Schnittstelle {@code TomlSerializable} für Serialisierbarkeit.
+ * <p>Implementiert die Schnittstelle {@code TomlSerializable}, um die TOML-basierte Serialisierung zu ermöglichen.
  *
  * @see TomlSerializable
  */

@@ -17,7 +17,7 @@ import java.util.Optional;
  * <p>Diese Klasse bietet Funktionen zum Initialisieren eines Netzwerks basierend auf seinen
  * Konfigurationseigenschaften oder zum Importieren eines bestehenden Netzwerks aus einer Datei.
  *
- * <p>Implementiert die Schnittstelle {@code TomlSerializable} für Serialisierbarkeit.
+ * <p>Implementiert die Schnittstelle {@code TomlSerializable}, um die TOML-basierte Serialisierung zu ermöglichen.
  *
  * @see Network
  * @see TomlSerializable
@@ -66,6 +66,8 @@ public class ConfNetwork implements TomlSerializable {
      * @return Eine {@code Network}-Instanz, die gemäß den angegebenen Eigenschaften konfiguriert oder aus der Datei importiert wurde.
      * @throws IllegalArgumentException Wenn sowohl {@code importFile} angegeben als auch zusätzliche Konfigurationseigenschaften
      *                                  ({@code seed}, {@code weightInitializer} oder {@code layer}) festgelegt sind.
+     *
+     * @see Network
      */
     public Network create(DataSet data) {
         if (importFile != null) {
