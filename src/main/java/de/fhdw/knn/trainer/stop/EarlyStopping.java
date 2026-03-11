@@ -1,10 +1,12 @@
 package de.fhdw.knn.trainer.stop;
 
+import io.github.wasabithumb.jtoml.serial.TomlSerializable;
+
 /**
  * Implementierung einer StopFunction, die das Training dann beendet,
  * wenn der Fortschritt (Minimierung des Loss) zu gering wird
  */
-public class EarlyStopping implements StopFunction {
+public class EarlyStopping implements StopFunction, TomlSerializable {
 
     /**
      * Minimale Verbesserung des Verlusts seit der letzten Epoche

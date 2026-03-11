@@ -32,6 +32,10 @@ batchSize = 1
 learningRate = 0.04
 #exportFile = "models/test.knn"
 
+[trainer.earlyStopping]
+minDelta = 0.01
+patience = 5
+
 [scorer]
 lossFunction = "CROSS_ENTROPY_LOSS"
 type = "ClassificationScorer"

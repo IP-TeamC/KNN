@@ -1,21 +1,27 @@
 # Konfigurationsmöglichkeiten
 
-Dieses Projekt ermöglicht es, Konfigurationsdateien zu verwenden, um die Netzwerkarchitektur, das Training, die Evaluation und die Visualisierung eines neuronalen Netzes schnell, strukturiert und reproduzierbar zu steuern.
-Zusätzlich besteht die Möglichkeit des Modellimports und -exports, sodass bestehende Modelle zu einem späteren Zeitpunkt analysiert oder weitertrainiert werden können.
+Dieses Projekt ermöglicht es, Konfigurationsdateien zu verwenden, um die Netzwerkarchitektur, das Training, die
+Evaluation und die Visualisierung eines neuronalen Netzes schnell, strukturiert und reproduzierbar zu steuern.
+Zusätzlich besteht die Möglichkeit des Modellimports und -exports, sodass bestehende Modelle zu einem späteren Zeitpunkt
+analysiert oder weitertrainiert werden können.
 
 ### Speicherort
- Konfigurationsdateien sollten im Verzeichnis `./conf` abgelegt werden.
+
+Konfigurationsdateien sollten im Verzeichnis `./conf` abgelegt werden.
 
 ### Dateiformat
+
 Das unterstützte Dateiformati ist [TOML](https://toml.io/en/).
 
-TOML erlaubt Abschnittsdefinitionen wie bspw. `[network]` sowie wiederholbare Blöcke wie `[[network.layer]]`, die hier vor allem für die Definition mehrerer Netzwerkschichten verwendet werden. 
+TOML erlaubt Abschnittsdefinitionen wie bspw. `[network]` sowie wiederholbare Blöcke wie `[[network.layer]]`, die hier
+vor allem für die Definition mehrerer Netzwerkschichten verwendet werden.
 
 <br>
 
 ## Beispiele von Konfigurationen
 
 ### Beispiel 1
+
 ``` toml
 [data]
 file = "data/banana_quality.csv"
@@ -50,6 +56,10 @@ batchSize = 1
 learningRate = 0.04
 exportFile = "models/example.knn"
 
+[trainer.earlyStopping]
+minDelta = 0.01
+patience = 5
+
 [scorer]
 lossFunction = "CROSS_ENTROPY_LOSS"
 type = "ClassificationScorer"
@@ -58,7 +68,9 @@ type = "ClassificationScorer"
 heatmapInterval = 10
 sankeyInterval = 10
 ```
+
 ### Beispiel 2
+
 ``` toml
 [data]
 file = "data/banana_quality.csv"
@@ -75,18 +87,22 @@ importFile = "models/example.knn"
 [scorer]
 type = "ClassificationScorer"
 ```
+
 <br>
 
 ## Konfigurationen ausführen
 
 ### Option 1: ConfigExecutor
-Im Paket `de.fhdw.knn` befindet sich die Klasse `ConfigExecutor`, welche interaktiv verwendet werden kann, um entsprechende Konfigurationen über die Eingabeaufforderung zu laden und auszuführen:
+
+Im Paket `de.fhdw.knn` befindet sich die Klasse `ConfigExecutor`, welche interaktiv verwendet werden kann, um
+entsprechende Konfigurationen über die Eingabeaufforderung zu laden und auszuführen:
 
 ``` cpp
 Config (.toml-Dateiendung optional): example.toml
 ```
 
 ### Option 2: Dedizierte Runner-Klasse
+
 Alternativ kann eine eigene Main-Klasse definiert werden, die eine bestimmte Konfigurationsdatei lädt und ausführt:
 
 ``` java
@@ -100,12 +116,15 @@ public class ConfRun {
     }
 }
 ```
+
 <br>
 
-## Verfügbare Konfigurationsoptionen 
+## Verfügbare Konfigurationsoptionen
 
 ### Daten
+
 Der Abschnitt [data] definiert die Datenquelle sowie die Aufteilung in Trainings- und Testdaten.
+
 ``` toml
 [data]
 
@@ -130,10 +149,13 @@ seed = 42
 # Anteil der Testdaten
 testShare = 0.2
 ```
+
 <br>
 
 ### Netzwerk
+
 Der Abschnitt [network] definiert die globalen Einstellungen des Netzwerkes.
+
 ``` toml
 [network]
 
@@ -157,7 +179,9 @@ importFile = "models/example.knn"
 ```
 
 Die einzelnen Schichten werden sequentiell über wiederholbare Blöcke definiert.
-Die Input-Layer wird automatisch erstellt und ist nicht mit anzugeben. Der letzte Block beschreibt folglich den Output-Layer. 
+Die Input-Layer wird automatisch erstellt und ist nicht mit anzugeben. Der letzte Block beschreibt folglich den
+Output-Layer.
+
 ``` toml
 [[network.layer]]
 
@@ -177,10 +201,13 @@ neurons = 50
 #
 activationFunction = "SWISH"
 ```
+
 <br>
 
 ### Trainer
+
 Der Abschnitt [trainer] definiert das Lernverhalten des Netzes.
+
 ``` toml
 [trainer]
 
@@ -213,11 +240,23 @@ learningRate = 0.04
 
 # Optionaler Pfad zum Speichern des trainierten Modells
 exportFile = "models/example.knn"
+
+# Vorzeitiges Beenden des Trainings bei zu geringen Verbesserungen (optional, kann weggelassen werden)
+[trainer.earlyStopping]
+
+# Minimale Verbesserung des Verlusts (Loss) seit der letzten Epoche
+minDelta = 0.01
+
+# Anzahl aufeinanderfolgender Epochen, in denen die Loss-Verbesserung minDelta unterschreiten muss, um das Training vorzeitig zu beenden
+patience = 5
 ``` 
+
 <br>
 
 ### Evaluation
+
 Der Abschnitt [scorer] definiert die Bewertungsmethode des trainierten Modells.
+
 ``` toml
 [scorer]
 
@@ -237,10 +276,13 @@ lossFunction = "CROSS_ENTROPY_LOSS"
 #
 type = "ClassificationScorer"
 ```
+
 <br>
 
 ### Darstellung
+
 Der Abschnitt [visualization] steuert optionale Trainingsvisualisierungen.
+
 ``` toml
 [visualization]
 

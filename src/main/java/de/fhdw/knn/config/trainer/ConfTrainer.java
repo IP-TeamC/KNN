@@ -7,7 +7,6 @@ import de.fhdw.knn.trainer.learningrate.ConstantLearningRate;
 import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
-import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
 import lombok.Data;
@@ -40,7 +39,7 @@ public class ConfTrainer implements TomlSerializable {
      *
      * @see ConfTrainer#create(Network)
      */
-    private EarlyStopping earlyStopping;
+    private ConfEarlyStopping earlyStopping;
 
     /**
      * Gibt die maximale Anzahl von Epochen für den Trainingsprozess an.
@@ -81,15 +80,14 @@ public class ConfTrainer implements TomlSerializable {
      *
      * @param network das zu trainierende neuronale Netzwerk.
      * @return eine {@code Trainer}-Instanz, die mit der angegebenen Verlustfunktion, den Kriterien für
-     *         das vorzeitige Beenden, der Optimierungsfunktion und anderen Parametern
-     *         für das Training des bereitgestellten Netzwerks konfiguriert ist.
-     *
+     * das vorzeitige Beenden, der Optimierungsfunktion und anderen Parametern
+     * für das Training des bereitgestellten Netzwerks konfiguriert ist.
      * @see Trainer
      */
     public Trainer create(Network network) {
         LossFunction lossFunction = Config.getStaticField(LossFunction.class, this.lossFunction);
         StopFunction stopFunction = Optional.ofNullable(earlyStopping)
-                .map(value -> (StopFunction) value)
+                .map(ConfEarlyStopping::create)
                 .orElse(StopFunction.NEVER);
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(learningRate));
         return new Trainer(network, maxEpochs, shuffleEpoch, batchSize, lossFunction, stopFunction, optimizationFunction);
@@ -97,6 +95,7 @@ public class ConfTrainer implements TomlSerializable {
 
     /**
      * Exportiert das trainierte neuronale Netzwerk in den angegebenen Dateipfad.
+     *
      * @param network das zu exportierende neuronale Netzwerk.
      */
     public void export(Network network) {
