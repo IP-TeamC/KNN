@@ -21,6 +21,9 @@ import java.util.Optional;
  * Bedingungen für EarlyStopping, Optimierungsparametern und Exporteinstellungen zu erstellen.
  *
  * <p>Implementiert die Schnittstelle {@code TomlSerializable}, um die TOML-basierte Serialisierung zu ermöglichen.
+ *
+ * @see Trainer
+ * @see TomlSerializable
  */
 @Data
 public class ConfTrainer implements TomlSerializable {

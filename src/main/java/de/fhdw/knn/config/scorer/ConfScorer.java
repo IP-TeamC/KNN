@@ -17,6 +17,9 @@ import java.util.Optional;
  * das Abrufen eines Verlustfunktionstyps aus der Konfiguration.
  *
  * <p>Implementiert die Schnittstelle {@code TomlSerializable}, um die TOML-basierte Serialisierung zu ermöglichen.
+ *
+ * @see Scorer
+ * @see TomlSerializable
  */
 @Data
 public class ConfScorer implements TomlSerializable {
