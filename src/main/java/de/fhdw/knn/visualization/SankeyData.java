@@ -11,8 +11,33 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Die Klasse {@code SankeyData} bietet Funktionalität zur Umwandlung einer neuronalen Netzwerkstruktur
+ * in eine Liste von {@code PlotItem}-Instanzen, die zur Erstellung eines Sankey-Diagramms geeignet sind.
+ * Sie verarbeitet die Schichten des neuronalen Netzwerks und berechnet die entsprechende visuelle
+ * Darstellung, indem sie Neuronen und deren Verbindungen auf {@code PlotItems} abbildet.
+ */
 public class SankeyData {
 
+    /**
+     * Stellt den Schwellenwert dar, der zur Bestimmung der Signifikanz bestimmter Verbindungen
+     * im Zusammenhang mit Sankeyplot-Visualisierungen verwendet wird.
+     *
+     * <p>Der Schwellwert ist derzeit auf fest auf 0.1 codiert.
+     */
+    private static final double THRESHOLD = 0.1;
+
+    /**
+     * Konvertiert ein bestimmtes Netzwerk in eine Liste von {@code PlotItem} zur Visualisierung.
+     * Das Netzwerk wird im Sankey-Diagramm für eine bessere Visualisierung der Gewichtsverteilung umgekehrt dargestellt.
+     *
+     * @param network Das neuronale Netzwerk, das Eingabe-, versteckte und Ausgabeschichten enthält,
+     *                die in {@code PlotItems} umgewandelt werden sollen.
+     *
+     * @return Eine Liste von {@code PlotItems}, die alle Schichten (Eingabe, versteckt und Ausgabe) des angegebenen Netzwerks darstellen.
+     *
+     * @see PlotItem
+     */
     public static List<PlotItem> convertNetworkToItems(Network network) {
         List<PlotItem> allItems = new ArrayList<>();
 
@@ -93,6 +118,20 @@ public class SankeyData {
         return allItems;
     }
 
+    /**
+     * Erstellt umgekehrte Verbindungen zwischen zwei Schichten von {@code PlotItems} basierend auf den Gewichten
+     * der Neuronen in der angegebenen {@code DenseLayer} und unter Beachtung des {@code THRESHOLD}.
+     *
+     * @param rightItems Ein Array von {@code PlotItems}, das die rechte Schicht repräsentiert.
+     * @param leftItems  Ein Array von {@code PlotItems}, das die linke Schicht repräsentiert.
+     * @param rightLayer Die {@code DenseLayer}, die die Neuronen der rechten Schicht enthält,
+     *                   einschließlich ihrer eingehenden Verbindungsgewichte von den Neuronen in der
+     *                   linken Schicht.
+     *
+     * @see PlotItem
+     * @see DenseLayer
+     * @see SankeyData#THRESHOLD
+     */
     private static void createConnectionsReversed(PlotItem[] rightItems, PlotItem[] leftItems, DenseLayer rightLayer) {
         for (int rIdx = 0; rIdx < rightItems.length; rIdx++) {
             AbstractDenseNeuron rightNeuron = rightLayer.neurons[rIdx];
@@ -101,16 +140,26 @@ public class SankeyData {
             for (int lIdx = 0; lIdx < leftItems.length; lIdx++) {
                 double weight = Math.abs(incomingFromLeft[lIdx].weight);
 
-                if (weight > 0.1) {
+                if (weight > THRESHOLD) {
                     rightItems[rIdx].addToOutgoing(leftItems[lIdx], weight);
                 }
             }
         }
     }
 
+    /**
+     * Bestimmt die Farbe für eine bestimmte Ebene basierend auf dem angegebenen Farbarray und der Gesamtzahl der Ebenen.
+     *
+     * @param layer Der Index der Ebene, für die die Farbe bestimmt werden soll.
+     * @param colors Ein Array von {@code Color}-Objekten, die die verfügbaren Farben darstellen, aus denen ausgewählt werden kann.
+     * @param totalLayers Die Gesamtzahl der Ebenen in der Struktur, die zur Skalierung der Farbauswahl verwendet werden.
+     *
+     * @return Die {@code Farbe}, die dem angegebenen Layer-Index entspricht.
+     *
+     * @see Color
+     */
     private static Color getColorForLayer(int layer, Color[] colors, int totalLayers) {
         int colorIndex = (layer * (colors.length - 1)) / Math.max(1, totalLayers - 1);
         return colors[Math.min(colorIndex, colors.length - 1)];
     }
-
 }

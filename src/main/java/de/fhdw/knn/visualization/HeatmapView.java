@@ -13,11 +13,44 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Die HeatmapView-Klasse erweitert JFrame und bietet Funktionen zur Visualisierung
+ * von Heatmaps von neuronalen Netzwerk-Gewichtsmatrizen in einer Tab-Fenster-Oberfläche.
+ * Jeder Tab zeigt eine Heatmap für eine bestimmte Epoche oder Konfiguration des Netzwerks.
+ *
+ * <p>Die Visualisierung verwendet JFreeChart zum Rendern von Diagrammen mit blockbasierter Darstellung
+ * für die Heatmaps, wobei Gewichte auf Farben abgebildet und als Raster angezeigt werden.
+ *
+ * <p>Wir bedanken uns an dieser Stelle beim "TeamAB" für die Bereitstellung des Codes als Grundlage und zur Inspiration 
+ */
 public class HeatmapView extends JFrame {
 
+
+    /**
+     * Eine JTabbedPane-Instanz, die als zentrale Registerkartenkomponente für die Anzeige
+     * mehrerer Heatmap-Visualisierungen innerhalb der HeatmapView fungiert.
+     *
+     * <p>Die Registerkarten werden dynamisch verwaltet und aktualisiert,
+     * wenn die Methode {@code addEpoch} aufgerufen wird.
+     *
+     * @see #addEpoch(String, HeatmapData)
+     */
     private final JTabbedPane tabs;
+
+    /**
+     * Stellt den Schwellenwert dar, der zur Bestimmung der Signifikanz bestimmter Verbindungen
+     * im Zusammenhang mit Heatmap-Visualisierungen verwendet wird.
+     *
+     * <p>Der Schwellwert ist derzeit auf fest auf 0.1 codiert.
+     */
     private static final double THRESHOLD = 0.1;
 
+    /**
+     * Erstellt eine neue HeatmapView-Instanz.
+     *
+     * <p>Es erstellt einen Registerkartenbereich zur Anzeige verschiedener Heatmap-Visualisierungen,
+     * konfiguriert die Fenstereigenschaften wie Größe und Standard-Schließvorgang und macht das Fenster sichtbar.
+     */
     public HeatmapView() {
         super("Heatmap – Network View");
 
@@ -30,6 +63,15 @@ public class HeatmapView extends JFrame {
         this.setVisible(true);
     }
 
+    /**
+     * Zeigt eine einzelne Heatmap in einem neuen Tab innerhalb des HeatmapView-Fensters an.
+     *
+     * @param title  Der Titel, der für die Heatmap und die entsprechende Registerkarte angezeigt werden soll.
+     * @param matrix das {@code HeatmapData}-Objekt, das Informationen über das neuronale Netzwerk und
+     *               die zugehörige Gewichtungsmatrix enthält, die visualisiert werden sollen
+     *
+     * @see HeatmapData
+     */
     public void showSingleMatrix(String title, HeatmapData matrix) {
         this.addEpoch(title, matrix);
 
@@ -39,7 +81,17 @@ public class HeatmapView extends JFrame {
         this.setVisible(true);
     }
 
-    // Methode nach einer Epoche auf, um einen neuen Tab hinzuzufügen
+    /**
+     * Fügt eine weitere Registerkarte zur {@code HeatmapView} hinzu.
+     * Diese Methode wird im Event Dispatch Thread ausgeführt, da Swing-Komponenten nicht threadsicher sind.
+     *
+     * @param tabTitle Der Titel der hinzuzufügenden Registerkarte. Er steht in der Regel für die aktuelle Epoche.
+     * @param data     Das {@code HeatmapData}-Objekt enthält Informationen über das Netzwerk,
+     *                 einschließlich der Gewichtungsmatrix und Neuronenbezeichnungen.
+     *
+     * @see HeatmapView
+     * @see HeatmapData
+     */
     public void addEpoch(String tabTitle, HeatmapData data) {
         SwingUtilities.invokeLater(() -> { // invokeLater, da Swing nicht Thread-safe ist
             JFreeChart chart = buildChart(data, tabTitle);
@@ -58,6 +110,19 @@ public class HeatmapView extends JFrame {
         });
     }
 
+    /**
+     * Erstellt eine JFreeChart-Instanz, um die Gewichtungsmatrix eines neuronalen Netzwerks
+     * anhand der bereitgestellten Daten und des Titels als Heatmap zu visualisieren.
+     *
+     * @param data  Das {@code HeatmapData}-Objekt enthält die Gewichtungsmatrix und die Neuronenbezeichnungen für das Netzwerk.
+     * @param title Der Titel, der auf dem Diagramm angezeigt werden soll.
+     *
+     * @return Ein {@code JFreeChart}-Objekt, das die Heatmap der Gewichtungsmatrix darstellt und
+     *         mit den entsprechenden Darstellungs- und Achsenbeschriftungen konfiguriert ist.
+     *
+     * @see HeatmapData
+     * @see JFreeChart
+     */
     private JFreeChart buildChart(HeatmapData data, String title) {
         double[][] m = data.buildFullWeightMatrix();
         String[] labels = data.getNeuronLabels();
@@ -99,6 +164,20 @@ public class HeatmapView extends JFrame {
         return chart;
     }
 
+    /**
+     * Erstellt und konfiguriert eine {@code XYPlot}-Instanz zur Visualisierung von Daten in einem 2D-Rasterformat.
+     *
+     * @param labels   Ein Array von {@code String}-Bezeichnungen, die für die symbolischen Achsen verwendet werden sollen.
+     *                 Diese Beschriftungen geben die Namen der Neuronen auf beiden Achsen wieder.
+     * @param dataset  Das {@code DefaultXYZDataset} enthält die zu visualisierenden Daten.
+     * @param renderer Ein {@code XYBlockRenderer}, der für die Darstellung der Gitterzellen im Plot verantwortlich ist.
+     *
+     * @return Eine {@code XYPlot}-Instanz, konfiguriert mit symbolischen Achsen, dem bereitgestellten Datensatz und dem definierten Renderer.
+     *
+     * @see XYPlot
+     * @see DefaultXYZDataset
+     * @see XYBlockRenderer
+     */
     private static XYPlot getXyPlot(String[] labels, DefaultXYZDataset dataset, XYBlockRenderer renderer) {
         SymbolAxis xAxis = new SymbolAxis("Source Neuron (Layer i)", labels);
         SymbolAxis yAxis = new SymbolAxis("Target Neuron (Layer i+1)", labels);
@@ -113,6 +192,20 @@ public class HeatmapView extends JFrame {
         return plot;
     }
 
+    /**
+     * Erstellt und konfiguriert eine {@code XYBlockRenderer}-Instanz, um Daten in einem 2D-Rasterformat zu visualisieren.
+     * Der Renderer ist dafür verantwortlich, Gitterzellen mit einer Farbskala basierend auf den angegebenen
+     * Mindest- sowie Höchstwerten und unter Beachtung des {@code THRESHOLD} zu rendern.
+     *
+     * @param min Der Mindestwert im Datenbereich. Dieser Wert stellt die Untergrenze der Farbskala dar.
+     * @param max Der Maximalwert im Datenbereich. Dieser Wert stellt die Obergrenze der Farbskala dar.
+     *
+     * @return Eine {@code XYBlockRenderer}-Instanz, konfiguriert mit einer Blockgröße von 1.0 und
+     *         einer Farbskala, um Datenwerte Farben von Grün (negativ) bis Rot (positiv) zuzuordnen.
+     *
+     * @see XYBlockRenderer
+     * @see HeatmapView#THRESHOLD
+     */
     private static XYBlockRenderer getXyBlockRenderer(double min, double max) {
         XYBlockRenderer renderer = new XYBlockRenderer();
         renderer.setBlockWidth(1.0);
