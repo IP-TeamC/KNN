@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 
 /**
  * Die Klasse {@code ConfLayer} stellt eine Konfiguration für eine {@code DenseLayer} in einem neuronalen Netzwerk dar.
+ *
  * <p>Es umfasst Eigenschaften wie die Anzahl der Neuronen und die für die Schicht zu verwendende Aktivierungsfunktion.
  *
  * <p>Implementiert die Schnittstelle {@code TomlSerializable}, um die TOML-basierte Serialisierung zu ermöglichen.

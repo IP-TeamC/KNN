@@ -14,6 +14,7 @@ import java.util.Optional;
 
 /**
  * Die Klasse {@code ConfNetwork} stellt eine Konfiguration für eine neuronales Netzwerk dar.
+ *
  * <p>Diese Klasse bietet Funktionen zum Initialisieren eines Netzwerks basierend auf seinen
  * Konfigurationseigenschaften oder zum Importieren eines bestehenden Netzwerks aus einer Datei.
  *

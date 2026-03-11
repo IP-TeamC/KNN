@@ -70,5 +70,4 @@ public class ConfScorer implements TomlSerializable {
         }
         return Optional.of(Config.getStaticField(LossFunction.class, lossFunction));
     }
-
 }
