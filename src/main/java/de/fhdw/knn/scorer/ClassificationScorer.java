@@ -8,12 +8,12 @@ import de.fhdw.knn.network.Network;
  * True Positives - True Negatives - False Positives - False Negatives
  * - Accuracy - Error - Precision - Recall - F1-Score
  *
- * @param network
+ * @param network Network, von welchem die Kennzahlen ermittelt werden sollen
  */
 public record ClassificationScorer(Network network) implements Scorer {
 
     /**
-     * Evaluierung anhand des übergebenen Datensatzes
+     * Evaluiert anhand des übergebenen Datensatzes die Daten
      *
      * @param data Test-Datensatz
      */
@@ -87,6 +87,11 @@ public record ClassificationScorer(Network network) implements Scorer {
 
         /**
          * Berechnet die zusätzlichen Metriken auf Basis der Parameter
+         *
+         * @param truePositives Richtig evaluiertes positives Ergebnis
+         * @param trueNegatives Richtig evaluiertes negatives Ergebnis
+         * @param falsePositives Falsch evaluiertes positives Ergebnis
+         * @param falseNegatives Falsch evaluiertes negatives Ergebnis
          *
          * @see ClassificationScorer
          */

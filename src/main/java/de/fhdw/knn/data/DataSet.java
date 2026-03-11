@@ -64,6 +64,8 @@ public class DataSet {
 
     /**
      * Führt den Preprocessor für jede Zeile (Eingabe/Ausgabe) des DataSets aus
+     *
+     * @param preprocessor Verarbeitet jede Zeile vorher. Akzeptiert Eingabe- und Ausgabedaten
      */
     public void preprocess(BiConsumer<double[], double[]> preprocessor) {
         for (int i = 0; i < size; i++) {
@@ -74,6 +76,10 @@ public class DataSet {
     /**
      * Erzeugt einen Datensatz, der in der Eingabe nur einen Teil der Spalten enthält.
      * Die Reihenfolge der Spalten entspricht der Reihenfolge der als Parameter übergebenen Spalten-Indizes.
+     *
+     * @param columns Beliebige Anzahl an Spalten-Indizes
+     *
+     * @return Dataset, mit dem Subset als Eingabe und normalen Ausgaben
      */
     public DataSet subsetInputs(int... columns) {
         double[][] subset = new double[inputs.length][];
@@ -90,6 +96,8 @@ public class DataSet {
 
     /**
      * Mischt die Zeilen zufällig und verwendet für den RNG den übergebenen Seed (dadurch deterministisch).
+     *
+     * @param seed Verwendeter Random Seed für den shuffle
      */
     public void shuffle(long seed) {
         Random random = new Random(seed);
@@ -110,6 +118,11 @@ public class DataSet {
      * Mischt die Zeilen zufällig und verwendet für den RNG den übergebenen Seed (dadurch deterministisch).
      * Teilt danach den letzten Anteil der Daten (testShare zwischen 0 und 1) den Test-Daten zu.
      * Der vordere Teil wird als Trainings-Daten verwendet.
+     *
+     * @param seed Verwendeter Random Seed für den shuffle
+     * @param testShare Prozentualer Anzeil an Daten in dezimalschreibweise, die in den Test-Anteil sollen
+     *
+     * @return TrainTestSplit, der jeweils aus einem Test-Dataset und einem Train-Dataset besteht
      *
      * @see DataSet#shuffle(long)
      */
@@ -141,6 +154,8 @@ public class DataSet {
 
     /**
      * Normalisiert alle Eingabe-Daten mit dem Normalizer und speichert diesen, um eine spätere Denormalisierung zu ermöglichen.
+     *
+     * @param normalizer Spezifischer normalizer für Eingaben
      */
     public void normalizeInputs(Normalizer normalizer) {
         normalizerInputs = normalizer;
@@ -149,6 +164,8 @@ public class DataSet {
 
     /**
      * Normalisiert alle Ausgabe-Daten mit dem Normalizer und speichert diesen, um eine spätere Denormalisierung zu ermöglichen.
+     *
+     * @param normalizer Spezifischer normalizer für Ausgaben
      */
     public void normalizeOutputs(Normalizer normalizer) {
         normalizerOutputs = normalizer;

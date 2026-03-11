@@ -10,6 +10,8 @@ public interface Scorer {
     /**
      * Führt die Evaluierung eines Netzwerks für den Test-Datensatz anhand bestimmter Metriken durch
      * @param data Test-Datensatz
+     *
+     * @return Score
      */
     Score score(DataSet data);
 
