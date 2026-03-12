@@ -5,10 +5,24 @@ package de.fhdw.knn.data;
  */
 public class MinMaxNormalizer implements Normalizer {
 
+    /**
+     * Minimum für den MinMaxNormalizer
+     */
     private final double min;
+
+    /**
+     * Maximum für den MinMaxNormalizer
+     */
     private final double max;
 
+    /**
+     * Minima pro Feature
+     */
     private double[] dataMin;
+
+    /**
+     * Maxima pro Feature
+     */
     private double[] dataMax;
 
     /**

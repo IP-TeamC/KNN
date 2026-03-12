@@ -39,7 +39,14 @@ public class DataSet {
      */
     public String[] outputLabels;
 
+    /**
+     * Gespeicherter Normalizer der Eingaben, um diese ggf. wieder denormalisieren zu können
+     */
     private Normalizer normalizerInputs;
+
+    /**
+     * Gespeicherter Normalizer der Ausgaben, um diese ggf. wieder denormalisieren zu können
+     */
     private Normalizer normalizerOutputs;
 
     /**

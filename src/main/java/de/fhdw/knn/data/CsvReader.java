@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 public class CsvReader {
 
     /**
-     * Erstellt eine CsvReader Instanz
+     * Objekte dieser Klasse müssen nicht instanziiert werden. Diese Klasse besitzt nur static-Funktionen
      */
     public CsvReader() {
     }
@@ -32,7 +32,7 @@ public class CsvReader {
      *
      * @throws IOException Wird bei fehlern des BufferedReaders geworfen
      *
-     * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert.
+     * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert
      */
     public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize) throws IOException {
         return readFile(fileName, inputStart, inputSize, outputStart, outputSize, 0);
@@ -50,7 +50,7 @@ public class CsvReader {
      *
      * @throws IOException Wird bei fehlern des BufferedReaders geworfen
      *
-     * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert.
+     * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert
      */
     public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize, int skip) throws IOException {
         return readFile(fileName, skip, line -> {
@@ -80,7 +80,7 @@ public class CsvReader {
      *
      * @throws IOException Wird bei fehlern des BufferedReaders geworfen
      *
-     * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert.
+     * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert
      */
     public static DataSet readFile(String fileName, int skip, Function<String, Stream<Map.Entry<double[], double[]>>> lineParser) throws IOException {
         return readFile(fileName, skip, lineParser, null);
@@ -96,7 +96,7 @@ public class CsvReader {
      *
      * @throws java.io.IOException Bei einem Fehler mit dem BufferedReader
      *
-     * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert.
+     * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert
      */
     public static DataSet readFile(String fileName, int skip,
                                    Function<String, Stream<Map.Entry<double[], double[]>>> lineParser,
@@ -125,6 +125,14 @@ public class CsvReader {
         }
     }
 
+
+    /**
+     * Initialisiert, wenn möglich, einen Double aus dem String-Value.
+     *
+     * @param value String, welcher zu einem Double umgewandelt wird
+     *
+     * @return Double, wenn der String nicht umgewandelt werden kann, Double.NaN
+     */
     private static double parseDoubleOrNaN(String value) {
         try {
             return Double.parseDouble(value);
