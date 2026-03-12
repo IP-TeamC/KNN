@@ -33,10 +33,35 @@ public class Config implements TomlSerializable {
     Config() {
     }
 
+    /**
+     * Die Konfigurationsdaten, die zur Ausführung des Programms benötigt werden.
+     *
+     * @see Config#execute()
+     */
     private ConfData data;
+    /**
+     * Die Konfiguration des neuronalen Netzwerks innerhalb der Ausführungssteuerung.
+     *
+     * @see Config#execute()
+     */
     private ConfNetwork network;
+    /**
+     * Die Konfiguration des Trainers innerhalb der Ausführungssteuerung.
+     *
+     * @see Config#execute()
+     */
     private ConfTrainer trainer;
+    /**
+     * Die Konfiguration des Scorers innerhalb der Ausführungssteuerung.
+     *
+     * @see Config#execute()
+     */
     private ConfScorer scorer;
+    /**
+     * Die Konfiguration der Visualisierung von Netzwerkinformationen innerhalb der Ausführungssteuerung.
+     *
+     * @see Config#execute()
+     */
     private ConfVisualization visualization;
 
     /**
