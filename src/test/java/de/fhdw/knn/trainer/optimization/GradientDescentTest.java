@@ -14,12 +14,15 @@ import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.trainer.loss.LossFunction;
 
+import javax.annotation.processing.Generated;
+
 public class GradientDescentTest {
 
     private GradientDescent gradientDescent;
 
     // ===== 1. EINFACHE STRUKTUR-TESTS =====
 
+    @Generated("GitHub Copilot")
     @Test
     public void testSingleNeuronGradientComputation() {
         // 1 Input -> 2 Hidden -> 1 Output
@@ -40,6 +43,7 @@ public class GradientDescentTest {
         assertEquals(2, adj.adjustmentsWeight().length);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testSingleNeuronGradientComputationSuperNeurons() {
         // 1 Input -> 1 Hidden -> 1 Output
@@ -62,6 +66,7 @@ public class GradientDescentTest {
         assertEquals(2, adj.adjustmentsWeight().length);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testSingleNeuronGradientComputationSuperNeuronsSimpler() {
         // 1 Input -> 1 output
@@ -83,6 +88,7 @@ public class GradientDescentTest {
         assertEquals(1, adj.adjustmentsWeight().length);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testMultipleOutputNeurons() {
         // 1 Input -> 3 Hidden -> 3 Output
@@ -103,6 +109,7 @@ public class GradientDescentTest {
         assertEquals(3, adj.adjustmentsWeight()[1].length);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testTwoLayerNetworkGradients() {
         // 2 Input -> 3 Hidden -> 1 Output
@@ -125,6 +132,7 @@ public class GradientDescentTest {
 
     // ===== 2. GRADIENT-EIGENSCHAFTEN =====
 
+    @Generated("GitHub Copilot")
     @Test
     public void testGradientProportionalToLearningRate() {
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
@@ -139,6 +147,7 @@ public class GradientDescentTest {
         }
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testGradientInverselyProportionalToBatchSize() {
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
@@ -165,6 +174,7 @@ public class GradientDescentTest {
 
     // ===== 3. SPEZIALFÄLLE =====
 
+    @Generated("GitHub Copilot")
     @Test
     public void testZeroLearningRateNoChanges() {
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
@@ -182,6 +192,7 @@ public class GradientDescentTest {
         assertTrue(allAdjustmentsZero(adj));
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testLargeInputsStability() {
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
@@ -200,6 +211,7 @@ public class GradientDescentTest {
         assertFalse(containsInfinity(adj), "Gradient contains Infinity values");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testVerySmallLearningRateStability() {
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
@@ -218,6 +230,7 @@ public class GradientDescentTest {
         assertFalse(containsInfinity(adj), "Gradient with tiny learning rate contains Infinity");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testNegativeInputsStability() {
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
@@ -238,6 +251,7 @@ public class GradientDescentTest {
 
     // ===== 4. BACKPROPAGATION KONSISTENZ =====
 
+    @Generated("GitHub Copilot")
     @Test
     public void testMultiLayerGradientFlow() {
         // 2 Input -> 3 Hidden -> 3 Output
@@ -261,6 +275,7 @@ public class GradientDescentTest {
         assertNotNull(adj.adjustmentsBias()[1], "Output layer bias adjustments null");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testDeepNetworkGradientBackpropagation() {
         // 2 Input -> 4 Hidden -> 2 Hidden -> 2 Output (3 Dense Layers)
@@ -288,6 +303,7 @@ public class GradientDescentTest {
         }
     }
 
+    @Generated("GitHub Copilot")
     @Test
     public void testGradientMagnitudeReasonable() {
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
@@ -314,6 +330,7 @@ public class GradientDescentTest {
 
     // ===== HELPER METHODS =====
 
+    @Generated("GitHub Copilot")
     private Adjustments computeWithLearningRate(Network network, double lr) {
         gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
@@ -327,6 +344,7 @@ public class GradientDescentTest {
         return gradientDescent.compute(network, input, output, 1);
     }
 
+    @Generated("GitHub Copilot")
     private boolean allAdjustmentsZero(Adjustments adj) {
         for (double[][] layerWeights : adj.adjustmentsWeight()) {
             for (double[] neuronWeights : layerWeights) {
@@ -343,6 +361,7 @@ public class GradientDescentTest {
         return true;
     }
 
+    @Generated("GitHub Copilot")
     private boolean containsNaN(Adjustments adj) {
         for (double[][] layerWeights : adj.adjustmentsWeight()) {
             for (double[] neuronWeights : layerWeights) {
@@ -359,6 +378,7 @@ public class GradientDescentTest {
         return false;
     }
 
+    @Generated("GitHub Copilot")
     private boolean containsInfinity(Adjustments adj) {
         for (double[][] layerWeights : adj.adjustmentsWeight()) {
             for (double[] neuronWeights : layerWeights) {
@@ -377,6 +397,7 @@ public class GradientDescentTest {
 
     // ===== NETZWERK-FACTORY METHODEN =====
 
+    @Generated("GitHub Copilot")
     private Network createNetworkWithHiddenLayer(int inputSize, int hiddenSize, int outputSize) {
         // inputSize Input -> hiddenSize Hidden -> outputSize Output
         ActivationFunction relu = ActivationFunction.RELU;
@@ -390,6 +411,7 @@ public class GradientDescentTest {
         return new Network(42, new ConstantWeightInitializer(0.5), inputSize, layers);
     }
 
+    @Generated("GitHub Copilot")
     private Network createNetworkWithMultipleHiddenLayers(@SuppressWarnings("SameParameterValue") int inputSize, int[] hiddenSizes, int outputSize) {
         // inputSize Input -> hiddenSizes[0] Hidden -> hiddenSizes[1] Hidden -> ... -> outputSize Output
         ActivationFunction relu = ActivationFunction.RELU;
@@ -411,6 +433,7 @@ public class GradientDescentTest {
 
     // ===== TEST UTILITY CLASSES =====
 
+    @Generated("GitHub Copilot")
     private static class ConstantWeightInitializer implements WeightInitializer {
         private final double weight;
 
@@ -431,6 +454,7 @@ public class GradientDescentTest {
      * des Output-Neurons mit dem numerisch per Finite-Differences ermittelten Gradienten.
      * Dies beweist die korrekte Berechnung der partiellen Ableitung im einfachsten Fall.
      */
+    @Generated("GitHub Copilot")
     @Test
     public void testNumericalGradientCheckOutputWeight() {
         double lr = 0.01;
@@ -468,6 +492,7 @@ public class GradientDescentTest {
     /**
      * Wie {@link #testNumericalGradientCheckOutputWeight}, aber für den Bias des Output-Neurons.
      */
+    @Generated("GitHub Copilot")
     @Test
     public void testNumericalGradientCheckOutputBias() {
         double lr = 0.01;
@@ -503,6 +528,7 @@ public class GradientDescentTest {
      * Dieser Test verifiziert die Korrektheit der Backpropagation durch mehrere Layer.
      * Netz: 1 Input → 1 Hidden (SIGMOID) → 1 Output (LINEAR).
      */
+    @Generated("GitHub Copilot")
     @Test
     public void testNumericalGradientCheckHiddenWeight() {
         double lr = 0.01;
@@ -544,6 +570,7 @@ public class GradientDescentTest {
      * Stellt sicher, dass {@link Adjustments#adjust(Network)} die Gewichte und Biases
      * im Netzwerk tatsächlich verändert (nicht nur berechnet).
      */
+    @Generated("GitHub Copilot")
     @Test
     public void testAdjustChangesWeightsAndBias() {
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
@@ -568,6 +595,7 @@ public class GradientDescentTest {
      * Nach einem einzelnen Gradient-Descent-Schritt (compute + adjust) muss der Loss
      * für denselben Datenpunkt kleiner sein als vorher.
      */
+    @Generated("GitHub Copilot")
     @Test
     public void testLossDecreasesAfterOneAdjustStep() {
         // 1 Input → 1 Output (LINEAR), w=0.5, b=0 → output=0.5, expected=1.0
@@ -596,6 +624,7 @@ public class GradientDescentTest {
      * Wenn die Vorhersage exakt dem erwarteten Wert entspricht (Loss = 0),
      * muss der Gradient überall null sein – das Netz ist bereits optimal.
      */
+    @Generated("GitHub Copilot")
     @Test
     public void testPerfectPredictionZeroAdjustments() {
         // w=0.5, b=0, input=2.0 → output = 0.5 * 2.0 = 1.0 = expected → perfekte Vorhersage
@@ -618,6 +647,7 @@ public class GradientDescentTest {
      * {@code compute()} darf das Netzwerk nicht verändern. Zwei aufeinanderfolgende Aufrufe
      * mit denselben Eingaben müssen identische Anpassungen liefern.
      */
+    @Generated("GitHub Copilot")
     @Test
     public void testComputeIsNonDestructive() {
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
@@ -651,6 +681,7 @@ public class GradientDescentTest {
      * </ul>
      * Nur für das Output-Gewicht eines einfachen linearen Netzes ohne Bias geprüft.
      */
+    @Generated("GitHub Copilot")
     @Test
     public void testAdjustmentSignMatchesGradientDirection() {
         // w=0.5, b=0, input=2.0, expected=2.0 → output=1.0 < expected → Underprediction
@@ -683,6 +714,7 @@ public class GradientDescentTest {
      * MAE und MSE berechnen unterschiedliche Gradienten, wenn |error| ≠ 0.5.
      * Bei einem Fehler von 1.0 liefert MSE den doppelten Gradienten gegenüber MAE.
      */
+    @Generated("GitHub Copilot")
     @Test
     public void testMAEProducesDifferentGradientThanMSE() {
         // w=0, b=0, input=1.0 → output=0.0, expected=1.0, Fehler=1.0
