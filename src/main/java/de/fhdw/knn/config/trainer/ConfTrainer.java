@@ -9,7 +9,6 @@ import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
-import lombok.Data;
 
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ import java.util.Optional;
  * @see Trainer
  * @see TomlSerializable
  */
-@Data
 public class ConfTrainer implements TomlSerializable {
 
     /**
@@ -39,47 +37,47 @@ public class ConfTrainer implements TomlSerializable {
      * @see ConfTrainer#create(Network)
      * @see LossFunction
      */
-    private String lossFunction;
+    public String lossFunction;
     /**
      * Konfiguriert die Bedingungen für EarlyStopping während des Trainings.
      *
      * @see ConfTrainer#create(Network)
      */
-    private ConfEarlyStopping earlyStopping;
+    public ConfEarlyStopping earlyStopping;
 
     /**
      * Gibt die maximale Anzahl von Epochen für den Trainingsprozess an.
      *
      * @see ConfTrainer#create(Network)
      */
-    private int maxEpochs;
+    public int maxEpochs;
     /**
      * Gibt an, ob die Trainingsdaten vor jeder Epoche neu gemischt werden sollen.
      * Empfohlen für eine bessere Generalisierung.
      *
      * @see ConfTrainer#create(Network)
      */
-    private boolean shuffleEpoch;
+    public boolean shuffleEpoch;
 
     /**
      * Gibt an, wie viele Trainingsbeispiele gleichzeitig verarbeitet werden, bevor die Gewichte des Netzwerks angepasst werden.
      *
      * @see ConfTrainer#create(Network)
      */
-    private int batchSize;
+    public int batchSize;
     /**
      * Gibt die Lernrate des Netzwerks an.
      *
      * @see ConfTrainer#create(Network)
      */
-    private double learningRate;
+    public double learningRate;
 
     /**
      * Gibt den Dateipfad an, in den das trainierte neuronale Netzwerk exportiert werden soll.
      *
      * @see ConfTrainer#export(Network)
      */
-    private String exportFile;
+    public String exportFile;
 
     /**
      * Erstellt eine neue {@code Trainer}-Instanz, die mit den Parametern dieses {@code ConfTrainer} konfiguriert ist.

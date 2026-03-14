@@ -3,7 +3,6 @@ package de.fhdw.knn.config.data;
 import de.fhdw.knn.data.CsvReader;
 import de.fhdw.knn.data.TrainTestSplit;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
-import lombok.Data;
 
 import java.io.IOException;
 
@@ -15,7 +14,6 @@ import java.io.IOException;
  *
  * @see TomlSerializable
  */
-@Data
 public class ConfData implements TomlSerializable {
 
     /**
@@ -32,33 +30,33 @@ public class ConfData implements TomlSerializable {
      *
      * <p>Es wird erwartet, dass die Datei im CSV-Format vorliegt.
      */
-    private String file;
+    public String file;
     /**
      * Gibt den Index der Spalte an, ab der die Eingabedaten im CSV-Datensatz beginnen.
      *
      * @see #inputSize
      */
-    private int inputStart;
+    public int inputStart;
     /**
      * Definiert die Anzahl der Eingabemerkmale (Features), die aus den CSV-Daten extrahiert werden sollen.
      * Sie wird in Kombination mit {@code inputStart} verwendet, um den Umfang der Eingabedaten zu definieren.
      *
      * @see #inputStart
      */
-    private int inputSize;
+    public int inputSize;
     /**
      * Gibt den Index der Spalte an, ab der die Ausgabedaten im CSV-Datensatz beginnen.
      *
      * @see #outputSize
      */
-    private int outputStart;
+    public int outputStart;
     /**
      * Definiert die Anzahl der Ausgabemerkmale (Features), die aus den CSV-Daten extrahiert werden sollen.
      * Sie wird in Kombination mit {@code outputStart} verwendet, um den Umfang der Ausgabedaten zu definieren.
      *
      * @see #outputStart
      */
-    private int outputSize;
+    public int outputSize;
     /**
      * Definiert die Anzahl der Zeilen, die beim Einlesen der CSV-Datei übersprungen werden sollen.
      *
@@ -68,7 +66,7 @@ public class ConfData implements TomlSerializable {
      *
      * @see CsvReader#readFile(String, int, int, int, int, int)
      */
-    private int skip;
+    public int skip;
 
     /**
      * Der Zufallswert, der zum Mischen und Aufteilen der Daten bei der Erstellung
@@ -77,7 +75,7 @@ public class ConfData implements TomlSerializable {
      * <p>Es wird im {@link TrainTestSplit}-Erstellungsprozess verwendet,
      * der in der Methode {@link ConfData#create()} implementiert ist.
      */
-    private int seed;
+    public int seed;
     /**
      * Gibt den Anteil der Daten an, der für den Testdatensatz bei der Aufteilung des
      * vollständigen Datensatzes in Trainings- und Testuntergruppen zugewiesen werden soll.
@@ -90,7 +88,7 @@ public class ConfData implements TomlSerializable {
      *          und keine Daten im Trainingsdatensatz verbleiben.</li>
      * </ul>
      */
-    private double testShare;
+    public double testShare;
 
 
     /**

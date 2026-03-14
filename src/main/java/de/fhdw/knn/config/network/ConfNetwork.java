@@ -7,7 +7,6 @@ import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.io.Importer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
-import lombok.Data;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -23,7 +22,6 @@ import java.util.Optional;
  * @see Network
  * @see TomlSerializable
  */
-@Data
 public class ConfNetwork implements TomlSerializable {
 
     /**
@@ -38,14 +36,14 @@ public class ConfNetwork implements TomlSerializable {
      *
      * @see ConfNetwork#create(DataSet)
      */
-    private String importFile;
+    public String importFile;
     /**
      * Stellt den Zufallswert dar, der zur Initialisierung der Zufälligkeit in der Konfiguration
      * des neuronalen Netzwerks verwendet wird.
      *
      * @see ConfNetwork#create(DataSet)
      */
-    private int seed;
+    public int seed;
     /**
      * Gibt den Gewichtsinitialisierer an, der zum Initialisieren der Gewichte
      * des neuronalen Netzwerks verwendet werden soll.
@@ -53,14 +51,14 @@ public class ConfNetwork implements TomlSerializable {
      * @see WeightInitializer
      * @see ConfNetwork#create(DataSet)
      */
-    private String weightInitializer;
+    public String weightInitializer;
     /**
      * Repräsentiert die Konfiguration der Schichten eines neuronalen Netzwerks.
      *
      * @see ConfLayer
      * @see ConfNetwork#create(DataSet)
      */
-    private ConfLayer[] layer;
+    public ConfLayer[] layer;
 
     /**
      * Erstellt eine neuronale Netzwerkinstanz basierend auf der aktuellen Konfiguration oder

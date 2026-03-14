@@ -4,7 +4,6 @@ import de.fhdw.knn.trainer.Trainer;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
-import lombok.Data;
 
 /**
  * Die Klasse {@code ConfEarlyStopping} stellt eine Konfiguration für die {@code StopFunction} {@code EarlyStopping} des Trainings eines neuronalen Netzwerks dar.
@@ -16,7 +15,6 @@ import lombok.Data;
  * @see EarlyStopping
  * @see TomlSerializable
  */
-@Data
 public class ConfEarlyStopping implements TomlSerializable {
 
     /**
@@ -31,14 +29,14 @@ public class ConfEarlyStopping implements TomlSerializable {
      * @see ConfEarlyStopping#create()
      * @see EarlyStopping
      */
-    private double minDelta;
+    public double minDelta;
     /**
      * Konfiguriert die Anzahl aufeinanderfolgender Epochen, in denen die Loss-Verbesserung minDelta unterschreiten muss
      *
      * @see ConfEarlyStopping#create()
      * @see EarlyStopping
      */
-    private int patience;
+    public int patience;
 
     /**
      * Erstellt eine neue {@code EarlyStopping}-Instanz, die mit den Parametern dieses {@code ConfEarlyStopping} konfiguriert ist.

@@ -4,7 +4,6 @@ import de.fhdw.knn.config.Config;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.layer.DenseLayer;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
-import lombok.Data;
 import lombok.SneakyThrows;
 
 /**
@@ -17,7 +16,6 @@ import lombok.SneakyThrows;
  * @see DenseLayer
  * @see TomlSerializable
  */
-@Data
 public class ConfLayer implements TomlSerializable {
 
     /**
@@ -32,7 +30,7 @@ public class ConfLayer implements TomlSerializable {
      * @see ConfLayer#create()
      * @see DenseLayer
      */
-    private int neurons;
+    public int neurons;
     /**
      * Stellt die Aktivierungsfunktion dar, die für eine {@code DenseLayer} innerhalb verwendet werden soll.
      *
@@ -40,7 +38,7 @@ public class ConfLayer implements TomlSerializable {
      * @see DenseLayer#withActivationFunction(ActivationFunction)
      * @see ActivationFunction
      */
-    private String activationFunction;
+    public String activationFunction;
 
 
     /**
@@ -55,7 +53,7 @@ public class ConfLayer implements TomlSerializable {
      */
     @SneakyThrows
     public DenseLayer create() {
-        ActivationFunction activationFunction = Config.getStaticField(ActivationFunction.class, getActivationFunction());
-        return new DenseLayer(getNeurons()).withActivationFunction(activationFunction);
+        ActivationFunction activationFunction = Config.getStaticField(ActivationFunction.class, this.activationFunction);
+        return new DenseLayer(neurons).withActivationFunction(activationFunction);
     }
 }

@@ -6,7 +6,6 @@ import de.fhdw.knn.scorer.ClassificationScorer;
 import de.fhdw.knn.scorer.Scorer;
 import de.fhdw.knn.trainer.loss.LossFunction;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
-import lombok.Data;
 
 import java.util.Optional;
 
@@ -21,7 +20,6 @@ import java.util.Optional;
  * @see Scorer
  * @see TomlSerializable
  */
-@Data
 public class ConfScorer implements TomlSerializable {
 
     /**
@@ -36,14 +34,14 @@ public class ConfScorer implements TomlSerializable {
      * @see ConfScorer#create(Network)
      * @see LossFunction
      */
-    private String lossFunction;
+    public String lossFunction;
     /**
      * Stellt den Typ des Scorers dar, der in der Konfiguration angegeben wird.
      *
      * @see ConfScorer#create(Network)
      * @see Scorer
      */
-    private String type;
+    public String type;
 
     /**
      * Erstellt dynamisch eine Instanz von {@code Scorer} basierend auf dem Konfigurationstyp.

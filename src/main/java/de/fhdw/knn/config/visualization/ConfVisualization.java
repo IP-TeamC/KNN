@@ -3,7 +3,6 @@ package de.fhdw.knn.config.visualization;
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.visualization.ViewManager;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
-import lombok.Data;
 
 /**
  * Die Klasse {@code ConfVisualization} stellt eine Konfiguration für einen {@code ViewManager} dar.
@@ -15,7 +14,6 @@ import lombok.Data;
  * @see ViewManager
  * @see TomlSerializable
  */
-@Data
 public class ConfVisualization implements TomlSerializable {
 
     /**
@@ -31,7 +29,7 @@ public class ConfVisualization implements TomlSerializable {
      *
      * @see ConfVisualization#create(Network)
      */
-    private int heatmapInterval = 0;
+    public int heatmapInterval = 0;
     /**
      * Gibt an, nach wie vielen Epochen ein neues SankeyPlot generiert werden soll.
      *
@@ -39,7 +37,7 @@ public class ConfVisualization implements TomlSerializable {
      *
      * @see ConfVisualization#create(Network)
      */
-    private int sankeyInterval = 0;
+    public int sankeyInterval = 0;
 
     /**
      * Erstellt eine neue Instanz von {@code ViewManager}, die mit den angegebenen Intervallen

@@ -14,7 +14,6 @@ import de.fhdw.knn.trainer.loss.LossFunction;
 import io.github.wasabithumb.jtoml.JToml;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
 import io.github.wasabithumb.jtoml.value.table.TomlTable;
-import lombok.Data;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -24,7 +23,6 @@ import java.util.Optional;
 /**
  * Ausführbare Konfiguration mithilfe einer TOML-Datei.
  */
-@Data
 public class Config implements TomlSerializable {
 
     /**
@@ -38,31 +36,31 @@ public class Config implements TomlSerializable {
      *
      * @see Config#execute()
      */
-    private ConfData data;
+    public ConfData data;
     /**
      * Die Konfiguration des neuronalen Netzwerks innerhalb der Ausführungssteuerung.
      *
      * @see Config#execute()
      */
-    private ConfNetwork network;
+    public ConfNetwork network;
     /**
      * Die Konfiguration des Trainers innerhalb der Ausführungssteuerung.
      *
      * @see Config#execute()
      */
-    private ConfTrainer trainer;
+    public ConfTrainer trainer;
     /**
      * Die Konfiguration des Scorers innerhalb der Ausführungssteuerung.
      *
      * @see Config#execute()
      */
-    private ConfScorer scorer;
+    public ConfScorer scorer;
     /**
      * Die Konfiguration der Visualisierung von Netzwerkinformationen innerhalb der Ausführungssteuerung.
      *
      * @see Config#execute()
      */
-    private ConfVisualization visualization;
+    public ConfVisualization visualization;
 
     /**
      * Führt das Programm (Daten einlesen, Netzwerk erzeugen/trainieren/evaluieren) entsprechend der Konfiguration aus.
@@ -70,31 +68,31 @@ public class Config implements TomlSerializable {
      * @throws IOException Wird geworfen, wenn beim Einlesen der Daten oder bei Operationen auf dem Netzwerk ein Fehler auftritt.
      */
     public void execute() throws IOException {
-        TrainTestSplit data = getData() != null ? getData().create() : new TrainTestSplit(null, null);
-        Network network = getNetwork().create(data.train);
+        TrainTestSplit data = this.data != null ? this.data.create() : new TrainTestSplit(null, null);
+        Network network = this.network.create(data.train);
 
         long trainStart = 0;
         long trainStop = 0;
-        if (getTrainer() != null) {
-            Trainer trainer = getTrainer().create(network);
-            if (getVisualization() != null && getVisualization().isEnabled()) {
-                trainer.setViewManager(getVisualization().create(network));
+        if (this.trainer != null) {
+            Trainer trainer = this.trainer.create(network);
+            if (this.visualization != null && this.visualization.isEnabled()) {
+                trainer.setViewManager(this.visualization.create(network));
             }
 
             trainStart = System.currentTimeMillis();
             trainer.train(data.train);
             trainStop = System.currentTimeMillis();
 
-            getTrainer().export(network);
-        } else if (getVisualization() != null && getVisualization().isEnabled()) {
-            getVisualization().create(network).nextEpoch(1, network, 1);
+            this.trainer.export(network);
+        } else if (this.visualization != null && this.visualization.isEnabled()) {
+            this.visualization.create(network).nextEpoch(1, network, 1);
         }
 
         long testStart = 0;
         long testStop = 0;
-        if (getScorer() != null) {
-            Optional<LossFunction> lossFunction = getScorer().getLossFunction();
-            Optional<Scorer> scorer = Optional.of(getScorer())
+        if (this.scorer != null) {
+            Optional<LossFunction> lossFunction = this.scorer.getLossFunction();
+            Optional<Scorer> scorer = Optional.of(this.scorer)
                     .flatMap(conf -> conf.create(network));
 
             testStart = System.currentTimeMillis();

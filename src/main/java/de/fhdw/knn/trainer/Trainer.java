@@ -133,7 +133,7 @@ public class Trainer {
             }
 
             // Export
-            if (export != null && mod > 0 && (epoch % mod == 0 || epoch == maxEpochs - 1)) {
+            if (export != null && mod > 0 && (epoch % mod == 0 || epoch == maxEpochs)) {
                 Exporter.export(network, export.formatted(epoch));
             }
 

@@ -62,8 +62,6 @@ public class ConfigExecutor {
      * @return Dateiname mit {code .toml} als Dateiendung
      */
     private static String addFileExtension(String filename) {
-        if (filename == null) return null;
-
         if (!filename.endsWith(".toml")) {
             filename += ".toml";
         }
@@ -87,8 +85,7 @@ public class ConfigExecutor {
         }
 
         if (!Files.isRegularFile(confPath)) {
-            System.err.println("Konfigurationsdatei nicht gefunden: " + confPath);
-            System.exit(1);
+            throw new IllegalArgumentException("Konfigurationsdatei nicht gefunden: " + confPath);
         }
 
         return confPath;

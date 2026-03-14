@@ -1,5 +1,7 @@
 package de.fhdw.knn.trainer.optimization;
 
+import de.fhdw.knn.TestUtil;
+import de.fhdw.knn.network.neuron.SuperNeuron;
 import de.fhdw.knn.trainer.learningrate.ConstantLearningRate;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +37,49 @@ public class GradientDescentTest {
         assertNotNull(adj.adjustmentsWeight());
         assertNotNull(adj.adjustmentsBias());
         assertEquals(2, adj.adjustmentsWeight().length);
+    }
+
+    @Test
+    public void testSingleNeuronGradientComputationSuperNeurons() {
+        // 1 Input -> 1 Hidden -> 1 Output
+        Network network = createNetworkWithHiddenLayer(1, 1, 1);
+        gradientDescent = new GradientDescent(
+                LossFunction.MEAN_SQUARED_ERROR,
+                new ConstantLearningRate(0.01)
+        );
+        new SuperNeuron(TestUtil.simpleDummyNetwork()).insert(network, 0, 0);
+        new SuperNeuron(TestUtil.simpleDummyNetwork()).insert(network, 1, 0);
+
+        double[] input = {1.0};
+        double[] expectedOutput = {1.0};
+
+        gradientDescent.epoch(0, 0);
+        Adjustments adj = gradientDescent.compute(network, input, expectedOutput, 1);
+
+        assertNotNull(adj.adjustmentsWeight());
+        assertNotNull(adj.adjustmentsBias());
+        assertEquals(2, adj.adjustmentsWeight().length);
+    }
+
+    @Test
+    public void testSingleNeuronGradientComputationSuperNeuronsSimpler() {
+        // 1 Input -> 1 output
+        Network network = TestUtil.simpleDummyNetwork();
+        gradientDescent = new GradientDescent(
+                LossFunction.MEAN_SQUARED_ERROR,
+                new ConstantLearningRate(0.01)
+        );
+        new SuperNeuron(TestUtil.simpleDummyNetwork()).insert(network, 0, 0);
+
+        double[] input = {1.0};
+        double[] expectedOutput = {1.0};
+
+        gradientDescent.epoch(0, 0);
+        Adjustments adj = gradientDescent.compute(network, input, expectedOutput, 1);
+
+        assertNotNull(adj.adjustmentsWeight());
+        assertNotNull(adj.adjustmentsBias());
+        assertEquals(1, adj.adjustmentsWeight().length);
     }
 
     @Test
@@ -344,7 +389,7 @@ public class GradientDescentTest {
         return new Network(42, new ConstantWeightInitializer(0.5), inputSize, layers);
     }
 
-    private Network createNetworkWithMultipleHiddenLayers(int inputSize, int[] hiddenSizes, int outputSize) {
+    private Network createNetworkWithMultipleHiddenLayers(@SuppressWarnings("SameParameterValue") int inputSize, int[] hiddenSizes, int outputSize) {
         // inputSize Input -> hiddenSizes[0] Hidden -> hiddenSizes[1] Hidden -> ... -> outputSize Output
         ActivationFunction relu = ActivationFunction.RELU;
         ActivationFunction linear = ActivationFunction.LINEAR;
