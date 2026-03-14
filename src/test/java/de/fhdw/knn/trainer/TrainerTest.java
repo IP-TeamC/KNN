@@ -15,6 +15,7 @@ import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.processing.Generated;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,4 +72,79 @@ public class TrainerTest {
         assertNotEquals(initialWeight, outer.denseLayers[0].neurons[0].incoming[0].weight);
     }
 
+    @Generated("GitHub Copilot")
+    @Test
+    public void testTrainingReducesLoss() {
+        // Einfaches Netz (1→1, Linear) soll die Funktion y=2*x annäherungsweise erlernen.
+        // Nach ausreichend vielen Epochen muss der Loss kleiner sein als vor dem Training.
+        Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 1,
+                DenseLayer.createLayers(null, ActivationFunction.LINEAR, 1));
+
+        DataSet data = new DataSet(
+                new double[][]{{1.0}, {2.0}, {3.0}, {4.0}},
+                new double[][]{{2.0}, {4.0}, {6.0}, {8.0}}
+        );
+
+        LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
+        double initialLoss = lossFunction.totalLoss(data.outputs, network.predict(data.inputs));
+
+        OptimizationFunction opt = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
+        Trainer trainer = new Trainer(network, 200, false, 1, LossFunction.MEAN_SQUARED_ERROR,
+                EarlyStopping.NEVER, opt);
+        trainer.train(data);
+
+        double finalLoss = lossFunction.totalLoss(data.outputs, network.predict(data.inputs));
+        assertTrue(finalLoss < initialLoss,
+                "Training sollte den Loss verringern. Vorher: " + initialLoss + ", Nachher: " + finalLoss);
+    }
+
+    @Generated("GitHub Copilot")
+    @Test
+    public void testShuffleChangesDataOrder() {
+        // DataSet.shuffle() muss die Reihenfolge der Zeilen verändern
+        DataSet data = new DataSet(
+                new double[][]{{1.0}, {2.0}, {3.0}, {4.0}, {5.0}},
+                new double[][]{{1.0}, {2.0}, {3.0}, {4.0}, {5.0}}
+        );
+        double[] originalOrder = new double[5];
+        for (int i = 0; i < 5; i++) {
+            originalOrder[i] = data.inputs[i][0];
+        }
+
+        data.shuffle(42);
+
+        boolean changed = false;
+        for (int i = 0; i < 5; i++) {
+            if (data.inputs[i][0] != originalOrder[i]) {
+                changed = true;
+                break;
+            }
+        }
+        assertTrue(changed, "shuffle() sollte die Reihenfolge der Einträge ändern");
+    }
+
+    @Generated("GitHub Copilot")
+    @Test
+    public void testBatchedTrainingReducesLoss() {
+        // Auch Mini-Batching (batchSize > 1) soll den Loss über mehrere Epochen verringern
+        Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 1,
+                DenseLayer.createLayers(null, ActivationFunction.LINEAR, 1));
+
+        DataSet data = new DataSet(
+                new double[][]{{1.0}, {2.0}, {3.0}, {4.0}, {5.0}, {6.0}, {7.0}, {8.0}},
+                new double[][]{{1.0}, {2.0}, {3.0}, {4.0}, {5.0}, {6.0}, {7.0}, {8.0}}
+        );
+
+        LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
+        double initialLoss = lossFunction.totalLoss(data.outputs, network.predict(data.inputs));
+
+        OptimizationFunction opt = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
+        Trainer trainer = new Trainer(network, 200, false, 4, LossFunction.MEAN_SQUARED_ERROR,
+                EarlyStopping.NEVER, opt);
+        trainer.train(data);
+
+        double finalLoss = lossFunction.totalLoss(data.outputs, network.predict(data.inputs));
+        assertTrue(finalLoss < initialLoss,
+                "Batched Training sollte den Loss verringern. Vorher: " + initialLoss + ", Nachher: " + finalLoss);
+    }
 }
