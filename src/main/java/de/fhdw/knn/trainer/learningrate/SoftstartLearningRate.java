@@ -34,7 +34,7 @@ public class SoftstartLearningRate implements LearningRateFunction {
 
     @Override
     public double calc(int epoch, double previousLoss) {
-        if (epoch < softEpochs) {
+        if (epoch <= softEpochs) {
             return learningRate * softness;
         }
         return learningRate;

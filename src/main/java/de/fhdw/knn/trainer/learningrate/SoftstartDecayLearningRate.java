@@ -41,11 +41,15 @@ public class SoftstartDecayLearningRate implements LearningRateFunction {
 
     @Override
     public double calc(int epoch, double previousLoss) {
-        if (epoch < softEpochs) {
+        if (epoch <= softEpochs) {
             return learningRate * softness;
         }
-        learningRate = learningRate * decay;
-        return learningRate;
+
+        try {
+            return learningRate;
+        } finally {
+            learningRate *= decay;
+        }
     }
 
 }

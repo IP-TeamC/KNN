@@ -28,8 +28,11 @@ public class DecayLearningRate implements LearningRateFunction {
 
     @Override
     public double calc(int epoch, double previousLoss) {
-        learningRate = learningRate * decay;
-        return learningRate;
+        try {
+            return learningRate;
+        } finally {
+            learningRate *= decay;
+        }
     }
 
 }
