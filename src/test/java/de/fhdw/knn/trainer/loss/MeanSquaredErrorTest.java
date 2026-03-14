@@ -3,6 +3,8 @@ package de.fhdw.knn.trainer.loss;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
+import javax.annotation.processing.Generated;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Mean Squared Error Loss Function Tests")
@@ -14,6 +16,7 @@ public class MeanSquaredErrorTest {
 
     // ===== GRUNDLEGENDE EIGENSCHAFTEN =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Perfekte Vorhersage sollte Loss = 0 ergeben")
     public void testPerfectPredictionZeroLoss() {
@@ -24,6 +27,7 @@ public class MeanSquaredErrorTest {
         assertEquals(0.0, loss, 1e-10);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss sollte nicht-negativ sein")
     public void testLossNonNegative() {
@@ -34,6 +38,7 @@ public class MeanSquaredErrorTest {
         assertTrue(loss >= 0, "Loss sollte nicht-negativ sein, ist aber: " + loss);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss ist symmetrisch in Vorhersage-Richtung")
     public void testSymmetricError() {
@@ -45,6 +50,7 @@ public class MeanSquaredErrorTest {
         assertEquals(loss1, loss2, 1e-10);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss skaliert quadratisch mit Error")
     public void testQuadraticScaling() {
@@ -56,6 +62,7 @@ public class MeanSquaredErrorTest {
         assertEquals(4.0, loss2 / loss1, 0.01);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss mittelt über alle Outputs")
     public void testAveragingOverOutputs() {
@@ -69,6 +76,7 @@ public class MeanSquaredErrorTest {
 
     // ===== NUMERISCHE EIGENSCHAFTEN =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Numerisches Gradient Checking")
     public void testGradientNumerical() {
@@ -86,6 +94,7 @@ public class MeanSquaredErrorTest {
                         " vs numerical=" + numericalGradient);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient sollte in Richtung von Error zeigen")
     public void testGradientDirection() {
@@ -98,6 +107,7 @@ public class MeanSquaredErrorTest {
         assertTrue(gradient < 0, "Gradient sollte negativ sein für unterprognostizierte Werte");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Sehr großer Error produces großen Gradient")
     public void testLargeErrorLargeGradient() {
@@ -111,6 +121,7 @@ public class MeanSquaredErrorTest {
 
     // ===== MEHRERE OUTPUTS =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient für mehrere Outputs")
     public void testGradientMultipleOutputs() {
@@ -123,6 +134,7 @@ public class MeanSquaredErrorTest {
         assertFalse(Double.isInfinite(gradient), "Gradient sollte nicht Infinity sein");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss mit einzelnem Output")
     public void testSingleOutput() {
@@ -134,6 +146,7 @@ public class MeanSquaredErrorTest {
         assertEquals(0.16, loss, 1e-10);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss mit vielen Outputs")
     public void testManyOutputs() {
@@ -154,6 +167,7 @@ public class MeanSquaredErrorTest {
 
     // ===== EDGE CASES =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Sehr kleine Errors")
     public void testVerySmallErrors() {
@@ -164,6 +178,7 @@ public class MeanSquaredErrorTest {
         assertTrue(loss > 0 && loss < 1e-15);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Sehr große Values")
     public void testVeryLargeValues() {
@@ -175,6 +190,7 @@ public class MeanSquaredErrorTest {
         assertFalse(Double.isInfinite(loss));
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Negative Values")
     public void testNegativeValues() {
@@ -185,6 +201,7 @@ public class MeanSquaredErrorTest {
         assertEquals(0.25, loss, 1e-10);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gemischte positive und negative Values")
     public void testMixedSigns() {
@@ -195,6 +212,7 @@ public class MeanSquaredErrorTest {
         assertEquals(1.0, loss, 1e-10);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Null-Like Arrays mit Zeros")
     public void testZeroArrays() {
@@ -207,6 +225,7 @@ public class MeanSquaredErrorTest {
 
     // ===== GRADIENT KONSISTENZ =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient bei Zero-Error")
     public void testGradientZeroError() {
@@ -217,6 +236,7 @@ public class MeanSquaredErrorTest {
         assertEquals(0.0, gradient, 1e-10);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient Richtung: Overprediction")
     public void testGradientOverprediction() {
@@ -229,6 +249,7 @@ public class MeanSquaredErrorTest {
         assertTrue(gradient > 0);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient Richtung: Underprediction")
     public void testGradientUnderprediction() {
@@ -241,6 +262,7 @@ public class MeanSquaredErrorTest {
         assertTrue(gradient < 0);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient Magnitude proportional zu Error")
     public void testGradientMagnitudeProportional() {
@@ -258,6 +280,7 @@ public class MeanSquaredErrorTest {
 
     // ===== STABILITÄT =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Keine NaN bei normalen Werten")
     public void testNoNaN() {
@@ -271,6 +294,7 @@ public class MeanSquaredErrorTest {
         assertFalse(Double.isNaN(gradient));
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Keine Infinity bei normalen Werten")
     public void testNoInfinity() {
@@ -289,6 +313,7 @@ public class MeanSquaredErrorTest {
     /**
      * Numerisches Gradient Checking mit Finite Differences
      */
+    @Generated("GitHub Copilot")
     private double computeNumericalGradient(java.util.function.Function<double[], Double> lossFunction, double[] point) {
         double sum = 0;
 
