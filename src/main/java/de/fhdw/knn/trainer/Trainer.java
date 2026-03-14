@@ -159,8 +159,8 @@ public class Trainer {
                     int index = base + offset;
                     adjustments[offset] = optimizationFunction.compute(network, data.inputs[index], data.outputs[index], batchSize);
                 });
-                for (Adjustments adjustment : adjustments) {
-                    adjustment.adjust(network);
+                for (int offset = 0; offset < limit; offset++) {
+                    adjustments[offset].adjust(network);
                 }
             }
         } else {

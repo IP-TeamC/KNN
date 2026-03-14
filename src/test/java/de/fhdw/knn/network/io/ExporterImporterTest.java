@@ -9,6 +9,7 @@ import de.fhdw.knn.network.neuron.OutputDerived;
 import de.fhdw.knn.network.neuron.SuperNeuron;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.processing.Generated;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,6 +65,14 @@ public class ExporterImporterTest {
     @Test
     public void testImportFail() {
         assertThrows(IOException.class, () -> Importer.importNetwork("src/main/java/invalid-file.knn"));
+    }
+
+    @Generated("GitHub Copilot")
+    @Test
+    public void testImportMalformedDataFails() {
+        Importer importer = new Importer();
+        byte[] malformed = new byte[]{0, 0, 0};
+        assertThrows(RuntimeException.class, () -> importer.load(malformed));
     }
 
 }

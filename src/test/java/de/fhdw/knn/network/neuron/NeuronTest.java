@@ -6,8 +6,10 @@ import de.fhdw.knn.network.connection.Connection;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.layer.InputLayer;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import javax.annotation.processing.Generated;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,7 +38,7 @@ public class NeuronTest {
         assertEquals(outputs[0], outputsDerived.lastOutput());
     }
 
-    private static Network superNeuronInner;
+    private Network superNeuronInner;
     private static final double[] superNeuronAdapterBias = new double[]{0, 0, 0};
     private static final double[][] superNeuronAdapterWeights = new double[][]{
             new double[]{0, 1},
@@ -44,8 +46,8 @@ public class NeuronTest {
             new double[]{1, 0},
     };
 
-    @BeforeAll
-    public static void initSuperNeuronInnerNetwork() {
+    @BeforeEach
+    public void initSuperNeuronInnerNetwork() {
         superNeuronInner = new Network(42, WeightInitializer.ZERO, 3,
                 DenseLayer.createLayers(null, ActivationFunction.SIGMOID, 1));
         superNeuronInner.denseLayers[0].neurons[0].incoming[0].weight = 5;
@@ -117,6 +119,22 @@ public class NeuronTest {
         outer.denseLayers[0].neurons[0].incoming[0].weight = 1;
         outer.denseLayers[0].neurons[0].incoming[1].weight = 1;
         outer.denseLayers[1].neurons[0].incoming[0].weight = 1;
+
+        SuperNeuron sn = new SuperNeuron(superNeuronInner, superNeuronAdapterBias, superNeuronAdapterWeights);
+        sn.insert(outer, 0, 0);
+
+        OutputsDerived feedForward = outer.feedForward(new double[]{-2, 3});
+        assertEquals(0.268941, feedForward.lastOutput()[0], 1e-6);
+        assertEquals(0.196612, feedForward.derived()[0][0], 1e-6);
+    }
+
+    @Generated("GitHub Copilot")
+    @Test
+    public void testSuperNeuronInsertIntoOutputLayer() {
+        Network outer = new Network(42, WeightInitializer.ZERO, 2,
+                new DenseLayer(1).withActivationFunction(ActivationFunction.LINEAR));
+        outer.denseLayers[0].neurons[0].incoming[0].weight = 1;
+        outer.denseLayers[0].neurons[0].incoming[1].weight = 1;
 
         SuperNeuron sn = new SuperNeuron(superNeuronInner, superNeuronAdapterBias, superNeuronAdapterWeights);
         sn.insert(outer, 0, 0);

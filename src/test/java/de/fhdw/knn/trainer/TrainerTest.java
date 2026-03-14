@@ -147,4 +147,44 @@ public class TrainerTest {
         assertTrue(finalLoss < initialLoss,
                 "Batched Training sollte den Loss verringern. Vorher: " + initialLoss + ", Nachher: " + finalLoss);
     }
+
+    @Generated("GitHub Copilot")
+    @Test
+    public void testBatchSizeLargerThanDataSizeDoesNotFail() {
+        Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 1,
+                DenseLayer.createLayers(null, ActivationFunction.LINEAR, 1));
+        DataSet data = new DataSet(
+                new double[][]{{1.0}, {2.0}},
+                new double[][]{{1.0}, {2.0}}
+        );
+
+        OptimizationFunction opt = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
+        Trainer trainer = new Trainer(network, 3, false, 10, LossFunction.MEAN_SQUARED_ERROR,
+                EarlyStopping.NEVER, opt);
+
+        assertDoesNotThrow(() -> trainer.train(data));
+    }
+
+    @Generated("GitHub Copilot")
+    @Test
+    public void testBatchedTrainingWithRemainderDoesNotReuseOldAdjustments() {
+        Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 1,
+                DenseLayer.createLayers(null, ActivationFunction.LINEAR, 1));
+        DataSet data = new DataSet(
+                new double[][]{{1.0}, {2.0}, {3.0}, {4.0}, {5.0}},
+                new double[][]{{1.0}, {2.0}, {3.0}, {4.0}, {5.0}}
+        );
+        LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
+        double initialLoss = lossFunction.totalLoss(data.outputs, network.predict(data.inputs));
+
+        OptimizationFunction opt = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
+        Trainer trainer = new Trainer(network, 30, false, 2, lossFunction,
+                EarlyStopping.NEVER, opt);
+
+        assertDoesNotThrow(() -> trainer.train(data));
+        double finalLoss = lossFunction.totalLoss(data.outputs, network.predict(data.inputs));
+        assertTrue(finalLoss < initialLoss,
+                "Training mit Rest-Batch sollte stabil laufen und den Loss senken. Vorher: "
+                        + initialLoss + ", Nachher: " + finalLoss);
+    }
 }
