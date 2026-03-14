@@ -15,10 +15,272 @@ import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.trainer.loss.LossFunction;
 
 import javax.annotation.processing.Generated;
+import java.util.Arrays;
 
 public class GradientDescentTest {
 
-    private GradientDescent gradientDescent;
+    @Test
+    public void testAlmostPerfect() {
+        Network network = new Network(42, WeightInitializer.ZERO, 2,
+                DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.SIN, 1, 1));
+        OptimizationFunction gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.1));
+        gradientDescent.epoch(0, Double.NaN);
+        network.denseLayers[0].neurons[0].incoming[0].weight = 42;
+        network.denseLayers[0].neurons[0].incoming[1].weight = 24;
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.25;
+
+        Adjustments adjustments = gradientDescent.compute(network, new double[]{-3, 7}, new double[]{-0.87969576}, 1);
+        Arrays.stream(adjustments.adjustmentsBias()).flatMapToDouble(Arrays::stream)
+                .forEach(adjustmentBias -> assertEquals(0.0, adjustmentBias, 1e-8));
+        Arrays.stream(adjustments.adjustmentsWeight()).flatMap(Arrays::stream).flatMapToDouble(Arrays::stream)
+                .forEach(adjustmentWeight -> assertEquals(0.0, adjustmentWeight, 1e-8));
+    }
+
+    @Test
+    public void testLearningRate() {
+        Network network = new Network(42, WeightInitializer.ZERO, 2,
+                DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.SIN, 1, 1));
+
+        OptimizationFunction gradientDescentSmall = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.1));
+        gradientDescentSmall.epoch(0, Double.NaN);
+
+        OptimizationFunction gradientDescentBig = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(1));
+        gradientDescentBig.epoch(0, Double.NaN);
+
+        network.denseLayers[0].neurons[0].incoming[0].weight = 41;
+        network.denseLayers[0].neurons[0].incoming[1].weight = 25;
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.28;
+
+        Adjustments adjustmentsSmall = gradientDescentSmall.compute(network, new double[]{-3, 7}, new double[]{-0.87969576}, 1);
+        Adjustments adjustmentsBig = gradientDescentBig.compute(network, new double[]{-3, 7}, new double[]{-0.87969576}, 1);
+
+        for (int layer = 0; layer < network.denseLayers.length; layer++) {
+            for (int neuron = 0; neuron < network.denseLayers[layer].neurons.length; neuron++) {
+                assertEquals(10,
+                        adjustmentsBig.adjustmentsBias()[layer][neuron] / adjustmentsSmall.adjustmentsBias()[layer][neuron], 1e-10);
+                for (int conn = 0; conn < network.denseLayers[layer].neurons[neuron].incoming.length; conn++) {
+                    assertEquals(10,
+                            adjustmentsBig.adjustmentsWeight()[layer][neuron][conn] / adjustmentsSmall.adjustmentsWeight()[layer][neuron][conn], 1e-10);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testAdjustmentsLargeNegative() {
+        Network network = new Network(42, WeightInitializer.ZERO, 2,
+                DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.TANH, 1, 1));
+
+        OptimizationFunction gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(1));
+        gradientDescent.epoch(0, Double.NaN);
+
+        network.denseLayers[0].neurons[0].incoming[0].weight = 42;
+        network.denseLayers[0].neurons[0].incoming[1].weight = 24;
+        // sollte 0.25 sein (-> Adjustment/Gradient soll groß negativ sein, um das Gewicht zu erhöhen - Anpassung wird immer subtrahiert)
+        network.denseLayers[1].neurons[0].incoming[0].weight = -0.5;
+
+        Adjustments adjustments = gradientDescent.compute(network, new double[]{-3, 5.4}, new double[]{0.71629787}, 1);
+        assertTrue(adjustments.adjustmentsWeight()[1][0][0] < -1);
+    }
+
+    @Test
+    public void testAdjustmentsPositive() {
+        Network network = new Network(42, WeightInitializer.ZERO, 2,
+                DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.TANH, 1, 1));
+
+        OptimizationFunction gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(1));
+        gradientDescent.epoch(0, Double.NaN);
+
+        network.denseLayers[0].neurons[0].incoming[0].weight = 42;
+        network.denseLayers[0].neurons[0].incoming[1].weight = 24;
+        // sollte 0.25 sein (-> Adjustment/Gradient soll positiv sein, um das Gewicht zu erhöhen - Anpassung wird immer subtrahiert)
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.4;
+
+        Adjustments adjustments = gradientDescent.compute(network, new double[]{-3, 5.4}, new double[]{0.71629787}, 1);
+        assertTrue(adjustments.adjustmentsWeight()[1][0][0] > 0.2);
+    }
+
+    @Test
+    public void testAdjustmentsDifferenceQuotientWeights() {
+        // Verwendung der h-Methode / des Differenzialquotienten zur Bestimmung der Ableitung/des Gradienten
+        Network network = new Network(42, WeightInitializer.ZERO, 2,
+                DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.TANH, 1, 1));
+
+        LossFunction mse = LossFunction.MEAN_SQUARED_ERROR;
+        OptimizationFunction gradientDescent = new GradientDescent(mse, new ConstantLearningRate(1));
+        gradientDescent.epoch(0, Double.NaN);
+
+        network.denseLayers[0].neurons[0].incoming[0].weight = 42;
+        network.denseLayers[0].neurons[0].incoming[1].weight = 24;
+
+        double[] input = new double[]{-3, 5.4};
+        double[] output = new double[]{0.71629787};
+
+        // Gewicht im Output Layer
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.30001;
+        double[] prediction1 = network.predict(new double[][]{input})[0];
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.30002;
+        double[] prediction2 = network.predict(new double[][]{input})[0];
+
+        double loss1 = mse.loss(output, prediction1);
+        double loss2 = mse.loss(output, prediction2);
+        double gradient12 = (loss2 - loss1) / 0.00001;
+        assertNotEquals(0, gradient12, 1e-4);
+
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.300015;
+        Adjustments adjustments12 = gradientDescent.compute(network, input, output, 1);
+        assertEquals(gradient12, adjustments12.adjustmentsWeight()[1][0][0], 1e-8);
+
+        // Gewicht im Hidden Layer
+        network.denseLayers[0].neurons[0].incoming[0].weight = 41.50003;
+        double[] prediction3 = network.predict(new double[][]{input})[0];
+        network.denseLayers[0].neurons[0].incoming[0].weight = 41.50004;
+        double[] prediction4 = network.predict(new double[][]{input})[0];
+
+        double loss3 = mse.loss(output, prediction3);
+        double loss4 = mse.loss(output, prediction4);
+        double gradient34 = (loss4 - loss3) / 0.00001;
+        assertNotEquals(0, gradient34, 1e-4);
+
+        network.denseLayers[0].neurons[0].incoming[0].weight = 41.500035;
+        Adjustments adjustments34 = gradientDescent.compute(network, input, output, 1);
+        assertEquals(gradient34, adjustments34.adjustmentsWeight()[0][0][0], 1e-8);
+    }
+
+    @Test
+    public void testAdjustmentsDifferenceQuotientBias() {
+        // Verwendung der h-Methode / des Differenzialquotienten zur Bestimmung der Ableitung/des Gradienten
+        Network network = new Network(42, WeightInitializer.ZERO, 2,
+                DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.TANH, 1, 1));
+
+        LossFunction mse = LossFunction.MEAN_SQUARED_ERROR;
+        OptimizationFunction gradientDescent = new GradientDescent(mse, new ConstantLearningRate(1));
+        gradientDescent.epoch(0, Double.NaN);
+
+        network.denseLayers[0].neurons[0].incoming[0].weight = 42;
+        network.denseLayers[0].neurons[0].incoming[1].weight = 24;
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.25;
+
+        double[] input = new double[]{-3, 5.4};
+        double[] output = new double[]{0.71629787};
+
+        // Gewicht im Output Layer
+        ((DenseNeuron) network.denseLayers[1].neurons[0]).bias = 0.20001;
+        double[] prediction1 = network.predict(new double[][]{input})[0];
+        ((DenseNeuron) network.denseLayers[1].neurons[0]).bias = 0.20002;
+        double[] prediction2 = network.predict(new double[][]{input})[0];
+
+        double loss1 = mse.loss(output, prediction1);
+        double loss2 = mse.loss(output, prediction2);
+        double gradient12 = (loss2 - loss1) / 0.00001;
+        assertNotEquals(0, gradient12, 1e-4);
+
+        ((DenseNeuron) network.denseLayers[1].neurons[0]).bias = 0.200015;
+        Adjustments adjustments12 = gradientDescent.compute(network, input, output, 1);
+        assertEquals(gradient12, adjustments12.adjustmentsBias()[1][0], 1e-8);
+
+        // Gewicht im Hidden Layer
+        ((DenseNeuron) network.denseLayers[0].neurons[0]).bias = 0.15003;
+        double[] prediction3 = network.predict(new double[][]{input})[0];
+        ((DenseNeuron) network.denseLayers[0].neurons[0]).bias = 0.15004;
+        double[] prediction4 = network.predict(new double[][]{input})[0];
+
+        double loss3 = mse.loss(output, prediction3);
+        double loss4 = mse.loss(output, prediction4);
+        double gradient34 = (loss4 - loss3) / 0.00001;
+        assertNotEquals(0, gradient34, 1e-4);
+
+        ((DenseNeuron) network.denseLayers[0].neurons[0]).bias = 0.150035;
+        Adjustments adjustments34 = gradientDescent.compute(network, input, output, 1);
+        assertEquals(gradient34, adjustments34.adjustmentsBias()[0][0], 1e-8);
+    }
+
+    @Test
+    public void testAdjustmentsDifferenceQuotientWeightsSuperNeuron() {
+        // Verwendung der h-Methode / des Differenzialquotienten zur Bestimmung der Ableitung/des Gradienten
+        Network network = new Network(42, WeightInitializer.ZERO, 2,
+                DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.TANH, 1, 1));
+        // Verhalten wie eigentlich definiertes Netzwerk über Dummy-SuperNeuron
+        new SuperNeuron(TestUtil.simpleDummyNetwork(), new double[]{0}, new double[][]{new double[]{1, 1}}).insert(network, 0, 0);
+        Network tanh = TestUtil.simpleDummyNetwork();
+        ((DenseNeuron) tanh.denseLayers[0].neurons[0]).activationFunction = ActivationFunction.TANH;
+        new SuperNeuron(tanh).insert(network, 1, 0);
+
+        LossFunction mse = LossFunction.MEAN_SQUARED_ERROR;
+        OptimizationFunction gradientDescent = new GradientDescent(mse, new ConstantLearningRate(1));
+        gradientDescent.epoch(0, Double.NaN);
+
+        network.denseLayers[0].neurons[0].incoming[0].weight = 42;
+        network.denseLayers[0].neurons[0].incoming[1].weight = 24;
+
+        double[] input = new double[]{-3, 5.4};
+        double[] output = new double[]{0.71629787};
+
+        // Gewicht im Output Layer
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.30001;
+        double[] prediction1 = network.predict(new double[][]{input})[0];
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.30002;
+        double[] prediction2 = network.predict(new double[][]{input})[0];
+
+        double loss1 = mse.loss(output, prediction1);
+        double loss2 = mse.loss(output, prediction2);
+        double gradient12 = (loss2 - loss1) / 0.00001;
+        assertNotEquals(0, gradient12, 1e-4);
+
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.300015;
+        Adjustments adjustments12 = gradientDescent.compute(network, input, output, 1);
+        assertEquals(gradient12, adjustments12.adjustmentsWeight()[1][0][0], 1e-8);
+
+        // Gewicht im Hidden Layer
+        network.denseLayers[0].neurons[0].incoming[0].weight = 41.50003;
+        double[] prediction3 = network.predict(new double[][]{input})[0];
+        network.denseLayers[0].neurons[0].incoming[0].weight = 41.50004;
+        double[] prediction4 = network.predict(new double[][]{input})[0];
+
+        double loss3 = mse.loss(output, prediction3);
+        double loss4 = mse.loss(output, prediction4);
+        double gradient34 = (loss4 - loss3) / 0.00001;
+        assertNotEquals(0, gradient34, 1e-4);
+
+        network.denseLayers[0].neurons[0].incoming[0].weight = 41.500035;
+        Adjustments adjustments34 = gradientDescent.compute(network, input, output, 1);
+        assertEquals(gradient34, adjustments34.adjustmentsWeight()[0][0][0], 1e-8);
+    }
+
+    @Test
+    public void testAdjustmentsDifferenceQuotientWeightsSuperNeuron3DenseLayers() {
+        // Verwendung der h-Methode / des Differenzialquotienten zur Bestimmung der Ableitung/des Gradienten
+        Network network = new Network(42, WeightInitializer.ZERO, 2,
+                DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.TANH, 1, 1, 1));
+        new SuperNeuron(TestUtil.simpleDummyNetwork(), new double[]{0}, new double[][]{new double[]{1, 1}}).insert(network, 0, 0);
+
+        LossFunction mse = LossFunction.MEAN_SQUARED_ERROR;
+        OptimizationFunction gradientDescent = new GradientDescent(mse, new ConstantLearningRate(1));
+        gradientDescent.epoch(0, Double.NaN);
+
+        network.denseLayers[0].neurons[0].incoming[0].weight = 42;
+        network.denseLayers[0].neurons[0].incoming[1].weight = 24;
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.5;
+        network.denseLayers[2].neurons[0].incoming[0].weight = 0.5;
+
+        double[] input = new double[]{-3, 5.4};
+        double[] output = new double[]{0.71629787};
+
+        // Gewicht im Output Layer (einziger Dense Layer)
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.50001;
+        double[] prediction1 = network.predict(new double[][]{input})[0];
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.50002;
+        double[] prediction2 = network.predict(new double[][]{input})[0];
+
+        double loss1 = mse.loss(output, prediction1);
+        double loss2 = mse.loss(output, prediction2);
+        double gradient12 = (loss2 - loss1) / 0.00001;
+        assertNotEquals(0, gradient12, 1e-4);
+
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.500015;
+        Adjustments adjustments12 = gradientDescent.compute(network, input, output, 1);
+        assertEquals(gradient12, adjustments12.adjustmentsWeight()[1][0][0], 1e-8);
+    }
 
     // ===== 1. EINFACHE STRUKTUR-TESTS =====
 
@@ -27,7 +289,7 @@ public class GradientDescentTest {
     public void testSingleNeuronGradientComputation() {
         // 1 Input -> 2 Hidden -> 1 Output
         Network network = createNetworkWithHiddenLayer(1, 2, 1);
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -48,7 +310,7 @@ public class GradientDescentTest {
     public void testSingleNeuronGradientComputationSuperNeurons() {
         // 1 Input -> 1 Hidden -> 1 Output
         Network network = createNetworkWithHiddenLayer(1, 1, 1);
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -71,7 +333,7 @@ public class GradientDescentTest {
     public void testSingleNeuronGradientComputationSuperNeuronsSimpler() {
         // 1 Input -> 1 output
         Network network = TestUtil.simpleDummyNetwork();
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -93,7 +355,7 @@ public class GradientDescentTest {
     public void testMultipleOutputNeurons() {
         // 1 Input -> 3 Hidden -> 3 Output
         Network network = createNetworkWithHiddenLayer(1, 3, 3);
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -114,7 +376,7 @@ public class GradientDescentTest {
     public void testTwoLayerNetworkGradients() {
         // 2 Input -> 3 Hidden -> 1 Output
         Network network = createNetworkWithMultipleHiddenLayers(2, new int[]{3, 2}, 1);
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -154,7 +416,7 @@ public class GradientDescentTest {
         double[] input = {1.0};
         double[] output = {0.5};
 
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -181,7 +443,7 @@ public class GradientDescentTest {
         double[] input = {1.0};
         double[] output = {0.5};
 
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.0)
         );
@@ -199,7 +461,7 @@ public class GradientDescentTest {
         double[] largeInput = {1000.0};
         double[] output = {1.0};
 
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -218,7 +480,7 @@ public class GradientDescentTest {
         double[] input = {1.0};
         double[] output = {0.5};
 
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(1e-8)
         );
@@ -237,7 +499,7 @@ public class GradientDescentTest {
         double[] negativeInput = {-100.0};
         double[] output = {0.0};
 
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -256,7 +518,7 @@ public class GradientDescentTest {
     public void testMultiLayerGradientFlow() {
         // 2 Input -> 3 Hidden -> 3 Output
         Network network = createNetworkWithHiddenLayer(2, 3, 3);
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -280,7 +542,7 @@ public class GradientDescentTest {
     public void testDeepNetworkGradientBackpropagation() {
         // 2 Input -> 4 Hidden -> 2 Hidden -> 2 Output (3 Dense Layers)
         Network network = createNetworkWithMultipleHiddenLayers(2, new int[]{4, 2}, 2);
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -310,7 +572,7 @@ public class GradientDescentTest {
         double[] input = {0.5};
         double[] output = {0.5};
 
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(0.01)
         );
@@ -332,7 +594,7 @@ public class GradientDescentTest {
 
     @Generated("GitHub Copilot")
     private Adjustments computeWithLearningRate(Network network, double lr) {
-        gradientDescent = new GradientDescent(
+        GradientDescent gradientDescent = new GradientDescent(
                 LossFunction.MEAN_SQUARED_ERROR,
                 new ConstantLearningRate(lr)
         );
@@ -469,7 +731,7 @@ public class GradientDescentTest {
         double[] input = {1.0};
         double[] expected = {1.0};
 
-        gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(lr));
+        GradientDescent gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(lr));
         gradientDescent.epoch(0, 0);
         Adjustments adj = gradientDescent.compute(network, input, expected, 1);
 
@@ -506,7 +768,7 @@ public class GradientDescentTest {
         double[] input = {1.0};
         double[] expected = {1.0};
 
-        gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(lr));
+        GradientDescent gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(lr));
         gradientDescent.epoch(0, 0);
         Adjustments adj = gradientDescent.compute(network, input, expected, 1);
         double analyticalGradient = adj.adjustmentsBias()[0][0] / lr;
@@ -544,7 +806,7 @@ public class GradientDescentTest {
         double[] input = {1.0};
         double[] expected = {1.0};
 
-        gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(lr));
+        GradientDescent gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(lr));
         gradientDescent.epoch(0, 0);
         Adjustments adj = gradientDescent.compute(network, input, expected, 1);
 
@@ -581,7 +843,7 @@ public class GradientDescentTest {
         double weightBefore = network.denseLayers[0].neurons[0].incoming[0].weight;
         double biasBefore = ((DenseNeuron) network.denseLayers[0].neurons[0]).bias;
 
-        gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.1));
+        GradientDescent gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.1));
         gradientDescent.epoch(0, 0);
         gradientDescent.compute(network, input, expected, 1).adjust(network);
 
@@ -609,7 +871,7 @@ public class GradientDescentTest {
 
         double lossBefore = mse.loss(expected, network.feedForward(input).lastOutput());
 
-        gradientDescent = new GradientDescent(mse, new ConstantLearningRate(0.1));
+        GradientDescent gradientDescent = new GradientDescent(mse, new ConstantLearningRate(0.1));
         gradientDescent.epoch(0, 0);
         gradientDescent.compute(network, input, expected, 1).adjust(network);
 
@@ -635,7 +897,7 @@ public class GradientDescentTest {
         double[] input = {2.0};
         double[] expected = {1.0}; // 0.5 * 2.0 = 1.0 → perfekt
 
-        gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
+        GradientDescent gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
         gradientDescent.epoch(0, 0);
         Adjustments adj = gradientDescent.compute(network, input, expected, 1);
 
@@ -654,7 +916,7 @@ public class GradientDescentTest {
         double[] input = {1.0};
         double[] expected = {0.5};
 
-        gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
+        GradientDescent gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
 
         gradientDescent.epoch(0, 0);
         Adjustments adj1 = gradientDescent.compute(network, input, expected, 1);
@@ -689,7 +951,7 @@ public class GradientDescentTest {
                 new DenseLayer(1).withActivationFunction(ActivationFunction.LINEAR));
         ((DenseNeuron) networkUnder.denseLayers[0].neurons[0]).bias = 0.0;
 
-        gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
+        GradientDescent gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
         gradientDescent.epoch(0, 0);
         Adjustments adjUnder = gradientDescent.compute(networkUnder, new double[]{2.0}, new double[]{2.0}, 1);
 
@@ -733,7 +995,7 @@ public class GradientDescentTest {
         double[] input = {1.0};
         double[] expected = {1.0};
 
-        gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(lr));
+        GradientDescent gradientDescent = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(lr));
         gradientDescent.epoch(0, 0);
         double mseAdjustment = gradientDescent.compute(mseNet, input, expected, 1).adjustmentsWeight()[0][0][0];
 
