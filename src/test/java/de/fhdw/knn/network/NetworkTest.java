@@ -18,6 +18,18 @@ public class NetworkTest {
     // Testet nur Code, der nicht bereits zuvor in anderen Tests des Packages getestet wurde
 
     @Test
+    public void testFeedforward() {
+        Network network = new Network(42, WeightInitializer.ZERO, 2,
+                DenseLayer.createLayers(ActivationFunction.LINEAR, ActivationFunction.TANH, 1, 1));
+        network.denseLayers[0].neurons[0].incoming[0].weight = 42;
+        network.denseLayers[0].neurons[0].incoming[1].weight = 24;
+        network.denseLayers[1].neurons[0].incoming[0].weight = 0.25;
+
+        double[] prediction = network.feedForward(new double[]{-3, 5.4}).lastOutput();
+        assertEquals(0.71629787, prediction[0], 1e-8);
+    }
+
+    @Test
     public void testNonOverridingConnector() {
         InputLayer inputLayer = new InputLayer(3);
         DenseLayer denseLayer1 = new DenseLayer(2).withActivationFunction(ActivationFunction.RELU);
