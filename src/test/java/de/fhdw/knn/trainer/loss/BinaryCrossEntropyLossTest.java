@@ -3,6 +3,8 @@ package de.fhdw.knn.trainer.loss;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
+import javax.annotation.processing.Generated;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Binary Cross Entropy Loss Function Tests")
@@ -14,6 +16,7 @@ public class BinaryCrossEntropyLossTest {
 
     // ===== GRUNDLEGENDE EIGENSCHAFTEN =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Perfekte Vorhersage sollte sehr kleinen Loss haben")
     public void testPerfectPredictionVerySmallLoss() {
@@ -24,6 +27,7 @@ public class BinaryCrossEntropyLossTest {
         assertTrue(loss < 0.01, "Loss für gute Vorhersage sollte klein sein: " + loss);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss sollte nicht-negativ sein")
     public void testLossNonNegative() {
@@ -34,6 +38,7 @@ public class BinaryCrossEntropyLossTest {
         assertTrue(loss >= 0, "BCE Loss sollte nicht-negativ sein, ist aber: " + loss);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Falsche Vorhersage hat höheren Loss als gute")
     public void testWrongPredictionHighLoss() {
@@ -45,6 +50,7 @@ public class BinaryCrossEntropyLossTest {
                 "Falsche Vorhersage sollte höheren Loss haben: good=" + lossGood + " bad=" + lossBad);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss ist symmetrisch bei 0.5 Prediction")
     public void testSymmetryAt0Point5() {
@@ -54,6 +60,7 @@ public class BinaryCrossEntropyLossTest {
         assertEquals(loss1, loss2, TOLERANCE, "Loss sollte symmetrisch bei 0.5 sein");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Mittelt über alle Outputs")
     public void testAveragingOverOutputs() {
@@ -70,6 +77,7 @@ public class BinaryCrossEntropyLossTest {
 
     // ===== NUMERISCHE EIGENSCHAFTEN =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Numerisches Gradient Checking")
     public void testGradientNumerical() {
@@ -87,6 +95,7 @@ public class BinaryCrossEntropyLossTest {
                         " vs numerical=" + numericalGradient);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient Richtung: Expected=1, Prediction zu niedrig")
     public void testGradientDirectionLowPrediction() {
@@ -97,6 +106,7 @@ public class BinaryCrossEntropyLossTest {
         assertTrue(gradient < 0, "Gradient sollte negativ sein (prediction zu niedrig)");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient Richtung: Expected=0, Prediction zu hoch")
     public void testGradientDirectionHighPrediction() {
@@ -107,6 +117,7 @@ public class BinaryCrossEntropyLossTest {
         assertTrue(gradient > 0, "Gradient sollte positiv sein (prediction zu hoch)");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Größere Fehler sollten größere Gradienten haben")
     public void testLargerErrorLargerGradient() {
@@ -119,6 +130,7 @@ public class BinaryCrossEntropyLossTest {
 
     // ===== MEHRERE OUTPUTS =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient für mehrere Outputs")
     public void testGradientMultipleOutputs() {
@@ -131,6 +143,7 @@ public class BinaryCrossEntropyLossTest {
         assertFalse(Double.isInfinite(gradient), "Gradient sollte nicht Infinity sein");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss mit einzelnem Output - expected=1")
     public void testSingleOutputExpected1() {
@@ -142,6 +155,7 @@ public class BinaryCrossEntropyLossTest {
         assertTrue(loss > 0.3 && loss < 0.4);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss mit einzelnem Output - expected=0")
     public void testSingleOutputExpected0() {
@@ -153,6 +167,7 @@ public class BinaryCrossEntropyLossTest {
         assertTrue(loss > 0.3 && loss < 0.4);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Loss mit vielen Outputs")
     public void testManyOutputs() {
@@ -173,6 +188,7 @@ public class BinaryCrossEntropyLossTest {
 
     // ===== NUMERICAL STABILITY (DELTA PROTECTION) =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("DELTA verhindert Log(0) bei predicted=1")
     public void testDeltaProtectionPredicted1() {
@@ -184,6 +200,7 @@ public class BinaryCrossEntropyLossTest {
         assertFalse(Double.isInfinite(loss), "Loss sollte nicht Infinity sein");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("DELTA verhindert Log(0) bei predicted=0")
     public void testDeltaProtectionPredicted0() {
@@ -195,6 +212,7 @@ public class BinaryCrossEntropyLossTest {
         assertFalse(Double.isInfinite(loss), "Loss sollte nicht Infinity sein");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Numerische Stabilität bei extremen Werten")
     public void testStabilityExtremes() {
@@ -210,6 +228,7 @@ public class BinaryCrossEntropyLossTest {
         assertFalse(Double.isInfinite(gradient), "Gradient sollte nicht Infinity sein");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Numerische Stabilität bei sehr nahe an 0 und 1")
     public void testStabilityNearBoundaries() {
@@ -223,6 +242,7 @@ public class BinaryCrossEntropyLossTest {
 
     // ===== EDGE CASES =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Alle Expected=1")
     public void testAllExpected1() {
@@ -234,6 +254,7 @@ public class BinaryCrossEntropyLossTest {
         assertFalse(Double.isNaN(loss));
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Alle Expected=0")
     public void testAllExpected0() {
@@ -245,6 +266,7 @@ public class BinaryCrossEntropyLossTest {
         assertFalse(Double.isNaN(loss));
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gemischte Expected Values")
     public void testMixedExpected() {
@@ -256,6 +278,7 @@ public class BinaryCrossEntropyLossTest {
         assertFalse(Double.isNaN(loss));
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Prediction=0.5 (neutral)")
     public void testNeutralPrediction() {
@@ -269,6 +292,7 @@ public class BinaryCrossEntropyLossTest {
 
     // ===== GRADIENT KONSISTENZ =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient bei Perfect Prediction")
     public void testGradientPerfectPrediction() {
@@ -280,6 +304,7 @@ public class BinaryCrossEntropyLossTest {
         assertTrue(Math.abs(gradient) < 1.001, "Gradient sollte klein bei guter Prediction sein");
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Gradient Magnitude steigt mit falscher Prediction")
     public void testGradientMagnitudeIncreases() {
@@ -292,6 +317,7 @@ public class BinaryCrossEntropyLossTest {
                 "Gradient magnitude sollte mit Error steigen: " + grad1 + " < " + grad2 + " < " + grad3);
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Expected=0 und Expected=1 Gradienten haben unterschiedliche Richtung")
     public void testGradientOppositeDirections() {
@@ -305,6 +331,7 @@ public class BinaryCrossEntropyLossTest {
 
     // ===== STABILITÄT =====
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Keine NaN bei normalen Werten")
     public void testNoNaN() {
@@ -318,6 +345,7 @@ public class BinaryCrossEntropyLossTest {
         assertFalse(Double.isNaN(gradient));
     }
 
+    @Generated("GitHub Copilot")
     @Test
     @DisplayName("Keine Infinity bei normalen Werten")
     public void testNoInfinity() {
@@ -336,6 +364,7 @@ public class BinaryCrossEntropyLossTest {
     /**
      * Numerisches Gradient Checking mit Finite Differences
      */
+    @Generated("GitHub Copilot")
     private double computeNumericalGradient(java.util.function.Function<double[], Double> lossFunction, double[] point) {
         double sum = 0;
 
