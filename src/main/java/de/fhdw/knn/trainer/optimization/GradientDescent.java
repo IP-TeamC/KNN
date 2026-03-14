@@ -151,11 +151,22 @@ public class GradientDescent implements OptimizationFunction {
      */
     private static void calculateAdjustments(LayerComputeValues values) {
         for (int neuron = 0; neuron < values.neurons.length; neuron++) {
-            double adjustmentBias = calculateAdjustmentBias(values, neuron);
-
             AbstractDenseNeuron dn = values.neurons[neuron];
             values.adjustmentsWeight[neuron] = new double[dn.incoming.length];
 
+            // Anpassung des Bias für das Neuron berechnen
+            // noinspection ExtractMethodRecommender (kleine Performance-Verbesserung)
+            double adjustmentBias = 0;
+            for (int next = 0; next < values.nextNeurons.length; next++) {
+                adjustmentBias +=
+                        (values.nextAdapterAdjustmentsBias[next] == null
+                                ? values.nextAdjustmentsBias[next]
+                                : values.nextAdapterAdjustmentsBias[next][neuron])
+                                * values.nextNeurons[next].incoming[neuron].weight;
+            }
+            adjustmentBias *= values.derived[neuron];
+
+            // Anpassungen der Gewichte berechnen
             if (dn instanceof SuperNeuron sn) {
                 calculateAdjustmentsSuperNeuron(sn, neuron, values.layerInput,
                         adjustmentBias, values.adapterAdjustmentsBias, values.adjustmentsWeight);
@@ -166,25 +177,6 @@ public class GradientDescent implements OptimizationFunction {
                 }
             }
         }
-    }
-
-    /**
-     * Berechnet die Anpassung des Bias für ein Neuron eines Layers durch Fortführung der Ableitung.
-     *
-     * @param values Alle notwendigen Werte zur Berechnung der Anpassungen für einen Layer, siehe {@link LayerComputeValues}
-     * @param neuron Index des Neurons, für das die Anpassung des Bias berechnet werden soll
-     * @return Anpassung des Bias für das jeweilige Neuron
-     */
-    private static double calculateAdjustmentBias(LayerComputeValues values, int neuron) {
-        double adjustmentBias = 0;
-        for (int next = 0; next < values.nextNeurons.length; next++) {
-            adjustmentBias +=
-                    (values.nextAdapterAdjustmentsBias[next] == null
-                            ? values.nextAdjustmentsBias[next]
-                            : values.nextAdapterAdjustmentsBias[next][neuron])
-                            * values.nextNeurons[next].incoming[neuron].weight;
-        }
-        return adjustmentBias * values.derived[neuron];
     }
 
     /**
