@@ -12,7 +12,66 @@ public class BinaryCrossEntropyLossTest {
 
     private static final double EPSILON = 1e-5;
     private static final double TOLERANCE = 1e-3;
-    private final BinaryCrossEntropyLoss bce = new BinaryCrossEntropyLoss();
+    private final LossFunction bce = LossFunction.CROSS_ENTROPY_LOSS;
+
+    @Test
+    public void testPerfect() {
+        double[] expected = new double[]{0, 1};
+        double[] predicted = new double[]{0, 1};
+        double loss = bce.loss(expected, predicted);
+        assertEquals(0.0, loss, 1e-10);
+    }
+
+    @Test
+    public void testDoubleDiff() {
+        double[] expected1 = new double[]{0.154, 0.20};
+        double[] predicted1 = new double[]{0.164, 0.21};
+        double loss1 = bce.loss(expected1, predicted1);
+
+        double[] expected2 = new double[]{0.154, 0.20};
+        double[] predicted2 = new double[]{0.174, 0.22};
+        double loss2 = bce.loss(expected2, predicted2);
+
+        assertEquals(0.465331729, loss1, 1e-6);
+        assertEquals(0.466308109, loss2, 1e-6);
+    }
+
+    @Test
+    public void testBad() {
+        double[] expected = new double[]{0, 1};
+        double[] predicted = new double[]{0.9, 0.05};
+        double loss = bce.loss(expected, predicted);
+        assertEquals(2.64915868, loss, 1e-6);
+    }
+
+    @Test
+    public void testGradientPositive() {
+        // mit steigender Vorhersage wird der Verlust größer
+        double[] expected = new double[]{0};
+        double[] predicted = new double[]{0.7};
+        double loss = bce.derivedLoss(expected, predicted, 0);
+        assertEquals(3.33333333, loss, 1e-6);
+    }
+
+    @Test
+    public void testGradientNegative() {
+        // mit steigender Vorhersage, wird der Verlust geringer
+        double[] expected = new double[]{1};
+        double[] predicted = new double[]{0.05};
+        double loss = bce.derivedLoss(expected, predicted, 0);
+        assertEquals(-20, loss, 1e-10);
+    }
+
+    @Test
+    public void testTotal() {
+        double[] expected1 = new double[]{0, 1};
+        double[] predicted1 = new double[]{0.9, 0.05};
+        double[] expected2 = new double[]{1, 0};
+        double[] predicted2 = new double[]{0.05, 0.7};
+
+        double totalLoss = bce.totalLoss(new double[][]{expected1, expected2}, new double[][]{predicted1, predicted2});
+        assertEquals(2.37450561, totalLoss, 1e-6);
+    }
 
     // ===== GRUNDLEGENDE EIGENSCHAFTEN =====
 

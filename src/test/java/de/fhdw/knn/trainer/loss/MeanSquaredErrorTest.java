@@ -12,7 +12,72 @@ public class MeanSquaredErrorTest {
 
     private static final double EPSILON = 1e-5;
     private static final double TOLERANCE = 1e-4;
-    private final MeanSquaredError mse = new MeanSquaredError();
+    private final LossFunction mse = LossFunction.MEAN_SQUARED_ERROR;
+
+    @Test
+    public void testPerfect() {
+        double[] expected = new double[]{15.4, 20};
+        double[] predicted = new double[]{15.4, 20};
+        double loss = mse.loss(expected, predicted);
+        assertEquals(0.0, loss, 1e-10);
+    }
+
+    @Test
+    public void testQuadratic() {
+        double[] expected1 = new double[]{15.4, 20};
+        double[] predicted1 = new double[]{16.4, 21};
+        double loss1 = mse.loss(expected1, predicted1);
+
+        double[] expected2 = new double[]{15.4, 20};
+        double[] predicted2 = new double[]{17.4, 22};
+        double loss2 = mse.loss(expected2, predicted2);
+
+        assertEquals(1.0, loss1, 1e-10);
+        assertEquals(4.0, loss2, 1e-10);
+    }
+
+    @Test
+    public void testNonNegative() {
+        double[] expected = new double[]{16.4, 21};
+        double[] predicted = new double[]{15.4, 20};
+        double loss = mse.loss(expected, predicted);
+        assertEquals(1.0, loss, 1e-10);
+    }
+
+    @Test
+    public void testAverage() {
+        double[] expected = new double[]{16.4, 22};
+        double[] predicted = new double[]{15.4, 20};
+        double loss = mse.loss(expected, predicted);
+        assertEquals(2.5, loss, 1e-10);
+    }
+
+    @Test
+    public void testGradientPositive() {
+        double[] expected = new double[]{15.4};
+        double[] predicted = new double[]{16.4};
+        double loss = mse.derivedLoss(expected, predicted, 0);
+        assertEquals(2, loss, 1e-10);
+    }
+
+    @Test
+    public void testGradientNegative() {
+        double[] expected = new double[]{15.4};
+        double[] predicted = new double[]{14.4};
+        double loss = mse.derivedLoss(expected, predicted, 0);
+        assertEquals(-2, loss, 1e-10);
+    }
+
+    @Test
+    public void testTotal() {
+        double[] expected1 = new double[]{15.4, 20};
+        double[] predicted1 = new double[]{16.4, 22};
+        double[] expected2 = new double[]{15.4, 20};
+        double[] predicted2 = new double[]{19.4, 23};
+
+        double totalLoss = mse.totalLoss(new double[][]{expected1, expected2}, new double[][]{predicted1, predicted2});
+        assertEquals(7.5, totalLoss, 1e-10);
+    }
 
     // ===== GRUNDLEGENDE EIGENSCHAFTEN =====
 
