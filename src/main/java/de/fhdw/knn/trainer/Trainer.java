@@ -159,9 +159,11 @@ public class Trainer {
                     int index = base + offset;
                     adjustments[offset] = optimizationFunction.compute(network, data.inputs[index], data.outputs[index], batchSize);
                 });
-                for (int offset = 0; offset < limit; offset++) {
-                    adjustments[offset].adjust(network);
-                }
+                IntStream.range(0, network.denseLayers.length).parallel().forEach(layer -> {
+                    for (int offset = 0; offset < limit; offset++) {
+                        adjustments[offset].adjust(network, layer);
+                    }
+                });
             }
         } else {
             for (int i = 0; i < data.size; i += 1) {
