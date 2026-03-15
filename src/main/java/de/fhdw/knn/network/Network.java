@@ -86,7 +86,9 @@ public class Network {
      */
     public double[][] predict(double[][] inputs) {
         double[][] predictions = new double[inputs.length][];
-        IntStream.range(0, inputs.length).parallel().forEach(i -> predictions[i] = feedForward(inputs[i]).lastOutput());
+        IntStream.range(0, inputs.length)
+                .parallel()
+                .forEach(i -> predictions[i] = feedForward(inputs[i]).lastOutput());
         return predictions;
     }
 
@@ -110,7 +112,7 @@ public class Network {
      * Verwendung ohne Buffer siehe {@link Network#feedForward(double[])}.
      *
      * @param buffer wird mit den Ausgaben/Aktivierungen und deren Ableitungen aller Neuronen überschrieben
-     * @param input eine Eingabe-Zeile
+     * @param input  eine Eingabe-Zeile
      */
     public void feedForward(OutputsDerived buffer, double[] input) {
         calculateOutput(0, input, buffer.output[0], buffer.derived[0]);
