@@ -80,6 +80,11 @@ public class ConfTrainer implements TomlSerializable {
     public String exportFile;
 
     /**
+     * Steuert die Ausgabe des Verlusts/Loss während des Trainings
+     */
+    public boolean logLoss = true;
+
+    /**
      * Erstellt eine neue {@code Trainer}-Instanz, die mit den Parametern dieses {@code ConfTrainer} konfiguriert ist.
      *
      * @param network das zu trainierende neuronale Netzwerk.
@@ -94,7 +99,7 @@ public class ConfTrainer implements TomlSerializable {
                 .map(ConfEarlyStopping::create)
                 .orElse(StopFunction.NEVER);
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(learningRate));
-        return new Trainer(network, maxEpochs, shuffleEpoch, batchSize, lossFunction, stopFunction, optimizationFunction);
+        return new Trainer(network, maxEpochs, shuffleEpoch, batchSize, logLoss ? lossFunction : null, stopFunction, optimizationFunction);
     }
 
     /**
