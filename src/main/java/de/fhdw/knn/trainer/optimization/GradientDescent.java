@@ -196,8 +196,8 @@ public class GradientDescent implements OptimizationFunction {
         subAdjustments.bias[subAdjustments.bias.length - 1][0] = neuronAdjustmentsBias;
         compute(subAdjustments, sn.network, layerInput, subnetResults.output, subnetResults.derived);
         double[] subAdjustmentBias = subAdjustments.bias[0];
-        AbstractDenseNeuron[] subLayerNeurons = sn.network.denseLayers[0].neurons;
 
+        AbstractDenseNeuron[] subLayerNeurons = sn.network.denseLayers[0].neurons;
         for (int adapterNeuron = 0; adapterNeuron < neuronAdapterAdjustmentsBias.length; adapterNeuron++) {
             for (int subLayerNeuron = 0; subLayerNeuron < subLayerNeurons.length; subLayerNeuron++) {
                 neuronAdapterAdjustmentsBias[adapterNeuron] +=

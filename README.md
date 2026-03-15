@@ -124,7 +124,20 @@ Visualisierung der KNN-Struktur und der Trainingsfortschritte.
 
 ### Effizienz / Performance
 
-?
+# TODO !!!
+- Multithreading für Batch-Training
+  - Parallelisierung der Backpropagation
+  - Parallelisierung der Netzwerk-Anpassung
+- effiziente Wiederverwendung allokierter Arrays
+  - Ziel: Zero-Allocation (Heap) während des Trainings
+  - Arrays für Anpassungen/Adjustments nur zu Beginn allokieren und wiederverwenden
+    - Performance-Verbesserung um ca. 20%
+    - stabile Speicherauslastung
+  - Neuron-Ausgabe in wiederverwendbarem Buffer
+  - Optimierungsalgorithmus dabei stateless und thread-safe (Multithreading trotz wiederverwendeter Buffer)
+- Parallelisierung des Feedforward bei der Verlustberechnung (Loss)
+  - Netzwerk ist während Feedforward stateless und thread-safe 
+# TODO !!!
 
 ### Dokumentation
 
