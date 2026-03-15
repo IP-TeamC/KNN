@@ -6,7 +6,7 @@ import de.fhdw.knn.network.Network;
  * Die Optimierungsfunktion ermittelt die für das Training notwendigen Anpassungen des Netzwerks.<br>
  * Die Methode {@link OptimizationFunction#epoch(int, double)} wird vor jeder Epoche aufgerufen,
  * um notwendige Anpassungen wie das Setzen der Learning Rate für die Epoche durchzuführen.
- * {@link OptimizationFunction#compute(Network, double[], double[], int)} berechnet die Anpassungen des Netzwerks für einen Datensatz.
+ * {@link OptimizationFunction#compute(Adjustments, Network, double[], double[], int)} berechnet die Anpassungen des Netzwerks für einen Datensatz.
  */
 public interface OptimizationFunction {
 
@@ -19,14 +19,16 @@ public interface OptimizationFunction {
     void epoch(int epoch, double previousLoss);
 
     /**
-     * Berechnet die Anpassungen des Netzwerks für eine Zeile des Datensatzes
+     * Berechnet die Anpassungen des Netzwerks für eine Zeile des Datensatzes und überschreibt die übergebenen Adjustments.<br>
+     * Für die Erstellung leerer Adjustments muss {@link Adjustments#generateEmpty(Network)} verwendet werden,
+     * damit die Dimensionen korrekt sind und Arrays im Voraus allokiert werden.
      *
-     * @param network   Netzwerk, das optimiert werden soll
-     * @param input     Eingabe-Zeile aus dem Datensatz
-     * @param output    Ausgabe-Zeile aus dem Datensatz
-     * @param batchSize Batch-Size für z.B. Mini-Batching (Learning Rate wird durch batchSize geteilt)
-     * @return berechnete Anpassungen des Netzwerks für die übergebene Zeile des Datensatzes
+     * @param adjustments zuvor korrekt erzeugt Adjustments, die überschrieben werden
+     * @param network     Netzwerk, das optimiert werden soll
+     * @param input       Eingabe-Zeile aus dem Datensatz
+     * @param output      Ausgabe-Zeile aus dem Datensatz
+     * @param batchSize   Batch-Size für z.B. Mini-Batching (Learning Rate wird durch batchSize geteilt)
      */
-    Adjustments compute(Network network, double[] input, double[] output, int batchSize);
+    void compute(Adjustments adjustments, Network network, double[] input, double[] output, int batchSize);
 
 }

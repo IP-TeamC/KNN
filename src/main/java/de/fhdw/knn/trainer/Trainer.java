@@ -53,6 +53,11 @@ public class Trainer {
      * Zu verwendende Optimierungsfunktion (nur Gradient Descent ist bisher verfügbar)
      */
     private final OptimizationFunction optimizationFunction;
+    /**
+     * Buffer für die Adjustments, da diese viele große Arrays enthalten und nicht für jede
+     * Ausführung des Optimierungsalgorithmus neu allokiert und vom GC wieder gelöscht werden müssen
+     */
+    private final Adjustments[] adjustmentsBuffer;
 
     /**
      * Verwaltung der Visualisierung während des Trainings
@@ -98,6 +103,11 @@ public class Trainer {
         this.stopFunction = stopFunction;
         this.optimizationFunction = optimizationFunction;
         this.viewManager = viewManager;
+
+        this.adjustmentsBuffer = new Adjustments[batchSize];
+        for (int i = 0; i < adjustmentsBuffer.length; i++) {
+            adjustmentsBuffer[i] = Adjustments.generateEmpty(network);
+        }
     }
 
     /**
@@ -151,23 +161,24 @@ public class Trainer {
      */
     private double trainEpoch(DataSet data) {
         if (batchSize > 1) {
-            Adjustments[] adjustments = new Adjustments[batchSize];
             for (int i = 0; i < data.size; i += batchSize) {
                 int base = i;
                 int limit = Math.min(batchSize, data.size - i);
                 IntStream.range(0, limit).parallel().forEach(offset -> {
                     int index = base + offset;
-                    adjustments[offset] = optimizationFunction.compute(network, data.inputs[index], data.outputs[index], batchSize);
+                    optimizationFunction.compute(adjustmentsBuffer[offset], network, data.inputs[index], data.outputs[index], batchSize);
                 });
                 IntStream.range(0, network.denseLayers.length).parallel().forEach(layer -> {
                     for (int offset = 0; offset < limit; offset++) {
-                        adjustments[offset].adjust(network, layer);
+                        adjustmentsBuffer[offset].adjust(network, layer);
                     }
                 });
             }
         } else {
+            Adjustments adjustments = adjustmentsBuffer[0];
             for (int i = 0; i < data.size; i += 1) {
-                optimizationFunction.compute(network, data.inputs[i], data.outputs[i], 1).adjust(network);
+                optimizationFunction.compute(adjustments, network, data.inputs[i], data.outputs[i], 1);
+                adjustments.adjust(network);
             }
         }
 

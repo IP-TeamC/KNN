@@ -11,6 +11,7 @@ import de.fhdw.knn.trainer.loss.LossFunction;
  * Beim KNN-Training üblicherweise verwendeter Optimierungsalgorithmus Gradient Descent.
  * Dieser ermittelt die Gradienten (Ableitung der Verlustfunktion nach einem Gewicht bzw. Bias),
  * passt diesen auf Basis der Learning Rate an und subtrahiert diesen von den jeweiligen Werten im Netzwerk.
+ * Objekte dieser Klasse sind während einer Epoche stateless und damit thread-safe!
  *
  * @see OptimizationFunction
  */
@@ -49,21 +50,21 @@ public class GradientDescent implements OptimizationFunction {
     }
 
     /**
-     * Berechnet die Anpassungen des Netzwerks für eine Zeile des Datensatzes.<br>
+     * Berechnet die Anpassungen des Netzwerks für eine Zeile des Datensatzes und überschreibt die Anpassungen im übergebenen Adjustments-Objekt.<br>
      * 1. Feed-Forward zur Berechnung der Ausgaben/Aktivierungen aller Neuronen und deren Ableitungen<br>
      * 2. Bestimmung der Anpassung des Bias der Output-Neuronen durch partielle Ableitung der Verlustfunktion nach dem jeweiligen Bias
      * und Reduzierung dieser Ableitung um den learningRate-Faktor.<br>
-     * 3. Bestimmung aller weiteren Anpassungen (Gewichte der Output-Neuronen sowie aller anderen Gewichte/Bias mithilfe von {@link GradientDescent#compute(Network, double[], double[][], double[][], double[])}).
+     * 3. Bestimmung aller weiteren Anpassungen (Gewichte der Output-Neuronen sowie aller anderen Gewichte/Bias mithilfe von {@link GradientDescent#compute(Adjustments, Network, double[], double[][], double[][])}).
      *
-     * @param network   Netzwerk, das optimiert werden soll
-     * @param input     Eingabe-Zeile aus dem Datensatz
-     * @param output    Ausgabe-Zeile aus dem Datensatz
-     * @param batchSize Batch-Size für z.B. Mini-Batching (Learning Rate wird durch batchSize geteilt)
-     * @return berechnete Anpassungen des Netzwerks für die übergebene Zeile des Datensatzes
+     * @param adjustments Anpassungen, die überschrieben werden (Verwendung als Buffer zur Reduzierung von Allokationen)
+     * @param network     Netzwerk, das optimiert werden soll
+     * @param input       Eingabe-Zeile aus dem Datensatz
+     * @param output      Ausgabe-Zeile aus dem Datensatz
+     * @param batchSize   Batch-Size für z.B. Mini-Batching (Learning Rate wird durch batchSize geteilt)
      * @see OptimizationFunction
      */
     @Override
-    public Adjustments compute(Network network, double[] input, double[] output, int batchSize) {
+    public void compute(Adjustments adjustments, Network network, double[] input, double[] output, int batchSize) {
         OutputsDerived feedForward = network.feedForward(input);
         double[][] outputs = feedForward.output();
         double[][] derived = feedForward.derived();
@@ -71,54 +72,47 @@ public class GradientDescent implements OptimizationFunction {
         double[] derivedOutput = derived[derived.length - 1];
 
         double adjustmentBase = learningRate / batchSize;
-        double[] adjustmentsBase = new double[output.length];
+        double[] adjustmentsBase = adjustments.bias[network.denseLayers.length - 1];
         for (int outputNeuron = 0; outputNeuron < adjustmentsBase.length; outputNeuron++) {
             adjustmentsBase[outputNeuron] = adjustmentBase * lossFunction.derivedLoss(output, predictions, outputNeuron) * derivedOutput[outputNeuron];
         }
 
-        return compute(network, input, outputs, derived, adjustmentsBase);
+        compute(adjustments, network, input, outputs, derived);
     }
 
     /**
-     * Berechnet die Anpassungen des Netzwerks für eine Zeile des Datensatzes auf Basis von adjustmentsBase.<br>
+     * Berechnet die Anpassungen des Netzwerks für eine Zeile des Datensatzes auf Basis vom AdjustmentsBias des Output-Layers.<br>
      * Ableitungen sind hier jeweils die Weiterführungen der Kettenregeln zur partiellen Ableitung der Verlustfunktion nach den jeweiligen Gewichten/Bias.<br>
      * 1. Berechnung der Anpassungen der Gewichte in die Output-Neuronen durch Ableitung<br>
-     * 2. Iteriere über alle anderen DenseLayer von hinten nach vorne und berechne hier die Anpassungen der Gewichte/Bias mithilfe von {@link GradientDescent#calculateAdjustments(LayerComputeValues)}<br>
+     * 2. Iteriere über alle anderen DenseLayer von hinten nach vorne und berechne hier die Anpassungen der Gewichte/Bias mithilfe von {@link GradientDescent#calculateAdjustments(AbstractDenseNeuron[], double[], double[], double[][], double[], double[][], AbstractDenseNeuron[], double[], double[][])}<br>
      * Im Spezialfall der Super-Neuronen wird die Ableitung innerhalb des enthaltenen Netzes rekursiv weitergeführt zum jeweiligen Gewicht. Einen Bias gibt es beim Super-Neuron hingegen nicht.
      *
-     * @param network         Netzwerk, das optimiert werden soll
-     * @param input           Eingabe-Zeile aus dem Datensatz
-     * @param outputs         Ausgaben/Aktivierungen aller Neuronen aller Layer
-     * @param derived         Ableitungen der Aktivierungen aller Neuronen aller Layer
-     * @param adjustmentsBase Basis-Anpassung (Anpassung des Bias aller Output-Neuronen)
-     * @return berechnete Anpassungen des Netzwerks für die übergebene Zeile des Datensatzes
+     * @param adjustments Anpassungen (enthalten bereits Bias für Output-Layer), die überschrieben werden (Verwendung als Buffer zur Reduzierung von Allokationen)
+     * @param network     Netzwerk, das optimiert werden soll
+     * @param input       Eingabe-Zeile aus dem Datensatz
+     * @param outputs     Ausgaben/Aktivierungen aller Neuronen aller Layer
+     * @param derived     Ableitungen der Aktivierungen aller Neuronen aller Layer
      */
-    private static Adjustments compute(Network network, double[] input, double[][] outputs, double[][] derived, double[] adjustmentsBase) {
-        // Layer, Neuron, Connection
-        double[][][] adjustmentsWeight = new double[network.denseLayers.length][][];
-        double[][] adjustmentsBias = new double[network.denseLayers.length][];
-        double[][][] adapterAdjustmentBias = new double[network.denseLayers.length][][];
-
+    private void compute(Adjustments adjustments, Network network, double[] input, double[][] outputs, double[][] derived) {
         // Output Layer: Ermittle Eingaben und initialisiere Adjustments-Arrays
         int outputLayer = network.denseLayers.length - 1;
         double[] outputLayerInputs = outputLayer == 0 ? input : outputs[outputLayer - 1];
         AbstractDenseNeuron[] outputNeurons = network.denseLayers[outputLayer].neurons;
-        adjustmentsWeight[outputLayer] = new double[outputNeurons.length][];
-        adjustmentsBias[outputLayer] = adjustmentsBase;
 
         // Output Layer: Berechne Adjustments für die Gewichte
-        adapterAdjustmentBias[outputLayer] = new double[outputNeurons.length][];
+        double[][] outputAdjustmentsWeight = adjustments.weight[outputLayer];
+        double[] outputAdjustmentsBias = adjustments.bias[outputLayer];
+        double[][] outputAdapterAdjustmentsBias = adjustments.adapterBias[outputLayer];
         for (int neuron = 0; neuron < outputNeurons.length; neuron++) {
             AbstractDenseNeuron dn = outputNeurons[neuron];
-            adjustmentsWeight[outputLayer][neuron] = new double[dn.incoming.length];
 
             if (dn instanceof SuperNeuron sn) {
                 double[] layerInput = outputLayer == 0 ? input : outputs[outputLayer - 1];
-                calculateAdjustmentsSuperNeuron(sn, neuron, layerInput,
-                        adjustmentsBias[outputLayer][neuron], adapterAdjustmentBias[outputLayer], adjustmentsWeight[outputLayer]);
+                calculateAdjustmentsSuperNeuron(sn, layerInput,
+                        outputAdjustmentsWeight[neuron], outputAdjustmentsBias[neuron], outputAdapterAdjustmentsBias[neuron]);
             } else {
                 for (int conn = 0; conn < dn.incoming.length; conn++) {
-                    adjustmentsWeight[outputLayer][neuron][conn] = adjustmentsBase[neuron] * outputLayerInputs[conn];
+                    outputAdjustmentsWeight[neuron][conn] = outputAdjustmentsBias[neuron] * outputLayerInputs[conn];
                 }
             }
         }
@@ -127,53 +121,58 @@ public class GradientDescent implements OptimizationFunction {
             // Nächster Dense Layer: Ermittle Eingaben und initialisiere Adjustments-Arrays
             double[] layerInput = layer == 0 ? input : outputs[layer - 1];
             AbstractDenseNeuron[] neurons = network.denseLayers[layer].neurons;
-            adjustmentsWeight[layer] = new double[neurons.length][];
-            adjustmentsBias[layer] = new double[neurons.length];
-            adapterAdjustmentBias[layer] = new double[neurons.length][];
 
             // Nächster Dense Layer: Berechne Adjustments für Gewichte und Bias
-            calculateAdjustments(new LayerComputeValues(
-                    adjustmentsWeight[layer], adjustmentsBias[layer], adapterAdjustmentBias[layer],
+            int nextLayer = layer + 1;
+            calculateAdjustments(
                     neurons, layerInput, derived[layer],
-                    adjustmentsBias[layer + 1], network.denseLayers[layer + 1].neurons, adapterAdjustmentBias[layer + 1]
-            ));
+                    adjustments.weight[layer], adjustments.bias[layer], adjustments.adapterBias[layer],
+                    network.denseLayers[nextLayer].neurons, adjustments.bias[nextLayer], adjustments.adapterBias[nextLayer]
+            );
         }
-
-        return new Adjustments(adjustmentsWeight, adjustmentsBias);
     }
 
     /**
      * Führt die Ableitung zur Ermittlung der notwendigen Anpassungen der Gewichte/Bias für einen weiteren DenseLayer fort.
      * Zuerst wieder die Anpassung des Bias berechnet und auf Basis dessen die Anpassung der eingehenden Gewichte für jeweils jedes Neuron des Layer.
      *
-     * @param values Alle notwendigen Werte zur Berechnung der Anpassungen für einen Layer, siehe {@link LayerComputeValues}
-     * @see GradientDescent#compute(Network, double[], double[][], double[][], double[])
+     * @param neurons                         Neuronen des aktuell betrachteten Layers
+     * @param layerInput                      Eingabe in diesen Layer (z.B. Ausgabe des vorherigen Layers)
+     * @param layerDerived                    Ableitungen der Aktivierungen der Neuronen dieses Layers
+     * @param layerAdjustmentsWeight          Anpassungen der Gewichte der Neuronen dieses Layers
+     * @param layerAdjustmentsBias            Anpassungen der Bias'e der Neuronen dieses Layers
+     * @param layerAdapterAdjustmentsBias     theoretische Anpassungen der Adapter-Neuronen der SuperNeuronen dieses Layers (Basis zur weiteren Berechnung für die Gewichtsanpassungen)
+     * @param nextNeurons                     Neuronen des nachgelagerten Layers
+     * @param nextLayerAdjustmentsBias        theoretische Anpassungen der Bias'e der Adapter-Neuronen der SuperNeuronen des nachgelagerten Layers
+     * @param nextLayerAdapterAdjustmentsBias theoretische Anpassungen der Adapter-Neuronen der SuperNeuronen des nachgelagerten Layers (Basis zur weiteren Berechnung für die Gewichtsanpassungen)
+     * @see GradientDescent#compute(Adjustments, Network, double[], double[][], double[][])
      */
-    private static void calculateAdjustments(LayerComputeValues values) {
-        for (int neuron = 0; neuron < values.neurons.length; neuron++) {
-            AbstractDenseNeuron dn = values.neurons[neuron];
-            values.adjustmentsWeight[neuron] = new double[dn.incoming.length];
+    private void calculateAdjustments(AbstractDenseNeuron[] neurons, double[] layerInput, double[] layerDerived,
+                                      double[][] layerAdjustmentsWeight, double[] layerAdjustmentsBias, double[][] layerAdapterAdjustmentsBias,
+                                      AbstractDenseNeuron[] nextNeurons, double[] nextLayerAdjustmentsBias, double[][] nextLayerAdapterAdjustmentsBias) {
+        for (int neuron = 0; neuron < neurons.length; neuron++) {
+            double[] neuronAdjustmentsWeight = layerAdjustmentsWeight[neuron];
+            AbstractDenseNeuron dn = neurons[neuron];
 
             // Anpassung des Bias für das Neuron berechnen
-            // noinspection ExtractMethodRecommender (kleine Performance-Verbesserung)
             double adjustmentBias = 0;
-            for (int next = 0; next < values.nextNeurons.length; next++) {
+            for (int next = 0; next < nextNeurons.length; next++) {
                 adjustmentBias +=
-                        (values.nextAdapterAdjustmentsBias[next] == null
-                                ? values.nextAdjustmentsBias[next]
-                                : values.nextAdapterAdjustmentsBias[next][neuron])
-                                * values.nextNeurons[next].incoming[neuron].weight;
+                        (nextNeurons[next] instanceof SuperNeuron
+                                ? nextLayerAdapterAdjustmentsBias[next][neuron]
+                                : nextLayerAdjustmentsBias[next])
+                                * nextNeurons[next].incoming[neuron].weight;
             }
-            adjustmentBias *= values.derived[neuron];
+            adjustmentBias *= layerDerived[neuron];
+            layerAdjustmentsBias[neuron] = adjustmentBias;
 
             // Anpassungen der Gewichte berechnen
             if (dn instanceof SuperNeuron sn) {
-                calculateAdjustmentsSuperNeuron(sn, neuron, values.layerInput,
-                        adjustmentBias, values.adapterAdjustmentsBias, values.adjustmentsWeight);
+                calculateAdjustmentsSuperNeuron(sn, layerInput,
+                        neuronAdjustmentsWeight, adjustmentBias, layerAdapterAdjustmentsBias[neuron]);
             } else {
-                values.adjustmentsBias[neuron] = adjustmentBias;
                 for (int conn = 0; conn < dn.incoming.length; conn++) {
-                    values.adjustmentsWeight[neuron][conn] = adjustmentBias * values.layerInput[conn];
+                    neuronAdjustmentsWeight[conn] = adjustmentBias * layerInput[conn];
                 }
             }
         }
@@ -183,53 +182,33 @@ public class GradientDescent implements OptimizationFunction {
      * Berechnet die Anpassungen der Gewichte/des Bias für ein SuperNeuron durch Fortführung der Ableitung im enthaltenen Netzwerk,
      * einschließlich des linearen Einflusses des Adapters.
      *
-     * @param sn                     betrachtetes SuperNeuron
-     * @param neuron                 Index des SuperNeurons im Layer
-     * @param layerInput             Eingabe in diesen Layer (z.B. Ausgabe des vorherigen Layers)
-     * @param adjustmentBias         berechnete Anpassung des Bias, falls es sich um ein herkömmliches DenseNeuron handeln würde (Basis zur Berechnung innerhalb des enthaltenen Netzwerks)
-     * @param adapterAdjustmentsBias zu berechnende theoretische Anpassungen der Adapter-Neuronen dieses SuperNeurons (Basis zur weiteren Berechnung für die Gewichtsanpassungen)
-     * @param adjustmentsWeight      zu berechnende Anpassungen einer Verbindung dieses SuperNeurons
+     * @param sn                           betrachtetes SuperNeuron
+     * @param layerInput                   Eingabe in diesen Layer (z.B. Ausgabe des vorherigen Layers)
+     * @param neuronAdjustmentsWeight      Anpassungen der Gewichte dieses Neurons
+     * @param neuronAdjustmentsBias        Anpassung des Bias dieses Neurons
+     * @param neuronAdapterAdjustmentsBias theoretische Anpassungen der Adapter-Neuronen dieses SuperNeurons (Basis zur weiteren Berechnung für die Gewichtsanpassungen)
      */
-    private static void calculateAdjustmentsSuperNeuron(
-            SuperNeuron sn, int neuron, double[] layerInput,
-            double adjustmentBias, double[][] adapterAdjustmentsBias, double[][] adjustmentsWeight) {
+    private void calculateAdjustmentsSuperNeuron(
+            SuperNeuron sn, double[] layerInput,
+            double[] neuronAdjustmentsWeight, double neuronAdjustmentsBias, double[] neuronAdapterAdjustmentsBias) {
         OutputsDerived subnetResults = sn.network.feedForward(layerInput);
-        double[] subAdjustmentBias = compute(sn.network, layerInput, subnetResults.output(), subnetResults.derived(),
-                new double[]{adjustmentBias}).adjustmentsBias()[0];
+        Adjustments subAdjustments = Adjustments.generateEmpty(sn.network);
+        subAdjustments.bias[subAdjustments.bias.length - 1][0] = neuronAdjustmentsBias;
+        compute(subAdjustments, sn.network, layerInput, subnetResults.output(), subnetResults.derived());
+        double[] subAdjustmentBias = subAdjustments.bias[0];
         AbstractDenseNeuron[] subLayerNeurons = sn.network.denseLayers[0].neurons;
 
-        adapterAdjustmentsBias[neuron] = new double[sn.network.inputLayer.neurons.length];
-        for (int adapterNeuron = 0; adapterNeuron < adapterAdjustmentsBias[neuron].length; adapterNeuron++) {
+        for (int adapterNeuron = 0; adapterNeuron < neuronAdapterAdjustmentsBias.length; adapterNeuron++) {
             for (int subLayerNeuron = 0; subLayerNeuron < subLayerNeurons.length; subLayerNeuron++) {
-                adapterAdjustmentsBias[neuron][adapterNeuron] +=
+                neuronAdapterAdjustmentsBias[adapterNeuron] +=
                         subAdjustmentBias[subLayerNeuron] * subLayerNeurons[subLayerNeuron].incoming[adapterNeuron].weight;
             }
         }
 
         for (int conn = 0; conn < sn.incoming.length; conn++) {
-            adjustmentsWeight[neuron][conn] =
-                    adapterAdjustmentsBias[neuron][conn] * layerInput[conn];
+            neuronAdjustmentsWeight[conn] =
+                    neuronAdapterAdjustmentsBias[conn] * layerInput[conn];
         }
-    }
-
-    /**
-     * Alle notwendigen Werte zur Berechnung der Anpassungen für einen Layer
-     *
-     * @param adjustmentsWeight          Array der zu berechnenden Anpassungen der Gewichte der in Neuronen dieses Layers eingehender Verbindungen
-     * @param adjustmentsBias            Array der zu berechnenden Anpassungen der Bias'e der Neuronen dieses Layers
-     * @param adapterAdjustmentsBias     Array der zu berechnenden theoretischen Anpassungen der Adapter-Neuronen möglicherweise enthaltener Super-Neuronen
-     * @param neurons                    Neuronen des Layers
-     * @param layerInput                 Eingabe in diesen Layer (z.B. Ausgabe des vorherigen Layers)
-     * @param derived                    Ableitungen der Aktivierungen der Neuronen dieses Layers
-     * @param nextAdjustmentsBias        bereits berechnete Anpassungen der Bias'e der Neuronen des nachgelagerten Layers (Backpropagation)
-     * @param nextNeurons                Neuronen des nachgelagerten Layers
-     * @param nextAdapterAdjustmentsBias bereits berechnete theoretische Anpassungen der Adapter-Neuronen möglicherweise enthaltener Super-Neuronen des nachgelagerten Layers
-     */
-    private record LayerComputeValues(double[][] adjustmentsWeight, double[] adjustmentsBias,
-                                      double[][] adapterAdjustmentsBias,
-                                      AbstractDenseNeuron[] neurons, double[] layerInput, double[] derived,
-                                      double[] nextAdjustmentsBias, AbstractDenseNeuron[] nextNeurons,
-                                      double[][] nextAdapterAdjustmentsBias) {
     }
 
 }

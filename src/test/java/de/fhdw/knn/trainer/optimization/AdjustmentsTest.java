@@ -26,10 +26,9 @@ public class AdjustmentsTest {
         neuron.incoming[0].weight = 0.5;
         neuron.bias = 0.3;
 
-        Adjustments adjustments = new Adjustments(
-                new double[][][]{{{0.1}}},
-                new double[][]{{0.2}}
-        );
+        Adjustments adjustments = Adjustments.generateEmpty(network);
+        adjustments.weight[0][0][0] = 0.1;
+        adjustments.bias[0][0] = 0.2;
 
         adjustments.adjust(network);
 
@@ -49,10 +48,9 @@ public class AdjustmentsTest {
 
         double beforeWeight = outer.denseLayers[0].neurons[0].incoming[0].weight;
 
-        Adjustments adjustments = new Adjustments(
-                new double[][][]{{{0.25}}},
-                new double[][]{{0.99}}
-        );
+        Adjustments adjustments = Adjustments.generateEmpty(outer);
+        adjustments.weight[0][0][0] = 0.25;
+        adjustments.bias[0][0] = 0.99;
 
         adjustments.adjust(outer);
 
