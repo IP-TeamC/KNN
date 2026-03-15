@@ -1,8 +1,10 @@
 # KNN
 
-Dokumentation zur KNN-Bibliothek von Team C.
+Dokumentation zur KNN-Bibliothek von Team C (Marcel Anker, Lennart Heinrich, Piet Ostendorp).
 Hier wird die grundlegende Dokumentation anhand von Beispielen erklärt.
-Detaillierte Informationen zu einzelnen Klassen bzw. Interfaces sind der beiliegenden [Javadoc](javadoc/de/fhdw/knn/package-summary.html) zu entnehmen.
+Detaillierte Informationen zu einzelnen Klassen bzw. Interfaces sind der
+beiliegenden [Javadoc](javadoc/de/fhdw/knn/package-summary.html) zu entnehmen.
+Ein grober [Überblick](#überblick) über die Funktionalität der Bibliothek ist ebenfalls weiter unten zu finden.
 
 ## Was ist dieses Projekt?
 
@@ -19,3 +21,132 @@ Die Verwendung von TOML-Konfigurationsdateien ist unter [configuration.md](confi
 ## Verwendung der Bibliothek
 
 Die Verwendung dieses Projekts als Bibliothek ist unter [library.md](library.md) beschrieben.
+
+## Überblick
+
+### Funktionalität / Umsetzung
+
+Die Funktionalität der KNN-Bibliothek umfasst die Erstellung und das Training von künstlichen Neuronalen Netzen (KNNs)
+mit verschiedenen Konfigurationen. Es ermöglicht die Auswahl von Aktivierungsfunktionen, Verlustfunktionen und
+Optimierungsalgorithmen, um die Leistung der KNNs zu optimieren. Die Bibliothek bietet auch Möglichkeiten zur
+Visualisierung der KNN-Struktur und der Trainingsfortschritte.
+
+- <strong>Daten-Verarbeitung</strong>
+    - CSV-Dateien einlesen (inkl. Preprocessing)
+    - Abstraktion der Daten durch die `DataSet`-Klasse
+    - Normalisierung der Daten (z.B. `MinMaxNormalizer`)
+    - Train-/Test-Split der Daten
+
+
+- <strong>Konfigurierbare Netzwerk-Strukturen</strong>
+    - Feedforward Neural Network
+    - erweiterbare Aktivierungsfunktionen: ReLU, Swish, Sigmoid, Snake, Softplus, Tanh, Linear, Sinus
+    - erweiterbare Gewichtsinitialisierungen: Glorot/Xavier (Normal, Uniform), He (Normal, Uniform), Zero
+    - Flexible Anzahl Neuronen im Input Layer
+    - Flexible Anzahl Dense Layer mit konfigurierbarer Anzahl Neuronen
+        - Verzicht auf Hidden Layer möglich
+        - Hilfsmethoden zum Einfachen erstellen mehrere Dense Layer (üblicher Strukturen)
+    - verschiedene Neuronen-Arten: Input Neuronen, Dense Neuronen, Super Neuronen
+        - Integration komplexer Strukturen in einzelne Neuronen möglich (Super Neuronen)
+        - Super Neuronen können als Container für Subnetze dienen (mit Adapter für die Integration in das Hauptnetz)
+        - Unterstützung von Verbindungs-Gewichten und -Guards sowie Bias und Aktivierungsfunktionen
+
+
+- <strong>Konfigurierbare Trainings-Parameter</strong>
+    - erweiterbare Verlustfunktionen: Mean Squared Error (MSE), Mean Absolute Error (MAE),
+      Binary Cross-Entropy Loss (BCE)
+    - erweiterbare Learning Rates: konstant, exponentiell abnehmend (Decay), gedämpfter Start (Softstart),
+      SoftstartDecay (kombiniert)
+    - erweiterbare Optimierungs-Algorithmen: Gradient Descent
+        - Backpropagation auf Basis analytisch berechneter Gradienten
+    - erweiterbare Stop-Funktionen: Early Stopping
+        - basierend auf Verlustfunktion
+    - konfigurierbare Anzahl Epochen und Batch-Größe (z.B. Mini-Batching oder SGD)
+        - parallelisiertes Batch-Training (Multi-Threading) für große Batch-Größen
+    - dynamischer Export während des Trainings (z.B. alle n Epochen)
+    - Visualisierung des Netzes während des Trainings
+    - randomisierter Shuffle der Tranings-Daten (mit Seed für Reproduzierbarkeit)
+
+
+- <strong>Modell-Export/Import</strong>
+    - Export von trainierten Modellen in Dateien
+        - kompaktes/effizientes Format (binär)
+    - Import von Modellen aus Dateien
+    - Export/Import inklusive Subnetzen (z.B. Super Neuronen)
+        - Export und Import erzeugen 100% identisches Modell
+
+
+- <strong>Evaluierung</strong>
+    - Evaluierung der Modell-Performance auf Testdaten
+        - erweiterbare Scorer: Classification Scorer (für Klassifikationsprobleme)
+    - Berechnung der True/False Positives/Negatives
+    - Berechnung von Metriken wie Accuracy, Error, Precision, Recall, F1-Score
+
+
+- <strong>Visualisierung</strong>
+    - Visualisierung der KNN-Struktur (Verbindungen/Gewichte zwischen Neuronen)
+        - auch live während des Trainings möglich (z.B. alle n Epochen)
+    - Heatmap der Gewichte
+    - Sankey-Plot der Verbindungsstärken
+
+
+- <strong>Bibliothek oder TOML-Config</strong>
+    - programmatische Erstellung von KNNs über die Java-API
+        - erweiterter Funktionsumfang (z.B. durch Implementierung von Interfaces)
+        - volle Kontrolle inklusive Pre-/Post-Processing
+    - deklarative Erstellung häufiger Anwendungsfälle über TOML-Konfigurationsdateien
+        - Daten-Verarbeitung
+        - Netzwerk-Struktur
+        - Trainings-Parameter
+        - Export/Import
+        - Evaluierung
+        - Visualisierung
+
+### Flexibilität / Interoperabilität
+
+- <strong>Anwendung auf verschiedene Datensätze und Problemstellungen</strong>
+    - z.B. Regression, Klassifikation, Monoalphabetische Substitution
+    - keine Einschränkung auf bestimmte Problemstellungen
+    - flexible Konfiguration der Netzwerk-Struktur und Trainings-Parameter ermöglicht Anpassung an verschiedene
+      Anwendungsfälle
+
+
+- <strong>Erweiterbarkeit durch Implementierung definierter Interfaces</strong>
+    - Normalizer
+    - Aktivierungsfunktionen
+    - Gewichtsinitialisierungen
+    - Optimierungsalgorithmen
+    - Verlustfunktionen
+    - Stop-Funktionen
+    - Learning-Rate-Funktionen
+    - Scorer
+    - individuelle Dense Neuronen (nur bei Erweiterung des Optimierungsalgorithmus)
+
+### Effizienz / Performance
+
+?
+
+### Dokumentation
+
+Eine ausführliche Dokumentation zu diesem Projekt ist in drei Teilen verfügbar:
+
+- TOML-Konfigurationsdateien: [configuration.md](configuration.md)
+- Java-Bibliothek (grundlegend): [library.md](library.md)
+- Javadoc (detailliert): [Javadoc](javadoc/de/fhdw/knn/package-summary.html)
+
+### Testvolumen
+
+Zur Sicherstellung der Qualität und Stabilität des Codes wurden umfangreiche Tests zum Erreichen einer Branch (und Line)
+Coverage von 100% implementiert (ausgenommen davon sind lediglich die experimentellen und isolierten Klassen im Package
+`de.fhdw.knn.run`).
+Um darüber hinaus die Testabdeckung weiter zu erhöhen, wurden nach Erreichen der Branch Coverage von 100% zusätzlich
+Tests automatisiert generiert (z.B. mithilfe von GitHub Copilot).
+Diese generierten Testfälle wurden manuell überprüft und anschließend mit der Annotation `@Generated` gekennzeichnet,
+um sie von manuell erstellten Tests zu unterscheiden und das verwendete Tool anzugeben.
+
+- manuell erstellte Tests zur Abdeckung aller wichtigen Anwendungsfälle und Randfälle
+    - 100% Branch Coverage (experimentelles Package `de.fhdw.knn.run` ausgenommen)
+    - 100% Line Coverage (experimentelles Package `de.fhdw.knn.run` ausgenommen)
+- manuell überprüfte, automatisiert generierte Tests (mit `@Generated`-Annotation) zur Erhöhung der Testabdeckung
+- Durchführung von Regressionstests nach Code-Änderungen
+- 167 Testfälle insgesamt (Stand: 15. März 2026)
