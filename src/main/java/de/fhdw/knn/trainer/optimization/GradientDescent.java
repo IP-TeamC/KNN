@@ -64,10 +64,10 @@ public class GradientDescent implements OptimizationFunction {
      * @see OptimizationFunction
      */
     @Override
-    public void compute(Adjustments adjustments, Network network, double[] input, double[] output, int batchSize) {
-        OutputsDerived feedForward = network.feedForward(input);
-        double[][] outputs = feedForward.output();
-        double[][] derived = feedForward.derived();
+    public void compute(Adjustments adjustments, OutputsDerived buffer, Network network, double[] input, double[] output, int batchSize) {
+        network.feedForward(buffer, input);
+        double[][] outputs = buffer.output;
+        double[][] derived = buffer.derived;
         double[] predictions = outputs[outputs.length - 1];
         double[] derivedOutput = derived[derived.length - 1];
 
@@ -194,7 +194,7 @@ public class GradientDescent implements OptimizationFunction {
         OutputsDerived subnetResults = sn.network.feedForward(layerInput);
         Adjustments subAdjustments = Adjustments.generateEmpty(sn.network);
         subAdjustments.bias[subAdjustments.bias.length - 1][0] = neuronAdjustmentsBias;
-        compute(subAdjustments, sn.network, layerInput, subnetResults.output(), subnetResults.derived());
+        compute(subAdjustments, sn.network, layerInput, subnetResults.output, subnetResults.derived);
         double[] subAdjustmentBias = subAdjustments.bias[0];
         AbstractDenseNeuron[] subLayerNeurons = sn.network.denseLayers[0].neurons;
 

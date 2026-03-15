@@ -3,6 +3,7 @@ package de.fhdw.knn.trainer;
 import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.io.Exporter;
+import de.fhdw.knn.network.neuron.OutputsDerived;
 import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.Adjustments;
@@ -58,6 +59,11 @@ public class Trainer {
      * Ausführung des Optimierungsalgorithmus neu allokiert und vom GC wieder gelöscht werden müssen
      */
     private final Adjustments[] adjustmentsBuffer;
+    /**
+     * Buffers für die Neuron-Aktivierungen/Ausgaben, da diese aus vielen großen Arrays bestehen und nicht für jede
+     * Ausführung des Optimierungsalgorithmus neu allokiert und vom GC wieder gelöscht werden müssen
+     */
+    private final OutputsDerived[] buffers;
 
     /**
      * Verwaltung der Visualisierung während des Trainings
@@ -105,8 +111,10 @@ public class Trainer {
         this.viewManager = viewManager;
 
         this.adjustmentsBuffer = new Adjustments[batchSize];
-        for (int i = 0; i < adjustmentsBuffer.length; i++) {
+        this.buffers = new OutputsDerived[batchSize];
+        for (int i = 0; i < batchSize; i++) {
             adjustmentsBuffer[i] = Adjustments.generateEmpty(network);
+            buffers[i] = OutputsDerived.generateEmpty(network);
         }
     }
 
@@ -166,7 +174,8 @@ public class Trainer {
                 int limit = Math.min(batchSize, data.size - i);
                 IntStream.range(0, limit).parallel().forEach(offset -> {
                     int index = base + offset;
-                    optimizationFunction.compute(adjustmentsBuffer[offset], network, data.inputs[index], data.outputs[index], batchSize);
+                    optimizationFunction.compute(adjustmentsBuffer[offset], buffers[offset],
+                            network, data.inputs[index], data.outputs[index], batchSize);
                 });
                 IntStream.range(0, network.denseLayers.length).parallel().forEach(layer -> {
                     for (int offset = 0; offset < limit; offset++) {
@@ -176,8 +185,10 @@ public class Trainer {
             }
         } else {
             Adjustments adjustments = adjustmentsBuffer[0];
+            OutputsDerived buffer = buffers[0];
             for (int i = 0; i < data.size; i += 1) {
-                optimizationFunction.compute(adjustments, network, data.inputs[i], data.outputs[i], 1);
+                optimizationFunction.compute(adjustments, buffer,
+                        network, data.inputs[i], data.outputs[i], 1);
                 adjustments.adjust(network);
             }
         }

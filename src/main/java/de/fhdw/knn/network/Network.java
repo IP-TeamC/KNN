@@ -107,40 +107,46 @@ public class Network {
 
     /**
      * Berechnet die Ausgaben/Aktivierungen aller DenseNeuronen sowie deren Ableitungen bei Eingabe einer Zeile (Feed-Forward).
+     * Verwendung ohne Buffer siehe {@link Network#feedForward(double[])}.
+     *
+     * @param buffer wird mit den Ausgaben/Aktivierungen und deren Ableitungen aller Neuronen überschrieben
+     * @param input eine Eingabe-Zeile
+     */
+    public void feedForward(OutputsDerived buffer, double[] input) {
+        calculateOutput(0, input, buffer.output[0], buffer.derived[0]);
+        for (int layer = 1; layer < denseLayers.length; layer++) {
+            calculateOutput(layer, buffer.output[layer - 1], buffer.output[layer], buffer.derived[layer]);
+        }
+    }
+
+    /**
+     * Berechnet die Ausgaben/Aktivierungen aller DenseNeuronen sowie deren Ableitungen bei Eingabe einer Zeile (Feed-Forward).
      *
      * @param input eine Eingabe-Zeile
      * @return Ausgaben/Aktivierungen aller DenseNeuronen sowie deren Ableitungen (außen Layer - innen Neuron im Layer)
      */
     public OutputsDerived feedForward(double[] input) {
-        double[][] output = new double[denseLayers.length][];
-        double[][] derived = new double[denseLayers.length][];
-
-        calculateOutput(0, input, output, derived);
-        for (int layer = 1; layer < denseLayers.length; layer++) {
-            calculateOutput(layer, output[layer - 1], output, derived);
-        }
-
-        return new OutputsDerived(output, derived);
+        OutputsDerived buffer = OutputsDerived.generateEmpty(this);
+        feedForward(buffer, input);
+        return buffer;
     }
 
     /**
      * Berechnet die Ausgaben/Aktivierungen aller DenseNeuronen sowie deren Ableitungen innerhalb eines Layers auf Basis der Aktivierungen des vorherigen Layers
      *
-     * @param layer   Index des DenseLayers
-     * @param input   Ausgabe des vorherigen Layers bzw. Eingabe in den Input Layer (bei layer = 0)
-     * @param output  Array mit den Ausgaben aller Layer/Neuronen (außen Layer - innen Neuron je Layer): output[layer] wird überschrieben
-     * @param derived Array mit den Ableitungen der Ausgabe/Aktivierung aller Layer/Neuronen (außen Layer - innen Neuron je Layer): derived[layer] wird überschrieben
+     * @param layer        Index des DenseLayers
+     * @param input        Ausgabe des vorherigen Layers bzw. Eingabe in den Input Layer (bei layer = 0)
+     * @param layerOutput  Array mit den Ausgaben aller Neuronen des Layers (wird überschrieben)
+     * @param layerDerived Array mit den Ableitungen der Ausgabe/Aktivierung aller Neuronen des Layers (wird überschrieben)
      */
-    private void calculateOutput(int layer, double[] input, double[][] output, double[][] derived) {
+    private void calculateOutput(int layer, double[] input, double[] layerOutput, double[] layerDerived) {
         AbstractDenseNeuron[] neurons = denseLayers[layer].neurons;
-        output[layer] = new double[neurons.length];
-        derived[layer] = new double[neurons.length];
 
         for (int neuron = 0; neuron < neurons.length; neuron++) {
             AbstractDenseNeuron dn = denseLayers[layer].neurons[neuron];
             OutputDerived neuronOutput = dn.compute(input);
-            output[layer][neuron] = neuronOutput.output();
-            derived[layer][neuron] = neuronOutput.derived();
+            layerOutput[neuron] = neuronOutput.output();
+            layerDerived[neuron] = neuronOutput.derived();
         }
     }
 

@@ -37,7 +37,8 @@ class BananaQuality {
         StopFunction stopFunction = EarlyStopping.NEVER;
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.03));
 
-        Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);
+        // Mini-Batching
+        Trainer trainer = new Trainer(network, 30, true, 10, lossFunction, stopFunction, optimizationFunction);
         trainer.train(train);
         long trainStop = System.currentTimeMillis();
 

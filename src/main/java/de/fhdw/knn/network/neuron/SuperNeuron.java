@@ -86,8 +86,8 @@ public class SuperNeuron extends AbstractDenseNeuron {
         }
 
         OutputsDerived outputDerived = network.feedForward(weightedInput);
-        double[][] output = outputDerived.output();
-        double[][] derived = outputDerived.derived();
+        double[][] output = outputDerived.output;
+        double[][] derived = outputDerived.derived;
         return new OutputDerived(output[output.length - 1][0], derived[derived.length - 1][0]);
     }
 

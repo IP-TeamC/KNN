@@ -88,7 +88,7 @@ public class NetworkTest {
         outputNeuron.bias = 0.0;
 
         OutputsDerived result = network.feedForward(new double[]{3.0});
-        assertEquals(3.0, result.output()[0][0], 1e-10); // Hidden Layer: 1*3 = 3
+        assertEquals(3.0, result.output[0][0], 1e-10); // Hidden Layer: 1*3 = 3
         assertEquals(6.0, result.lastOutput()[0], 1e-10); // Output Layer: 2*3 = 6
     }
 

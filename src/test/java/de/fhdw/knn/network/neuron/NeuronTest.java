@@ -108,7 +108,7 @@ public class NeuronTest {
 
         OutputsDerived feedForward = outer.feedForward(new double[]{-2, 3});
         assertEquals(0.268941, feedForward.lastOutput()[0], 1e-6);
-        assertEquals(0.196612, feedForward.derived()[0][0], 1e-6);
+        assertEquals(0.196612, feedForward.derived[0][0], 1e-6);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class NeuronTest {
 
         OutputsDerived feedForward = outer.feedForward(new double[]{-2, 3});
         assertEquals(0.268941, feedForward.lastOutput()[0], 1e-6);
-        assertEquals(0.196612, feedForward.derived()[0][0], 1e-6);
+        assertEquals(0.196612, feedForward.derived[0][0], 1e-6);
     }
 
     @Generated("GitHub Copilot")
@@ -141,7 +141,7 @@ public class NeuronTest {
 
         OutputsDerived feedForward = outer.feedForward(new double[]{-2, 3});
         assertEquals(0.268941, feedForward.lastOutput()[0], 1e-6);
-        assertEquals(0.196612, feedForward.derived()[0][0], 1e-6);
+        assertEquals(0.196612, feedForward.derived[0][0], 1e-6);
     }
 
 }
