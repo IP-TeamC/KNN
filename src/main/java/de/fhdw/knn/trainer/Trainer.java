@@ -155,7 +155,10 @@ public class Trainer {
                 Exporter.export(network, export.formatted(epoch));
             }
 
-            if (stopFunction.isFinished(totalLoss)) break;
+            if (stopFunction.isFinished(totalLoss)) {
+                if (viewManager != null && epoch != maxEpochs) viewManager.earlyStop(epoch, network);
+                break;
+            }
             if (shuffleEpoch) data.shuffle(epoch);
         }
     }

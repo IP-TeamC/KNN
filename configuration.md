@@ -3,7 +3,7 @@
 Dieses Projekt ermöglicht es, Konfigurationsdateien zu verwenden, um die Netzwerkarchitektur, das Training, die
 Evaluation und die Visualisierung eines neuronalen Netzes schnell, strukturiert und reproduzierbar zu steuern.
 Zusätzlich besteht die Möglichkeit des Modellimports und -exports, sodass bestehende Modelle zu einem späteren Zeitpunkt
-analysiert oder weitertrainiert werden können.
+analysiert oder weiter trainiert werden können.
 
 ### Speicherort
 
@@ -67,6 +67,9 @@ type = "ClassificationScorer"
 [visualization]
 heatmapInterval = 10
 sankeyInterval = 10
+showWeights = true
+normalizeColor = true
+ColorSchema = "MONOCHROME"
 ```
 
 ### Beispiel 2
@@ -97,9 +100,12 @@ type = "ClassificationScorer"
 Im Paket `de.fhdw.knn` befindet sich die Klasse `ConfigExecutor`, welche interaktiv verwendet werden kann, um
 entsprechende Konfigurationen über die Eingabeaufforderung zu laden und auszuführen:
 
-``` cpp
-Config (.toml-Dateiendung optional): example.toml
 ```
+Config (.toml-Dateiendung optional): example.toml~~~~
+```
+
+Optional kann der Pfad bzw. Name der zu ladenden Konfigurationsdatei auch direkt beim Start 
+als Command-Line-Argument angegeben werden.
 
 ### Option 2: Dedizierte Runner-Klasse
 
@@ -178,8 +184,8 @@ weightInitializer = "GLOROT_UNIFORM"
 importFile = "models/example.knn"
 ```
 
-Die einzelnen Schichten werden sequentiell über wiederholbare Blöcke definiert.
-Die Input-Layer wird automatisch erstellt und ist nicht mit anzugeben. Der letzte Block beschreibt folglich den
+Die einzelnen Schichten werden sequenziell über wiederholbare Blöcke definiert.
+Der Input-Layer wird automatisch erstellt und ist nicht mit anzugeben. Der letzte Block beschreibt folglich den
 Output-Layer.
 
 ``` toml
@@ -295,6 +301,26 @@ heatmapInterval = 10
 #
 # Default: 0 (deaktiviert)
 sankeyInterval = 10
+
+# Gibt an, ob die Gewichtswerte innerhalb der Heatmap-Felder angezeigt werden sollen.
+#
+# Default: true
+showWeights = true
+
+# Gibt an, ob die Farbskala der Heatmap auf den tatsächlichen Wertebereich der Gewichtsmatrix
+# normalisiert wird. Bei false wird ein fester Bereich von [-1, 1] verwendet.
+#
+# Default: true
+normalizeColors = true
+
+# Farbschema der Heatmap. Negative Gewichte werden in der ersten, positive in der zweiten Farbe dargestellt.
+#
+# - "RED_GREEN"  : Negative Gewichte in Rot, Positive Gewitchte in Grün 
+# - "BLUE_RED"   : Negative Gewichte in Blau, Positive Gewitchte in Rot 
+# - "MONOCHROME" : Negative und Positive Gewichte in Schwarz
+
+# Default: RED_GREEN
+colorScheme = "RED_GREEN"
 ```
 
 

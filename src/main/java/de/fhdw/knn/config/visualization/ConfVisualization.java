@@ -1,6 +1,7 @@
 package de.fhdw.knn.config.visualization;
 
 import de.fhdw.knn.network.Network;
+import de.fhdw.knn.visualization.ColorScheme;
 import de.fhdw.knn.visualization.ViewManager;
 import io.github.wasabithumb.jtoml.serial.TomlSerializable;
 
@@ -40,6 +41,38 @@ public class ConfVisualization implements TomlSerializable {
     public int sankeyInterval = 0;
 
     /**
+     * Gibt an, ob die Gewichtswerte innerhalb der Heatmap-Felder angezeigt werden sollen.
+     *
+     * <p>Bei {@code false} werden nur die Farben dargestellt.
+     *
+     * @see ColorScheme
+     */
+    public boolean showWeights = true;
+
+    /**
+     * Gibt an, ob die Farbskala der Heatmap auf den tatsächlichen Wertebereich der
+     * Gewichtsmatrix normalisiert werden soll.
+     *
+     * <p>Bei {@code true} erhält der höchste bzw. niedrigste Gewichtswert die kräftigste Farbe,
+     * unabhängig davon, ob die Werte im Bereich [-1, 1] liegen oder nicht.
+     *
+     * <p>Bei {@code false} wird ein fester Bereich von [-1, 1] verwendet. Werte außerhalb
+     * dieses Bereichs werden mit der maximalen Farbsättigung dargestellt.
+     *
+     * @see de.fhdw.knn.visualization.ColorScheme
+     */
+    public boolean normalizeColors = true;
+
+    /**
+     * Legt das Farbschema fest, das für die Heatmap-Visualisierung verwendet werden soll.
+     *
+     * <p>Das Schema bestimmt, welche Farben für negative und positive Gewichtswerte verwendet werden.
+     *
+     * @see ColorScheme
+     */
+    public String colorScheme = "RED_GREEN";
+
+    /**
      * Erstellt eine neue Instanz von {@code ViewManager}, die mit den angegebenen Intervallen
      * für Heatmap- und Sankey-Diagramm-Visualisierungen konfiguriert ist.
      *
@@ -55,7 +88,15 @@ public class ConfVisualization implements TomlSerializable {
         if (heatmapInterval <= 0 && sankeyInterval <= 0) {
             return null;
         }
-        return new ViewManager(heatmapInterval, sankeyInterval, network);
+
+        ColorScheme scheme;
+        try {
+            scheme = ColorScheme.valueOf(colorScheme.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            scheme = ColorScheme.RED_GREEN; // Fallback
+        }
+
+        return new ViewManager(heatmapInterval, sankeyInterval, showWeights, normalizeColors, scheme, network);
     }
 
     /**

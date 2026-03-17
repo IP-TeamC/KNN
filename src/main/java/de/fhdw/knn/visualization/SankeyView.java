@@ -91,15 +91,15 @@ public class SankeyView {
      * Aktualisiert das Sankey-Diagramm mit den neuesten Daten aus dem Netzwerk.
      *
      * @param network Das Netzwerk, dessen Daten im Sankey-Diagramm visualisiert werden.
-     * @param epoch   Die aktuelle Epochennummer, die im Label angezeigt werden soll.
+     * @param label   Das Label, das auf dem Sankey-Diagramm angezeigt werden soll.
      */
-    public void update(Network network, int epoch) {
+    public void update(Network network, String label) {
         List<PlotItem> items = SankeyData.convertNetworkToItems(network);
         Platform.runLater(() -> {
             if (sankey != null) {
                 sankey.setItems(items);
                 if (epochLabel != null) {
-                    epochLabel.setText("Epoche: " + epoch);
+                    epochLabel.setText(label);
                 }
             }
         });

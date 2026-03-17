@@ -56,9 +56,9 @@ public class SankeyData {
         DenseLayer outputLayer = network.denseLayers[network.denseLayers.length - 1];
         PlotItem[] outputItems = new PlotItem[outputLayer.neurons.length];
 
-        for (int i = 0; i < outputLayer.neurons.length; i++) {
+        for (int i = outputLayer.neurons.length - 1; i >= 0; i--) {
             outputItems[i] = new PlotItem(
-                    "O-" + (i + 1),
+                    "O-N" + (i + 1),
                     1,
                     getColorForLayer(0, layerColors, totalLayers),
                     0
@@ -75,9 +75,9 @@ public class SankeyData {
 
             hiddenItems[layer] = new PlotItem[currentLayer.neurons.length];
 
-            for (int i = 0; i < currentLayer.neurons.length; i++) {
+            for (int i = currentLayer.neurons.length - 1; i >= 0; i--) {
                 hiddenItems[layer][i] = new PlotItem(
-                        "H" + (layer + 1) + "-" + (i + 1),
+                        "H" + (layer + 1) + "-N" + (i + 1),
                         1,
                         getColorForLayer(visualLayer, layerColors, totalLayers),
                         visualLayer
@@ -90,9 +90,9 @@ public class SankeyData {
         Neuron[] inputNeurons = network.inputLayer.neurons;
         PlotItem[] inputItems = new PlotItem[inputNeurons.length];
 
-        for (int i = 0; i < inputNeurons.length; i++) {
+        for (int i = inputNeurons.length - 1; i >= 0; i--) {
             inputItems[i] = new PlotItem(
-                    "I-" + (i + 1),
+                    "I-N" + (i + 1),
                     1,
                     getColorForLayer(totalLayers - 1, layerColors, totalLayers),
                     totalLayers - 1

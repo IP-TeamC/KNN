@@ -59,14 +59,28 @@ public class ViewManager {
      *
      * @param heatmapInterval Das Intervall, in dem die Heatmap aktualisiert werden soll. Der Wert 0 deaktiviert die Heatmap.
      * @param sankeyInterval Das Intervall, in dem das Sankeyplot aktualisiert werden soll. Der Wert 0 deaktiviert das Sankeyplot.
+     * @param showWeights {@code true}, um die Werte der Gewichte in der Heatmap anzuzeigen.
+     * @param normalizeColors {@code true}, um die Farbskala auf den tatsächlichen Wertebereich zu normalisieren;
+     *                        {@code false} für einen festen Bereich von [-1, 1].
      * @param network Die Netzwerkdaten, die zur Initialisierung der Diagramme verwendet werden.
+     * @param colorScheme Das {@link ColorScheme}, das für die Heatmap-Visualisierung verwendet werden soll.
      */
-    public ViewManager(final int heatmapInterval, final int sankeyInterval, Network network) {
+    public ViewManager(
+            final int heatmapInterval,
+            final int sankeyInterval,
+            final boolean showWeights,
+            final boolean normalizeColors,
+            final ColorScheme colorScheme,
+            Network network
+    ) {
         this.heatmapInterval = heatmapInterval;
         this.sankeyInterval = sankeyInterval;
 
         if (this.heatmapInterval > 0) {
             this.heatmapView = new HeatmapView();
+            this.heatmapView.setShowWeights(showWeights);
+            this.heatmapView.setNormalizeColors(normalizeColors);
+            this.heatmapView.setColorSchema(colorScheme);
             this.heatmapView.addEpoch("Epoche 0", new HeatmapData(network));
         }
 
@@ -97,8 +111,23 @@ public class ViewManager {
 
         // Sankey Update
         if (sankeyView != null && shouldUpdate(epoch, sankeyInterval, maxEpochs)) {
-            sankeyView.update(network, epoch);
+            sankeyView.update(network, "Epoche " + epoch);
         }
+    }
+
+    /**
+     * Erzwingt eine Aktualisierung der Heatmap bzw. des Sankeyplots bei einem EarlyStop.
+     *
+     * <p>Diese Methode wird in der Regel aufgerufen, wenn der Trainingsprozess vorzeitig durch
+     * {@link de.fhdw.knn.trainer.stop.EarlyStopping} abgebrochen wird,
+     * um den Endzustand in den Visualisierungen darzustellen.
+     *
+     * @param epoch Die aktuelle Epoche.
+     * @param network Die für Aktualisierungen zu verwendenden Daten des neuronalen Netzwerks.
+     */
+    public void earlyStop(int epoch, Network network) {
+        if (heatmapView != null) heatmapView.addEpoch("Epoche " + epoch + " (Early Stopping)", new HeatmapData(network));
+        if (sankeyView != null) sankeyView.update(network, "Epoche " + epoch + " (Early Stopping)");
     }
 
     /**

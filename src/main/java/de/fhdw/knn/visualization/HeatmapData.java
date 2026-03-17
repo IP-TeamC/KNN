@@ -93,15 +93,15 @@ public class HeatmapData {
         // Input Layer
         int inputCount = this.network.inputLayer.neurons.length;
         for (int i = 0; i < inputCount; i++) {
-            labels[globalIndex++] = "Input " + i;
+            labels[globalIndex++] = "I-N" + (i + 1);
         }
 
         // Hidden / Output Layer
         for (int l = 0; l < this.network.denseLayers.length; l++) {
             DenseLayer layer = this.network.denseLayers[l];
             for (int n = 0; n < layer.neurons.length; n++) {
-                String prefix = (l == this.network.denseLayers.length - 1) ? "Output " : "L" + (l + 1) + " N";
-                labels[globalIndex++] = prefix + n;
+                String prefix = (l == this.network.denseLayers.length - 1) ? "O" : "H" + (l + 1);
+                labels[globalIndex++] = prefix + "-N" + (n + 1);
             }
         }
         return labels;

@@ -43,3 +43,4 @@ type = "ClassificationScorer"
 [visualization]
 heatmapInterval = 10
 sankeyInterval = 10
+colorScheme = "BLUE_RED"
