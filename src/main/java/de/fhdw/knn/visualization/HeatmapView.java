@@ -167,7 +167,6 @@ public class HeatmapView extends JFrame {
                 }
             });
 
-
             JScrollPane scrollPane = new JScrollPane(panel);
             this.tabs.addTab(tabTitle, scrollPane);
             this.tabs.setSelectedIndex(this.tabs.getTabCount() - 1);
