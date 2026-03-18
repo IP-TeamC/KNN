@@ -2,9 +2,13 @@ package de.fhdw.knn.visualization;
 
 import de.fhdw.knn.TestUtil;
 import de.fhdw.knn.network.Network;
+import org.jfree.chart.ChartPanel;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseWheelEvent;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 class HeatmapViewTest {
@@ -29,6 +33,26 @@ class HeatmapViewTest {
             view.setThreshold(0.5);
 
             view.showSingleMatrix("Manuelle Test-Gewichtsmatrix", new HeatmapData(network));
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    Field tabs = view.getClass().getDeclaredField("tabs");
+                    tabs.setAccessible(true);
+                    JTabbedPane tabbed = (JTabbedPane) tabs.get(view);
+                    int index = tabbed.indexOfTab("Test-Epoche 1");
+                    JScrollPane scrollPane = (JScrollPane) tabbed.getComponentAt(index);
+                    ChartPanel panel = (ChartPanel) scrollPane.getViewport().getView();
+                    panel.restoreAutoBounds();
+                    panel.dispatchEvent(new MouseWheelEvent(panel, MouseWheelEvent.MOUSE_WHEEL, System.currentTimeMillis(), 0, 100, 100, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 3, -1));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             view.dispose();
         });

@@ -13,12 +13,15 @@ import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
+import de.fhdw.knn.visualization.ColorScheme;
+import de.fhdw.knn.visualization.ViewManager;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.processing.Generated;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,8 +68,10 @@ public class TrainerTest {
 
         DataSet data = CsvReader.readFile("data/banana_quality.csv", 0, 1, 7, 1);
         OptimizationFunction optimizationFunction = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
+        ViewManager viewManager = new ViewManager(10, 10, false, false, ColorScheme.RED_GREEN, outer);
+        AtomicBoolean earlyStoppingOnTime = new AtomicBoolean(false);
         Trainer trainer = new Trainer(outer, 2, true, 1, null,
-                EarlyStopping.NEVER, optimizationFunction);
+                (loss) -> earlyStoppingOnTime.getAndSet(true), optimizationFunction, viewManager);
         double initialWeight = outer.denseLayers[0].neurons[0].incoming[0].weight;
         trainer.train(data);
         assertNotEquals(initialWeight, outer.denseLayers[0].neurons[0].incoming[0].weight);

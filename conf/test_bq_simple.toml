@@ -21,15 +21,15 @@ activationFunction = "SIGMOID"
 
 [trainer]
 lossFunction = "CROSS_ENTROPY_LOSS"
-maxEpochs = 5
+maxEpochs = 6
 shuffleEpoch = true
 batchSize = 1
 learningRate = 0.04
 #exportFile = "models/test.knn"
 
 [trainer.earlyStopping]
-minDelta = 0.01
-patience = 5
+minDelta = 0.9
+patience = 3
 
 [scorer]
 lossFunction = "CROSS_ENTROPY_LOSS"
