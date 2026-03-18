@@ -128,7 +128,5 @@ public record ClassificationScorer(Network network) implements Scorer {
             System.out.println("F1: " + f1);
             System.out.println();
         }
-
     }
-
 }

@@ -3,7 +3,6 @@ package de.fhdw.knn.scorer;
 import de.fhdw.knn.data.CsvReader;
 import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.data.Pair;
-import de.fhdw.knn.data.TrainTestSplit;
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
@@ -18,9 +17,13 @@ import de.fhdw.knn.trainer.stop.StopFunction;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.TestAbortedException;
 
+import javax.annotation.processing.Generated;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class ClassificationScorerTest {
 
@@ -66,4 +69,33 @@ public class ClassificationScorerTest {
         assertEquals(0.8797, score.recall, 0.0001);
         assertEquals(0.8448, score.f1, 0.0001);
     }
+
+    @Generated("GitHub Copilot")
+    @Test
+    public void testPrintFunction(){
+        ClassificationScorer.Score score = new ClassificationScorer.Score(234, 182, 54, 32);
+        
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+        
+        try {
+            score.print();
+            System.setOut(originalOut);
+            String output = outputStream.toString();
+            
+            assertTrue(output.contains("TP:"), "Ausgabe sollte 'TP:' enthalten");
+            assertTrue(output.contains("TN:"), "Ausgabe sollte 'TN:' enthalten");
+            assertTrue(output.contains("FP:"), "Ausgabe sollte 'FP:' enthalten");
+            assertTrue(output.contains("FN:"), "Ausgabe sollte 'FN:' enthalten");
+            assertTrue(output.contains("Accuracy:"), "Ausgabe sollte 'Accuracy:' enthalten");
+            assertTrue(output.contains("Error:"), "Ausgabe sollte 'Error:' enthalten");
+            assertTrue(output.contains("Precision:"), "Ausgabe sollte 'Precision:' enthalten");
+            assertTrue(output.contains("Recall:"), "Ausgabe sollte 'Recall:' enthalten");
+            assertTrue(output.contains("F1:"), "Ausgabe sollte 'F1:' enthalten");
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
 }
+
