@@ -109,10 +109,12 @@ public class HeatmapView extends JFrame {
     public void showSingleMatrix(String title, HeatmapData matrix) {
         this.addEpoch(title, matrix);
 
-        this.setTitle(title);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.pack();
-        this.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            this.setTitle(title);
+            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            this.pack();
+            this.setVisible(true);
+        });
     }
 
     /**
