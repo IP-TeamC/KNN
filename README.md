@@ -147,6 +147,7 @@ Visualisierung der KNN-Struktur und der Trainingsfortschritte.
     - Batch-Größe 64: `12.45s` (KNN-Bibliothek) vs. `5.23s` (scikit-learn)
   - Beispiel für die Messung: Konfiguration `conf/bq_perf.toml`
     - CPU: AMD Ryzen 5 3600 (6 Kerne, 4.2 GHz)
+    - scikit-learn siehe [assets_docs/bq_perf.py](assets_docs/bq_perf.py)
 
 ### Dokumentation
 
@@ -172,4 +173,4 @@ um sie von manuell erstellten Tests zu unterscheiden und das verwendete Tool anz
 - manuell überprüfte, automatisiert generierte Tests (mit `@Generated`-Annotation) zur Erhöhung der Testabdeckung
 - Durchführung von Regressionstests nach Code-Änderungen
 - # TODO 167 Testfälle insgesamt (Stand: 15. März 2026)
-![test_coverage.png](images/test_coverage.png)
+![test_coverage.png](assets_docs/test_coverage.png)
