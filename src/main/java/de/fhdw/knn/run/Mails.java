@@ -30,8 +30,6 @@ class Mails {
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.SIGMOID, 300, 300, 1);
         Network network = new Network(42, WeightInitializer.HE, 3000, denseLayers);
         network = Importer.importNetwork("models/mails_swish_97.knn");
-        //network = Importer.importNetwork("models/mails_91.knn");
-        //network = Importer.importNetwork("models/mails_98.knn");
 
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = StopFunction.NEVER;

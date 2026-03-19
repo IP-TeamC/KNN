@@ -32,6 +32,7 @@ class F2 {
 
         Trainer trainer = new Trainer(network, 5000, true, 128, lossFunction, stopFunction, optimizationFunction);
         trainer.train(data);
+        //network.export("models/f2.knn");
 
         double[][] x = new double[21][];
         for (int i = -10; i <= 10; i++) {
