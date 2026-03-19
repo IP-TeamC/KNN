@@ -27,6 +27,8 @@ import java.util.stream.IntStream;
 
 class DataPoints {
 
+    // Hier kann der wenig erfolgreiche Versuch der Funktionsbestimmung für die Data-Points beobachtet werden :-)
+
     public static void main(String[] args) throws IOException {
         DataSet data = CsvReader.readFile("data/datapoints.csv", 1, 10, 0, 1, 1);
         data.preprocess((input, output) -> output[0] /= input[0]);
@@ -50,7 +52,7 @@ class DataPoints {
 
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = EarlyStopping.NEVER;
-        // learning rate zu klein oder decay zu groß (bzw. zu klein: näher an 1 - ist ja 1 - decay eig...)
+        // learning rate zu klein oder decay zu groß (bzw. zu klein: näher an 1)
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new DecayLearningRate(0.001, 0.995));
 
         Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);

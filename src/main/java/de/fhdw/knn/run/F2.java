@@ -22,15 +22,15 @@ class F2 {
         DataSet data = CsvReader.readFile("data/f2_full.csv", 0, 1, 2, 1);
         data.shuffle(42);
 
-        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.RELU, ActivationFunction.LINEAR, 200, 200, 200, 1);
+        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.RELU, ActivationFunction.LINEAR, 50, 50, 1);
         Network network = new Network(42, WeightInitializer.HE, 1, denseLayers);
         //network = Importer.importNetwork("models/f2.knn");
 
         LossFunction lossFunction = LossFunction.MEAN_SQUARED_ERROR;
         StopFunction stopFunction = new EarlyStopping(0.0001, 100);
-        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new SoftstartLearningRate(0.00005, 0.3, 5));
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new SoftstartLearningRate(0.0005, 0.5, 100));
 
-        Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);
+        Trainer trainer = new Trainer(network, 5000, true, 128, lossFunction, stopFunction, optimizationFunction);
         trainer.train(data);
 
         double[][] x = new double[21][];

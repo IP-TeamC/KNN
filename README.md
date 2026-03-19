@@ -172,4 +172,4 @@ um sie von manuell erstellten Tests zu unterscheiden und das verwendete Tool anz
 - manuell überprüfte, automatisiert generierte Tests (mit `@Generated`-Annotation) zur Erhöhung der Testabdeckung
 - Durchführung von Regressionstests nach Code-Änderungen
 - # TODO 167 Testfälle insgesamt (Stand: 15. März 2026)
-![test_coverage.png](test_coverage.png)
+![test_coverage.png](images/test_coverage.png)
