@@ -4,9 +4,11 @@ import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
+import javafx.application.Platform;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.CountDownLatch;
 
 public class TestUtil {
 
@@ -29,6 +31,16 @@ public class TestUtil {
         try {
             SwingUtilities.invokeAndWait(() -> {});
         } catch (InvocationTargetException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void waitForJavaFX() {
+        try {
+            CountDownLatch latch = new CountDownLatch(1);
+            Platform.runLater(latch::countDown);
+            latch.await();
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

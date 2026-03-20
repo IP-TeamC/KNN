@@ -20,19 +20,11 @@ import java.util.List;
 public class SankeyView {
 
     /**
-     * Erzeugt eine Instanz von SankeyView
-     *
-     * @see SankeyView
-     */
-    public SankeyView() {
-    }
-
-    /**
      * Stellt die primäre JavaFX Stage für die Anzeige des Sankey-Diagramms dar.
-     * Diese Stufe wird initialisiert und angezeigt, wenn die Methode {@code show} aufgerufen wird,
+     * Diese Stufe wird initialisiert und angezeigt, wenn die Methode {@code update} aufgerufen wird,
      * und dient als Container für das Sankey-Diagramm und die zugehörigen UI-Elemente.
      *
-     * @see #show(Network)
+     * @see #update(Network, String)
      */
     private Stage stage;
     /**
@@ -52,37 +44,33 @@ public class SankeyView {
     private Label epochLabel;
 
     /**
-     * Öffnet ein JavaFX-Fenster mit einem Sankey-Diagramm, das mit den Daten aus dem bereitgestellten Netzwerk initialisiert wurde.
+     * Erstellt eine neue SankeyView-Instanz, die das angegebene Netzwerk in einem Sankey-Diagramm visualisiert.
      *
-     * @param initialNetwork Die ursprünglichen Netzwerkdaten, die im Sankey-Diagramm visualisiert werden sollen.
+     * @param initialNetwork Das Netzwerk, dessen Daten im Sankey-Diagramm visualisiert werden sollen.
+     * @param title          Das Label, das auf dem Sankey-Diagramm angezeigt werden soll.
      */
-    public void show(Network initialNetwork) {
-        //Platform.setImplicitExit(false);
+    public SankeyView(Network initialNetwork, String title) {
         List<PlotItem> initialItems = SankeyData.convertNetworkToItems(initialNetwork);
 
-        // JavaFX Fenster im FX-Thread initialisieren
         Platform.runLater(() -> {
             this.stage = new Stage();
             this.sankey = new SankeyPlot();
+            this.epochLabel = new Label(title);
 
-            // Epochen-Label erstellen
-            epochLabel = new javafx.scene.control.Label("");
             epochLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 10px;");
             StackPane root = new StackPane(sankey, epochLabel);
             StackPane.setAlignment(epochLabel, Pos.TOP_LEFT);
 
-            // Initialdaten setzen
-            if (!initialItems.isEmpty()) {
-                sankey.setItems(initialItems);
-            }
-
+            sankey.setItems(initialItems);
             sankey.setStreamFillMode(SankeyPlot.StreamFillMode.GRADIENT);
             sankey.setShowFlowDirection(false);
 
             this.stage.setTitle("Sankey - Network View");
-            this.stage.setScene(new Scene(root, 1200, 800));
-
+            this.stage.setScene(new Scene(root, 1200, 900));
             this.stage.show();
+            this.stage.toFront();
+            this.stage.requestFocus();
+
             System.out.println("Sankey-Fenster geöffnet.");
         });
     }
@@ -90,18 +78,14 @@ public class SankeyView {
     /**
      * Aktualisiert das Sankey-Diagramm mit den neuesten Daten aus dem Netzwerk.
      *
-     * @param network Das Netzwerk, dessen Daten im Sankey-Diagramm visualisiert werden.
-     * @param label   Das Label, das auf dem Sankey-Diagramm angezeigt werden soll.
+     * @param network Das Netzwerk, dessen Daten im Sankey-Diagramm visualisiert werden sollen.
+     * @param title   Das Label, das auf dem Sankey-Diagramm angezeigt werden soll.
      */
-    public void update(Network network, String label) {
+    public void update(Network network, String title) {
         List<PlotItem> items = SankeyData.convertNetworkToItems(network);
         Platform.runLater(() -> {
-            if (sankey != null) {
-                sankey.setItems(items);
-                if (epochLabel != null) {
-                    epochLabel.setText(label);
-                }
-            }
+            sankey.setItems(items);
+            epochLabel.setText(title);
         });
     }
 }

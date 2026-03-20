@@ -17,6 +17,6 @@ class HeatmapTest {
         HeatmapData heatmapData = new HeatmapData(network);
 
         HeatmapView window = new HeatmapView();
-        window.addHeatmap("Manuelle Gewichtsmatrix", heatmapData);
+        window.addHeatmap(heatmapData, "Manuelle Gewichtsmatrix");
     }
 }

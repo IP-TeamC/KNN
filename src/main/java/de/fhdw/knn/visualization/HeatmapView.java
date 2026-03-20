@@ -41,7 +41,7 @@ public class HeatmapView extends JFrame {
      * <p>Die Registerkarten werden dynamisch verwaltet und aktualisiert,
      * wenn die Methode {@code addEpoch} aufgerufen wird.
      *
-     * @see #addHeatmap(String, HeatmapData)
+     * @see #addHeatmap(HeatmapData, String)
      */
     private final JTabbedPane tabs;
 
@@ -95,19 +95,24 @@ public class HeatmapView extends JFrame {
         this.setSize(1200, 900);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
+        this.toFront();
+        this.requestFocus();
+
+        System.out.println("Heatmap-Fenster geöffnet.");
     }
+
     /**
      * Fügt eine weitere Registerkarte zur {@code HeatmapView} hinzu.
      * Diese Methode wird im Event Dispatch Thread ausgeführt, da Swing-Komponenten nicht threadsicher sind.
      *
-     * @param tabTitle Der Titel der hinzuzufügenden Registerkarte. Er steht in der Regel für die aktuelle Epoche.
      * @param data     Das {@code HeatmapData}-Objekt enthält Informationen über das Netzwerk,
      *                 einschließlich der Gewichtungsmatrix und Neuronenbezeichnungen.
+     * @param tabTitle Der Titel der hinzuzufügenden Registerkarte. Er steht in der Regel für die aktuelle Epoche.
      *
      * @see HeatmapView
      * @see HeatmapData
      */
-    public void addHeatmap(String tabTitle, HeatmapData data) {
+    public void addHeatmap(HeatmapData data, String tabTitle) {
         SwingUtilities.invokeLater(() -> { // invokeLater, da Swing nicht Thread-safe ist
 
             JFreeChart chart = buildChart(data, tabTitle);

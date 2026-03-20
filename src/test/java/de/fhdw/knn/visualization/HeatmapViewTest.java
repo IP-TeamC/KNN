@@ -32,7 +32,7 @@ class HeatmapViewTest {
     @Test
     void testAddHeatmap() throws Exception {
         HeatmapView view = new HeatmapView();
-        SwingUtilities.invokeAndWait(() -> view.addHeatmap("Test-Matrix 1", new HeatmapData(TestUtil.complexDummyNetwork())));
+        SwingUtilities.invokeAndWait(() -> view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test-Matrix 1"));
 
         waitForSwing();
 
@@ -44,7 +44,7 @@ class HeatmapViewTest {
         assert tabbed.getTabCount() == 1;
         assert "Test-Matrix 1".equals(tabbed.getTitleAt(0));
 
-        SwingUtilities.invokeAndWait(() -> view.addHeatmap("Test-Matrix 2", new HeatmapData(TestUtil.extremelyComplexDummyNetwork())));
+        SwingUtilities.invokeAndWait(() -> view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test-Matrix 2"));
 
         waitForSwing();
 
@@ -63,7 +63,7 @@ class HeatmapViewTest {
             view.setThreshold(0.5);
             view.setNormalizeColors(true);
             view.setShowWeights(true);
-            view.addHeatmap("Test-Setters 1", new HeatmapData(TestUtil.complexDummyNetwork()));
+            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test-Setters 1");
         });
 
         SwingUtilities.invokeAndWait(() -> {
@@ -71,7 +71,7 @@ class HeatmapViewTest {
             view.setThreshold(-1.0);
             view.setNormalizeColors(false);
             view.setShowWeights(false);
-            view.addHeatmap("Test-Setters 2", new HeatmapData(TestUtil.extremelyComplexDummyNetwork()));
+            view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test-Setters 2");
         });
 
         waitForSwing();
@@ -101,7 +101,7 @@ class HeatmapViewTest {
 
         SwingUtilities.invokeAndWait(() -> {
             view.setColorSchema(ColorScheme.MONOCHROME);
-            view.addHeatmap("Test-Zooming 1", new HeatmapData(TestUtil.complexDummyNetwork()));
+            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test-Zooming 1");
         });
 
         waitForSwing();
@@ -136,7 +136,7 @@ class HeatmapViewTest {
 
         SwingUtilities.invokeAndWait(() -> {
             view.setColorSchema(ColorScheme.BLUE_RED);
-            view.addHeatmap("Test-Zooming 2", new HeatmapData(TestUtil.extremelyComplexDummyNetwork()));
+            view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test-Zooming 2");
         });
 
         waitForSwing();
@@ -180,7 +180,7 @@ class HeatmapViewTest {
             view.setColorSchema(ColorScheme.BLUE_RED);
             view.setThreshold(0.0);
 
-            view.addHeatmap("Test-ZeroWeight", new HeatmapData(network));
+            view.addHeatmap(new HeatmapData(network), "Test-ZeroWeight");
         });
 
         waitForSwing();
@@ -243,7 +243,7 @@ class HeatmapViewTest {
 
         SwingUtilities.invokeAndWait(() -> {
             view.setShowWeights(true);
-            view.addHeatmap("NonXYZBranch", new FakeHeatmapData(simpleDummyNetwork()));
+            view.addHeatmap(new FakeHeatmapData(simpleDummyNetwork()), "Test-NonXYZBranch");
         });
 
         waitForSwing();
