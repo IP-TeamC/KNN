@@ -184,23 +184,23 @@ class HeatmapViewTest {
         ChartPanel panel2 = (ChartPanel) scrollPane2.getViewport().getView();
 
         CountDownLatch latch5 = new CountDownLatch(1);
-        SwingUtilities.invokeAndWait(() -> {
-            for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 25; i++) {
+            SwingUtilities.invokeAndWait(() -> {
                 panel2.dispatchEvent(new MouseWheelEvent(panel2, MouseWheelEvent.MOUSE_WHEEL, System.currentTimeMillis(), 0, 600, 200, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 1, -1));
-            }
-            initSleep(100);
-            latch5.countDown();
-        });
+            });
+        }
+        initSleep(100);
+        latch5.countDown();
         latch5.await();
 
         CountDownLatch latch6 = new CountDownLatch(1);
-        SwingUtilities.invokeAndWait(() -> {
-            for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 25; i++) {
+            SwingUtilities.invokeAndWait(() -> {
                 panel2.dispatchEvent(new MouseWheelEvent(panel2, MouseWheelEvent.MOUSE_WHEEL, System.currentTimeMillis(), 0, 600, 200, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 1, 1));
-            }
-            initSleep(100);
-            latch6.countDown();
-        });
+            });
+        }
+        initSleep(100);
+        latch6.countDown();
 
         latch6.await();
         waitForSwing();
@@ -249,7 +249,7 @@ class HeatmapViewTest {
 
     @Generated("ChatGPT")
     @Test
-    // Testen über Reflection, um 100% Branch-Coverage zu erreichen.
+        // Testen über Reflection, um 100% Branch-Coverage zu erreichen.
     void testRendererPaintScaleAndBoundsViaReflection() throws Exception {
         Method method = HeatmapView.class.getDeclaredMethod("getXyBlockRenderer", double.class, double.class, double.class, boolean.class, ColorScheme.class);
         method.setAccessible(true);
