@@ -26,7 +26,7 @@ public class ConfigExecutorTest {
         } finally {
             System.setIn(systemIn);
         }
-        // erwarte bis hier keinen Fehler
+        // Erwarte bis hier keinen Fehler
         assertThrowsExactly(IllegalArgumentException.class, () -> ConfigExecutor.main(new String[]{"target/"}));
     }
 

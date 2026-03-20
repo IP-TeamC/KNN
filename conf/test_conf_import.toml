@@ -1,0 +1,2 @@
+[network]
+importFile = "models/test_conf.knn"

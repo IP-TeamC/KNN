@@ -88,13 +88,7 @@ public class ConfVisualization implements TomlSerializable {
         if (heatmapInterval <= 0 && sankeyInterval <= 0) {
             return null;
         }
-
-        ColorScheme scheme;
-        try {
-            scheme = ColorScheme.valueOf(colorScheme.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            scheme = ColorScheme.RED_GREEN; // Fallback
-        }
+        ColorScheme scheme = ColorScheme.valueOf(colorScheme.toUpperCase());
 
         return new ViewManager(heatmapInterval, sankeyInterval, showWeights, normalizeColors, scheme, network);
     }

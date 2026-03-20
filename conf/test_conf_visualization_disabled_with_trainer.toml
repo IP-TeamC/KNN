@@ -1,0 +1,31 @@
+[data]
+file = "data/test_conf.csv"
+inputStart = 0
+inputSize = 3
+outputStart = 3
+outputSize = 2
+seed = 42
+testShare = 0.2
+
+[network]
+seed = 42
+weightInitializer = "GLOROT_UNIFORM"
+
+[[network.layer]]
+neurons = 3
+activationFunction = "LINEAR"
+
+[[network.layer]]
+neurons = 2
+activationFunction = "LINEAR"
+
+[trainer]
+lossFunction = "CROSS_ENTROPY_LOSS"
+maxEpochs = 1
+shuffleEpoch = true
+batchSize = 1
+learningRate = 0.01
+
+[visualization]
+heatmapInterval = 0
+sankeyInterval = 0
