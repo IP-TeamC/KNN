@@ -59,7 +59,7 @@ public class ConfigExecutor {
      * Ergänzt die Dateiendung {@code .toml} an den Dateinamen, falls diese nicht bereits vorhanden ist.
      *
      * @param filename Dateiname der Konfigurationsdatei
-     * @return Dateiname mit {code .toml} als Dateiendung
+     * @return Dateiname mit {@code .toml} als Dateiendung
      */
     private static String addFileExtension(String filename) {
         if (!filename.endsWith(".toml")) {
