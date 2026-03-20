@@ -95,17 +95,30 @@ type = "ClassificationScorer"
 
 ## Konfigurationen ausführen
 
-### Option 1: ConfigExecutor
+### Option 1: ConfigExecutor (empfohlen)
 
 Im Paket `de.fhdw.knn` befindet sich die Klasse `ConfigExecutor`, welche interaktiv verwendet werden kann, um
 entsprechende Konfigurationen über die Eingabeaufforderung zu laden und auszuführen:
 
 ```
-Config (.toml-Dateiendung optional): example.toml~~~~
+Config (.toml-Dateiendung optional): example.toml
 ```
 
 Optional kann der Pfad bzw. Name der zu ladenden Konfigurationsdatei auch direkt beim Start 
 als Command-Line-Argument angegeben werden.
+
+In beiden Fällen sollte die mitgelieferte JAR-Datei direkt verwendet werden:
+```
+# Interaktiv ohne Argument
+java -jar knn.jar
+> Config (.toml-Dateiendung optional): example.toml
+> ...
+
+# Direkt mit Argument
+java -jar knn.jar example.toml
+> ...
+```
+
 
 ### Option 2: Dedizierte Runner-Klasse
 

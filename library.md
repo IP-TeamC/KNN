@@ -1,8 +1,12 @@
 # Verwendung der Bibliothek
 
 Im folgenden Abschnitt wird die Verwendung der Bibliothek am Beispiel eines Datensatzes zur Klassifikation der Bananen-Qualität schrittweise vorgestellt.
+Zunächst wird der gesamte Code gezeigt, um einen Überblick zu geben.
+Anschließend werden die einzelnen Schritte und weitere Funktionen der KNN-Bibliothek detailliert erläutert.
 
-## Vollständiger Code
+## Beispiel-Code
+
+Vollständige/ausführbare Klasse für dieses Beispiel siehe `de.fhdw.knn.run.BananaQuality`
 
 ```java
 package de.fhdw.knn.run;
@@ -24,41 +28,68 @@ import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import de.fhdw.knn.visualization.HeatmapData;
 import de.fhdw.knn.visualization.HeatmapView;
-
 import java.io.IOException;
 
 public class BananaQuality {
     public static void main(String[] args) throws IOException {
-        // Datenaufbereitung
+        /// Datenaufbereitung
         DataSet data = CsvReader.readFile("data/banana_quality.csv", 0, 7, 7, 1);
+        /// optional Inputs (oder Outputs) normalisieren
+        // MinMaxNormalizer data = new MinMaxNormalizer(-10, 10);
+        // train.normalizeInputs(data);
+
+        /// Train-/Test-Split erzeugen
         TrainTestSplit trainTest = data.shuffleAndSplit(42, 0.2);
         DataSet train = trainTest.train;
         DataSet test = trainTest.test;
 
-        // Network
-        DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.SIGMOID, 100, 100, 1);
-        Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 7, denseLayers);
 
-        // Trainer
+        /// Netzwerk erzeugen
+        DenseLayer[] denseLayers = DenseLayer.createLayers(
+                ActivationFunction.SWISH, ActivationFunction.SIGMOID,
+                100, 100, 1);
+        Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM,
+                7, denseLayers);
+        /// alternativ vorhandenes Netzwerk importieren
+        // network = Importer.importNetwork("models/bq.knn");
+
+        /// Loss-, Stop- und Optimization-Funktion für das Training festlegen
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
-        StopFunction stopFunction = EarlyStopping.NEVER;
-        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.03));
+        StopFunction stopFunction = new EarlyStopping(0.002, 5);
+        LearningRateFunction learningRateFunction = new ConstantLearningRate(0.03);
+        OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, learningRateFunction);
 
-        Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);
+        /// Trainer mit Mini-Batching definieren und starten
+        Trainer trainer = new Trainer(network, 30, true, 10,
+                lossFunction, stopFunction, optimizationFunction);
         trainer.train(train);
 
-        // Scorer
-        ClassificationScorer scorer = new ClassificationScorer(network);
-        ClassificationScorer.Score score = scorer.score(test);
+        /// Evaluierung des trainierten Netzwerks
+        Scorer scorer = new ClassificationScorer(Vollständiger network);
+        Score score = scorer.score(test);
         score.print();
 
-        // Visualization
+        /// optionaler Export des Netzwerks
+        // network.export("models/bq_demo.knn");
+
+        /// Visualisierung des Netzwerks als Heatmap
         HeatmapData heatmapData = new HeatmapData(network);
         HeatmapView window = new HeatmapView();
         window.addHeatmap("Manuelle Gewichtsmatrix", heatmapData);
+
+        /// Visualisierung des Netzwerks als Sankey-Plot
+        try {
+            Platform.startup(() -> {
+            }); // JavaFx initialisieren
+        } catch (IllegalStateException ignored) {
+        } // Ignorieren, falls es schon läuft
+        SankeyView sankeyView = new SankeyView();
+        sankeyView.show(network);
     }
 }
 ```
+
+Weitere Code-Beispiele, die während der Entwicklung erstellt wurden und nicht dokumentiert sind, befinden sich ebenfalls in demselben Package `de.fhdw.knn.run`
 
 ## Datenaufbereitung
 
@@ -118,7 +149,7 @@ Initializern gehören:
 - `WeightInitializer.HE`
 - `WeightInitializer.HE_UNIFORM`
 - `WeightInitializer.GLOROT`
-- `WeightInitializer.GLOROT_UNIFORM`.
+- `WeightInitializer.GLOROT_UNIFORM`
 
 ### Input-Layer
 
@@ -152,7 +183,7 @@ Zu den unterstützten Aktivierungsfunktionen gehören:
 - `ActivationFunction.SNAKE`
 - `ActivationFunction.SOFTPLUS`
 - `ActivationFunction.SWISH`
-- `ActivationFunction.TANH`.
+- `ActivationFunction.TANH`
 
 ### Neuronen
 
@@ -172,7 +203,7 @@ Zur Erzeugung eines `SuperNeuron`s kann zusätzlich ein Adapter verwendet werden
 - die Anzahl der Input-Neuronen des Netzwerks innerhalb des `SuperNeuron`s von der Anzahl der Neuronen im Layer vor dem `SuperNeuron` abweicht,
 - oder nicht nur genau jedes n-te Neuron des vorherigen Layers mit jedem n-ten Input-Neuron des Netzwerks innerhalb des `SuperNeuron`s verbunden werden soll
 
-Mithilfe des Adapters wird ein weiterer Input-Layer innerhalb des Netzwerks im `SuperNeuron`s erzeugt.
+Mithilfe des Adapters wird ein weiterer Input-Layer innerhalb des Netzwerks im `SuperNeuron` erzeugt.
 Der Adapter-Bias gibt den Bias für jedes Neuron des ursprünglichen Input-Layers vom eingebetteten Netzwerk an.
 Dieser ursprüngliche Input-Layer wird nun zum intern zum ersten Dense-Layer und benötigt also nun einen Bias.
 
@@ -191,6 +222,27 @@ double[][] adapterWeights = new double[][]{
 };
 SuperNeuron superNeuron = new SuperNeuron(includedNetwork, adapterBias, adapterWeights);
 superNeuron.insert(network, 0, 0);
+```
+
+Hat das äußere Netzwerk vom oberen Beispiel abweichend z.B. 2 Neuronen in dem Layer, das dem Super-Neuron direkt vorgelagert ist, und das eingebettete Netzwerk nur ein Neuron im Input-Layer, muss folgender Adapter verwendet werden:
+
+![superneuron_adapter.svg](assets_docs/superneuron_adapter.svg)
+
+A1 und A2 sind die neu hinzugefügten Adapter-Neuronen, die nun neu hinzugefügten Input-Layer des Netzwerks innerhalb des Super-Neurons liegen.
+I1 ist das Neuron des ursprünglichen Input-Layers des eingebetteten Netzwerks, welches nun zum ersten Dense-Layer wird.
+D1 befindet sich nun im zweiten Dense-Layer (ursprünglich erster Dense-Layer).
+Hier beschreibt `adapterBias[0]` den Bias von I1, `adapterWeights[0][0]` das Gewicht von A1 zu I1 und `adapterWeights[0][1]` das Gewicht von A2 zu I1.
+Entsprechend kann der Adapter z.B. wie folgt definiert werden:
+```java
+double[] adapterBias = new double[]{
+        7 // Bias von I1
+};
+double[][] adapterWeights = new double[][]{
+        new double[]{ // beschreibt alle eingehenden Verbindung zu I1
+                10, // Gewicht der Verbindung von A1 zu I1
+                5 // Gewicht der Verbindung von A2 zu I1
+        };
+};
 ```
 
 ### IO
@@ -218,7 +270,7 @@ muss mehrere Parametern angegeben werden:
 - und die `Optimierungsfunktion` ermitteln die Anpassungen des Netzwerks (in der Regel `GradientDescent`, in welchem die tatsächlich zum Training genutzte Verlust-Funktion definiert wird, die von der Verlust-Funktion des Trainers abweichen kann)
 ```java
 LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
-StopFunction stopFunction = EarlyStopping.NEVER;
+StopFunction stopFunction = StopFunction.NEVER;
 OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.03));
 
 Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);
@@ -324,6 +376,8 @@ Networks lassen sich als Heatmap darstellen, in der die x- und y-Achse ein Neuro
 die Heatmapeinträge dann jeweils die Verbindung vom x-Neuron zum y-Neuron ist.
 Rot stellt eine starke Verbindung (Gewicht) dar, während grün eine besonders schwache Verbindung (Gewicht) darstellt.
 
+![heatmap.png](assets_docs/heatmap.png)
+
 Der Sankey-Plot stellt die Verbindungen als Linien dar. Je dicker die Linie, desto stärker gewichtet ist die Verbindung.
 
 ```java
@@ -336,3 +390,5 @@ try {
 SankeyView sankeyView = new SankeyView();
 sankeyView.show(network);
 ```
+
+![sankey_plot.png](assets_docs/sankey_plot.png)

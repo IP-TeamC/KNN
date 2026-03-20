@@ -109,6 +109,10 @@ public class CsvReader {
             }
             List<Map.Entry<double[], double[]>> data = br.lines().skip(skip).flatMap(lineParser).toList();
 
+            if(data.isEmpty()){
+                throw new IllegalArgumentException("Csv-File not allowed to be empty.");
+            }
+
             double[][] input = new double[data.size()][];
             double[][] output = new double[data.size()][];
             for (int i = 0; i < data.size(); i++) {

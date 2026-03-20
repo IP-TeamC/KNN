@@ -11,7 +11,7 @@ public class ConstantLearningRate implements LearningRateFunction {
     private final double learningRate;
 
     /**
-     * Definiert eine konstante Learning
+     * Definiert eine konstante Learning Rate
      *
      * @param learningRate Konstante Learning Rate
      * @see ConstantLearningRate

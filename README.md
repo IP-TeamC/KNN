@@ -124,22 +124,30 @@ Visualisierung der KNN-Struktur und der Trainingsfortschritte.
 
 ### Effizienz / Performance
 
-# TODO !!!
 - Multithreading für Batch-Training
   - Parallelisierung der Backpropagation
   - Parallelisierung der Netzwerk-Anpassung
 - effiziente Wiederverwendung allokierter Arrays
   - Ziel: Zero-Allocation (Heap) während des Trainings
   - Arrays für Anpassungen/Adjustments nur zu Beginn allokieren und wiederverwenden
-    - Performance-Verbesserung um ca. 20%
+    - Performance-Verbesserung um ca. 30%
     - stabile Speicherauslastung (Entlastung des Garbage Collectors)
   - Neuron-Ausgabe in wiederverwendbarem Buffer
   - Optimierungsalgorithmus während Trainings-Epoche stateless und thread-safe
     - Multithreading trotz wiederverwendeter Buffer
 - Parallelisierung des Feedforward bei Vorhersage für große DataSets
   - Netzwerk ist während Feedforward stateless und thread-safe
-- Vergleich mit scikit-learn: schneller für batchSize = 1, etwas langsamer für größere Batch-Größen
-# TODO !!!
+- Vergleichbare Performance wie scikit-learn je nach Trainings-Parametern
+  - schneller für kleine Batch-Größen (z.B. SGD)
+    - Batch-Größe 1: `23.78s` (KNN-Bibliothek) vs. `175.51s` (scikit-learn)
+    - Batch-Größe 4: `26.25s` (KNN-Bibliothek) vs. `45.47s` (scikit-learn)
+    - Batch-Größe 8: `19.67s` (KNN-Bibliothek) vs. `23.98s` (scikit-learn)
+    - Batch-Größe 16: `14.16s` (KNN-Bibliothek) vs. `13.19s` (scikit-learn)
+    - Batch-Größe 32: `12.93s` (KNN-Bibliothek) vs. `7.54s` (scikit-learn)
+    - Batch-Größe 64: `12.45s` (KNN-Bibliothek) vs. `5.23s` (scikit-learn)
+  - Beispiel für die Messung: Konfiguration `conf/bq_perf.toml`
+    - CPU: AMD Ryzen 5 3600 (6 Kerne, 4.2 GHz)
+    - scikit-learn siehe [assets_docs/bq_perf.py](assets_docs/bq_perf.py)
 
 ### Dokumentation
 
@@ -164,4 +172,5 @@ um sie von manuell erstellten Tests zu unterscheiden und das verwendete Tool anz
     - 100% Line Coverage (experimentelles Package `de.fhdw.knn.run` ausgenommen)
 - manuell überprüfte, automatisiert generierte Tests (mit `@Generated`-Annotation) zur Erhöhung der Testabdeckung
 - Durchführung von Regressionstests nach Code-Änderungen
-- 167 Testfälle insgesamt (Stand: 15. März 2026)
+- # TODO 167 Testfälle insgesamt (Stand: 15. März 2026)
+![test_coverage.png](assets_docs/test_coverage.png)

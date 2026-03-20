@@ -25,6 +25,8 @@ class TestSN {
     // Super-Neuron Test
     // Funktion 69*sin(3*x)+42x, wobei sin(x) das Super-Neuron ist (mit Snake-Aktivierungsfunktion trainiert)
     // Super-Neuron funktioniert ähnlich gut wie Sinus-Aktivierungsfunktion
+    // Scheitert trotzdem bei ungünstig gewählten Gewichten/Bias an der periodischen Sinus-Funktion
+    // Teilweise können jedoch kleine Anpassungen (bei ca. 10% Abweichung) gelernt werden.
 
     public static void main(String[] args) throws IOException {
         DataSet data = generate(10000, -10, 10);

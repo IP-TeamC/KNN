@@ -133,8 +133,13 @@ public class DataSet {
      *
      * @see DataSet#shuffle(long)
      */
-    public TrainTestSplit shuffleAndSplit(long seed, double testShare) {
+    public TrainTestSplit shuffleAndSplit(long seed, double testShare) throws IllegalArgumentException {
         shuffle(seed);
+
+        if (testShare < 0 || testShare > 1) {
+            throw new IllegalArgumentException("Test share must be between 0 and 1");
+        }
+
         int testSize = (int) (testShare * size);
         int trainSize = size - testSize;
 
