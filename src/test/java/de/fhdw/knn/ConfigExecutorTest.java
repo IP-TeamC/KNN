@@ -32,7 +32,7 @@ public class ConfigExecutorTest {
     @Test
     public void testMainAcceptsTomlExtensionWithoutAppendingTwice() {
         String out = captureStdout(() -> ConfigExecutor.main(new String[]{"conf/test/bq_very_simple.toml"}));
-        assertTrue(out.contains("conf/test/bq_very_simple.toml") || out.contains("conf\\bq_very_simple.toml"), "Aufgelöster Pfad sollte die übergebene Datei enthalten");
+        assertTrue(out.contains("conf/test/bq_very_simple.toml") || out.contains("conf\\test\\bq_very_simple.toml"), "Aufgelöster Pfad sollte die übergebene Datei enthalten");
         assertFalse(out.contains(".toml.toml"), "Dateiendung .toml darf nicht doppelt ergänzt werden");
     }
 

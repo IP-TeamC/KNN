@@ -183,26 +183,27 @@ class HeatmapViewTest {
         JScrollPane scrollPane2 = (JScrollPane) tabbed.getComponentAt(1);
         ChartPanel panel2 = (ChartPanel) scrollPane2.getViewport().getView();
 
-        CountDownLatch latch5 = new CountDownLatch(1);
+
         for (int i = 0; i < 25; i++) {
+            CountDownLatch latch5 = new CountDownLatch(1);
             SwingUtilities.invokeAndWait(() -> {
                 panel2.dispatchEvent(new MouseWheelEvent(panel2, MouseWheelEvent.MOUSE_WHEEL, System.currentTimeMillis(), 0, 600, 200, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 1, -1));
+                initSleep(10);
+                latch5.countDown();
             });
+            latch5.await();
         }
-        initSleep(100);
-        latch5.countDown();
-        latch5.await();
 
-        CountDownLatch latch6 = new CountDownLatch(1);
         for (int i = 0; i < 25; i++) {
+            CountDownLatch latch6 = new CountDownLatch(1);
             SwingUtilities.invokeAndWait(() -> {
                 panel2.dispatchEvent(new MouseWheelEvent(panel2, MouseWheelEvent.MOUSE_WHEEL, System.currentTimeMillis(), 0, 600, 200, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 1, 1));
+                initSleep(10);
+                latch6.countDown();
             });
+            latch6.await();
         }
-        initSleep(100);
-        latch6.countDown();
 
-        latch6.await();
         waitForSwing();
 
         initSleep(100);
@@ -247,9 +248,9 @@ class HeatmapViewTest {
         view.dispose();
     }
 
+    /// Testen über Reflection, um 100% Branch-Coverage zu erreichen.
     @Generated("ChatGPT")
     @Test
-        // Testen über Reflection, um 100% Branch-Coverage zu erreichen.
     void testRendererPaintScaleAndBoundsViaReflection() throws Exception {
         Method method = HeatmapView.class.getDeclaredMethod("getXyBlockRenderer", double.class, double.class, double.class, boolean.class, ColorScheme.class);
         method.setAccessible(true);
