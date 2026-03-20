@@ -41,7 +41,7 @@ public class HeatmapView extends JFrame {
      * <p>Die Registerkarten werden dynamisch verwaltet und aktualisiert,
      * wenn die Methode {@code addEpoch} aufgerufen wird.
      *
-     * @see #addEpoch(String, HeatmapData)
+     * @see #addHeatmap(HeatmapData, String)
      */
     private final JTabbedPane tabs;
 
@@ -95,80 +95,67 @@ public class HeatmapView extends JFrame {
         this.setSize(1200, 900);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
-    }
+        this.toFront();
+        this.requestFocus();
 
-    /**
-     * Zeigt eine einzelne Heatmap in einem neuen Tab innerhalb des HeatmapView-Fensters an.
-     *
-     * @param title  Der Titel, der für die Heatmap und die entsprechende Registerkarte angezeigt werden soll.
-     * @param matrix das {@code HeatmapData}-Objekt, das Informationen über das neuronale Netzwerk und
-     *               die zugehörige Gewichtungsmatrix enthält, die visualisiert werden sollen
-     *
-     * @see HeatmapData
-     */
-    public void showSingleMatrix(String title, HeatmapData matrix) {
-        this.addEpoch(title, matrix);
-
-        SwingUtilities.invokeLater(() -> {
-            this.setTitle(title);
-            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            this.pack();
-            this.setVisible(true);
-        });
+        System.out.println("Heatmap-Fenster geöffnet.");
     }
 
     /**
      * Fügt eine weitere Registerkarte zur {@code HeatmapView} hinzu.
      * Diese Methode wird im Event Dispatch Thread ausgeführt, da Swing-Komponenten nicht threadsicher sind.
      *
-     * @param tabTitle Der Titel der hinzuzufügenden Registerkarte. Er steht in der Regel für die aktuelle Epoche.
      * @param data     Das {@code HeatmapData}-Objekt enthält Informationen über das Netzwerk,
      *                 einschließlich der Gewichtungsmatrix und Neuronenbezeichnungen.
-     *
+     * @param tabTitle Der Titel der hinzuzufügenden Registerkarte. Er steht in der Regel für die aktuelle Epoche.
      * @see HeatmapView
      * @see HeatmapData
      */
-    public void addEpoch(String tabTitle, HeatmapData data) {
+    public void addHeatmap(HeatmapData data, String tabTitle) {
         SwingUtilities.invokeLater(() -> { // invokeLater, da Swing nicht Thread-safe ist
-            int N = data.buildFullWeightMatrix().length; // für Zoom-Grenzen
 
             JFreeChart chart = buildChart(data, tabTitle);
-            ChartPanel panel = new ChartPanel(chart) {
-                @Override
-                public void restoreAutoBounds() {
-                    getChart().getXYPlot().getDomainAxis().setRange(-0.5, N - 0.5);
-                    getChart().getXYPlot().getRangeAxis().setRange(-0.5, N - 0.5);
-                }
-            };
+            ChartPanel panel = new ChartPanel(chart);
+            XYPlot xyPlot = panel.getChart().getXYPlot();
 
             panel.setMouseWheelEnabled(true);
-            panel.setDomainZoomable(true);
-            panel.setRangeZoomable(true);
 
-            panel.getChart().getXYPlot().setDomainPannable(true);
-            panel.getChart().getXYPlot().setRangePannable(true);
+            xyPlot.setDomainPannable(true);
+            xyPlot.setRangePannable(true);
 
-            panel.getChart().getXYPlot().getDomainAxis().setLowerBound(-0.5);
-            panel.getChart().getXYPlot().getDomainAxis().setUpperBound(N - 0.5);
-            panel.getChart().getXYPlot().getRangeAxis().setLowerBound(-0.5);
-            panel.getChart().getXYPlot().getRangeAxis().setUpperBound(N - 0.5);
+            int N = data.buildFullWeightMatrix().length; // für Zoom-Grenzen
 
-            // Wenn zu weit rausgezoomt dann zurück auf Standard setzen
+            xyPlot.getDomainAxis().setLowerBound(-0.5);
+            xyPlot.getDomainAxis().setUpperBound(N - 0.5);
+            xyPlot.getRangeAxis().setLowerBound(-0.5);
+            xyPlot.getRangeAxis().setUpperBound(N - 0.5);
+
+            // Beim Zoomen Viewgrenzen einhalten
             panel.addMouseWheelListener(e -> {
-                XYPlot xyPlot = panel.getChart().getXYPlot();
                 ValueAxis domain = xyPlot.getDomainAxis();
-                ValueAxis range  = xyPlot.getRangeAxis();
+                ValueAxis range = xyPlot.getRangeAxis();
 
                 double minBound = -0.5;
                 double maxBound = N - 0.5;
 
-                if (domain.getLowerBound() < minBound || domain.getUpperBound() > maxBound ||
-                        range.getLowerBound()  < minBound || range.getUpperBound()  > maxBound) {
-                    domain.setRange(minBound, maxBound);
-                    range.setRange(minBound, maxBound);
+                double domainLower = domain.getLowerBound();
+                double domainUpper = domain.getUpperBound();
+                if (domainLower < minBound) {
+                    domain.setLowerBound(minBound);
+                }
+                if (domainUpper > maxBound) {
+                    domain.setUpperBound(maxBound);
+                }
+
+                double rangeLower = range.getLowerBound();
+                double rangeUpper = range.getUpperBound();
+                if (rangeLower < minBound) {
+                    range.setLowerBound(minBound);
+                }
+                if (rangeUpper > maxBound) {
+                    range.setUpperBound(maxBound);
                 }
             });
-
 
             JScrollPane scrollPane = new JScrollPane(panel);
             this.tabs.addTab(tabTitle, scrollPane);
@@ -182,10 +169,8 @@ public class HeatmapView extends JFrame {
      *
      * @param data  Das {@code HeatmapData}-Objekt enthält die Gewichtungsmatrix und die Neuronenbezeichnungen für das Netzwerk.
      * @param title Der Titel, der auf dem Diagramm angezeigt werden soll.
-     *
      * @return Ein {@code JFreeChart}-Objekt, das die Heatmap der Gewichtungsmatrix darstellt und
-     *         mit den entsprechenden Darstellungs- und Achsenbeschriftungen konfiguriert ist.
-     *
+     * mit den entsprechenden Darstellungs- und Achsenbeschriftungen konfiguriert ist.
      * @see HeatmapData
      * @see JFreeChart
      */
@@ -256,9 +241,7 @@ public class HeatmapView extends JFrame {
      *                 Diese Beschriftungen geben die Namen der Neuronen auf beiden Achsen wieder.
      * @param dataset  Das {@code DefaultXYZDataset} enthält die zu visualisierenden Daten.
      * @param renderer Ein {@code XYBlockRenderer}, der für die Darstellung der Gitterzellen im Plot verantwortlich ist.
-     *
      * @return Eine {@code XYPlot}-Instanz, konfiguriert mit symbolischen Achsen, dem bereitgestellten Datensatz und dem definierten Renderer.
-     *
      * @see XYPlot
      * @see DefaultXYZDataset
      * @see XYBlockRenderer
@@ -287,10 +270,8 @@ public class HeatmapView extends JFrame {
      * @param threshold   Der Schwellenwert, unter dem Gewichte als unbedeutend betrachtet und weiß dargestellt werden.
      * @param showWeights Gibt an, ob die numerischen Gewichtswerte in den Gitterzellen angezeigt werden sollen.
      * @param colorScheme Das Farbschema, das zum Zuordnen von Datenwerten zu Farben verwendet wird.
-     *
      * @return Eine {@code XYBlockRenderer}-Instanz, konfiguriert mit einer Blockgröße von 1.0 und
      * einer Farbskala, um Datenwerte Farben von Grün (negativ) bis Rot (positiv) zuzuordnen.
-     *
      * @see XYBlockRenderer
      * @see HeatmapView#threshold
      * @see ColorScheme
@@ -314,8 +295,8 @@ public class HeatmapView extends JFrame {
                         dataset, series, item, crosshairState, pass);
 
                 if (!showWeights) return;
-                if (!(dataset instanceof XYZDataset xyzDataset)) return;
 
+                XYZDataset xyzDataset = (XYZDataset) dataset;
                 double z = xyzDataset.getZValue(series, item);
                 if (Double.isNaN(z)) return;
 
@@ -384,9 +365,9 @@ public class HeatmapView extends JFrame {
      * @return Ein {@code Paint}-Objekt, das die interpolierte Farbe darstellt.
      */
     private static Paint interpolateToWhite(Color target, double ratio) {
-        float r = Math.clamp(1.0f - (float) ratio * (1.0f - target.getRed()   / 255.0f), 0.0f, 1.0f);
+        float r = Math.clamp(1.0f - (float) ratio * (1.0f - target.getRed() / 255.0f), 0.0f, 1.0f);
         float g = Math.clamp(1.0f - (float) ratio * (1.0f - target.getGreen() / 255.0f), 0.0f, 1.0f);
-        float b = Math.clamp(1.0f - (float) ratio * (1.0f - target.getBlue()  / 255.0f), 0.0f, 1.0f);
+        float b = Math.clamp(1.0f - (float) ratio * (1.0f - target.getBlue() / 255.0f), 0.0f, 1.0f);
         return new Color(r, g, b);
     }
 }

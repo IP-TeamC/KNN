@@ -30,7 +30,6 @@ public class MinMaxNormalizer implements Normalizer {
      *
      * @param min Minimum für den MinMaxNormalizer
      * @param max Maximum für den MinMaxNormalizer
-     *
      * @see MinMaxNormalizer
      */
     public MinMaxNormalizer(double min, double max) {

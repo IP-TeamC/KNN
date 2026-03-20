@@ -13,6 +13,7 @@ import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 
+import javax.annotation.processing.Generated;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;

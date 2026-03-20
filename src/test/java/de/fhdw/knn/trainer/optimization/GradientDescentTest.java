@@ -1,6 +1,6 @@
 package de.fhdw.knn.trainer.optimization;
 
-import de.fhdw.knn.TestUtil;
+import de.fhdw.knn.util.TestUtil;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.network.neuron.OutputsDerived;
 import de.fhdw.knn.network.neuron.SuperNeuron;

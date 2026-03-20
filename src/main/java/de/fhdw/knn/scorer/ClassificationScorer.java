@@ -88,11 +88,10 @@ public record ClassificationScorer(Network network) implements Scorer {
         /**
          * Berechnet die zusätzlichen Metriken auf Basis der Parameter
          *
-         * @param truePositives Richtig evaluiertes positives Ergebnis
-         * @param trueNegatives Richtig evaluiertes negatives Ergebnis
+         * @param truePositives  Richtig evaluiertes positives Ergebnis
+         * @param trueNegatives  Richtig evaluiertes negatives Ergebnis
          * @param falsePositives Falsch evaluiertes positives Ergebnis
          * @param falseNegatives Falsch evaluiertes negatives Ergebnis
-         *
          * @see ClassificationScorer
          */
         public Score(int truePositives, int trueNegatives, int falsePositives, int falseNegatives) {

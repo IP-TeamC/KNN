@@ -22,7 +22,6 @@ public class Pair<X, Y> {
      *
      * @param x Beliebige Werte
      * @param y Beliebige Werte
-     *
      * @see Pair
      */
     public Pair(X x, Y y) {

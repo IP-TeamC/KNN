@@ -40,9 +40,8 @@ public class CsvReaderTest {
 
     @Test
     public void testEmptyCsv() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            DataSet dataSet = CsvReader.readFile("data/empty.csv", 0, 1, 1, 1);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                CsvReader.readFile("data/empty.csv", 0, 1, 1, 1));
         assertEquals("Csv-File not allowed to be empty.", exception.getMessage());
     }
 
@@ -70,8 +69,7 @@ public class CsvReaderTest {
 
     @Test
     public void testCsvReaderConstructor() {
-        CsvReader csvReader = new CsvReader();
-        assertNotNull(csvReader);
+        assertDoesNotThrow(CsvReader::new);
     }
 
     @Test
@@ -82,13 +80,13 @@ public class CsvReaderTest {
 
         boolean hasNaN = false;
         for (double[] input : dataSet.inputs) {
-            if (Arrays.stream(input).allMatch(x -> Double.isNaN(x))){
+            if (Arrays.stream(input).allMatch(Double::isNaN)) {
                 hasNaN = true;
                 break;
             }
         }
         for (double[] output : dataSet.outputs) {
-            if (Arrays.stream(output).allMatch(x -> Double.isNaN(x))) {
+            if (Arrays.stream(output).allMatch(Double::isNaN)) {
                 hasNaN = true;
                 break;
             }

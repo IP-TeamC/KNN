@@ -1,6 +1,5 @@
 package de.fhdw.knn.data;
 
-import org.jfree.data.general.Dataset;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.processing.Generated;
@@ -10,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DataSetTest {
 
-    private DataSet setUpDataSet(){
+    private DataSet setUpDataSet() {
         double[][] input = new double[12][5];
         double[][] output = new double[12][1];
         for (int i = 0; i < input.length; i++) {
-            for(int j = 0; j < 5; j++){
+            for (int j = 0; j < 5; j++) {
                 input[i][j] = Math.random();
                 output[i][0] = Math.random();
             }
@@ -23,23 +22,22 @@ public class DataSetTest {
     }
 
     @Test
-    public void testUnevenDataSetConstruction(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            DataSet dataSet = new DataSet(new double[12][3], new double[16][2]);
-        });
+    public void testUnevenDataSetConstruction() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new DataSet(new double[12][3], new double[16][2]));
     }
 
     @Test
-    public void testPreprocessDoesSomething(){
+    public void testPreprocessDoesSomething() {
         double[][] input = new double[12][1];
         double[][] output = new double[12][1];
-        for(int i = 0; i < input.length; i++){
+        for (int i = 0; i < input.length; i++) {
             input[i][0] = Math.random();
             output[i][0] = Math.random();
         }
         DataSet dataSet = new DataSet(input, output);
         double[][] inputsBefore = new double[input.length][];
-        for(int i = 0; i < input.length; i++){
+        for (int i = 0; i < input.length; i++) {
             inputsBefore[i] = dataSet.inputs[i].clone();
         }
 
@@ -59,7 +57,7 @@ public class DataSetTest {
     }
 
     @Test
-    public void testShuffle(){
+    public void testShuffle() {
         DataSet dataSet = this.setUpDataSet();
         double[][] inputsBefore = new double[dataSet.inputs.length][];
         for (int i = 0; i < dataSet.inputs.length; i++) {
@@ -71,7 +69,7 @@ public class DataSetTest {
 
     @Generated("GitHub Copilot")
     @Test
-    public void testShuffleAndSplitWithNormalTestShare(){
+    public void testShuffleAndSplitWithNormalTestShare() {
         DataSet dataSet = this.setUpDataSet();
         double[][] inputsBefore = new double[dataSet.inputs.length][];
         for (int i = 0; i < dataSet.inputs.length; i++) {
@@ -86,7 +84,7 @@ public class DataSetTest {
     }
 
     @Test
-    public void testShuffleAndSplitWithZeroAndOneTestShare(){
+    public void testShuffleAndSplitWithZeroAndOneTestShare() {
         DataSet dataSet = this.setUpDataSet();
         TrainTestSplit zeroTestShare = dataSet.shuffleAndSplit(42, 0);
         TrainTestSplit oneTestShare = dataSet.shuffleAndSplit(42, 1);
@@ -94,50 +92,50 @@ public class DataSetTest {
         assertNull(oneTestShare.train);
     }
 
-    @Test void testShuffleAndSplitWithToBigTestShare(){
+    @Test
+    void testShuffleAndSplitWithToBigTestShare() {
         DataSet dataSet = this.setUpDataSet();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            dataSet.shuffleAndSplit(42, 1.2);
-        });
-        assertEquals("Test share must be between 0 and 1", exception.getMessage());
-    }
-
-    @Test void testShuffleAndSplitWithToLittleTestShare(){
-        DataSet dataSet = this.setUpDataSet();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            dataSet.shuffleAndSplit(42, -0.2);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                dataSet.shuffleAndSplit(42, 1.2));
         assertEquals("Test share must be between 0 and 1", exception.getMessage());
     }
 
     @Test
-    public void testNormalizeAndDenormalizeInputs(){
+    void testShuffleAndSplitWithToLittleTestShare() {
+        DataSet dataSet = this.setUpDataSet();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                dataSet.shuffleAndSplit(42, -0.2));
+        assertEquals("Test share must be between 0 and 1", exception.getMessage());
+    }
+
+    @Test
+    public void testNormalizeAndDenormalizeInputs() {
         DataSet dataSet = this.setUpDataSet();
         double min = 1.0;
         double max = 3.0;
         Normalizer normalizer = new MinMaxNormalizer(min, max);
         dataSet.normalizeInputs(normalizer);
-        for (double[] row : dataSet.inputs){
+        for (double[] row : dataSet.inputs) {
             assertTrue(Arrays.stream(row).allMatch(x -> x >= min && x <= max)); //Previously randomly initialized from 0 to 1
         }
         dataSet.denormalizeInputs();
-        for (double[] row : dataSet.inputs){
+        for (double[] row : dataSet.inputs) {
             assertTrue(Arrays.stream(row).allMatch(x -> x <= 1 && x >= 0)); //Should now be back in range of 0 to 1
         }
     }
 
     @Test
-    public void testNormalizeAndDenormalizeOutputs(){
+    public void testNormalizeAndDenormalizeOutputs() {
         DataSet dataSet = this.setUpDataSet();
         double min = 1.0;
         double max = 3.0;
         Normalizer normalizer = new MinMaxNormalizer(min, max);
         dataSet.normalizeOutputs(normalizer);
-        for (double[] row : dataSet.outputs){
+        for (double[] row : dataSet.outputs) {
             assertTrue(Arrays.stream(row).allMatch(x -> x >= min && x <= max)); //Previously randomly initialized from 0 to 1
         }
         dataSet.denormalizeOutputs();
-        for (double[] row : dataSet.outputs){
+        for (double[] row : dataSet.outputs) {
             assertTrue(Arrays.stream(row).allMatch(x -> x <= 1 && x >= 0)); //Should now be back in range of 0 to 1
         }
     }

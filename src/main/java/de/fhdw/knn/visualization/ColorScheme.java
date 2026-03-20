@@ -12,24 +12,23 @@ import java.awt.*;
  * @see ColorScheme#RED_GREEN
  * @see ColorScheme#BLUE_RED
  * @see ColorScheme#MONOCHROME
- * @see ColorScheme#ColorScheme(Color, Color)
  */
 public enum ColorScheme {
 
     /**
      * Negative Gewichte werden in Rot, positive in Grün dargestellt.
      */
-    RED_GREEN (Color.RED, Color.GREEN),
+    RED_GREEN(Color.RED, Color.GREEN),
 
     /**
      * Negative Gewichte werden in Blau, positive in Rot dargestellt.
      */
-    BLUE_RED (Color.BLUE, Color.RED),
+    BLUE_RED(Color.BLUE, Color.RED),
 
     /**
      * Sowohl negative als auch positive Gewichte werden in Schwarz dargestellt.
      */
-    MONOCHROME (Color.BLACK, Color.BLACK);
+    MONOCHROME(Color.BLACK, Color.BLACK);
 
     /**
      * Die Farbe, die für negative Gewichtswerte verwendet wird.

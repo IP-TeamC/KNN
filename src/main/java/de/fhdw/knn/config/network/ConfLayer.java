@@ -47,7 +47,6 @@ public class ConfLayer implements TomlSerializable {
      * verwendet die aus der Klassenkonfiguration abgerufene Aktivierungsfunktion.
      *
      * @return Eine {@code DenseLayer}-Instanz, die mit der angegebenen Anzahl von Neuronen und Aktivierungsfunktion konfiguriert ist.
-     *
      * @see DenseLayer
      * @see ActivationFunction
      */

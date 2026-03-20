@@ -1,0 +1,25 @@
+[data]
+file = "data/test_conf.csv"
+inputStart = 0
+inputSize = 3
+outputStart = 3
+outputSize = 2
+skip = 0
+seed = 42
+testShare = 0.2
+
+[network]
+seed = 42
+weightInitializer = "GLOROT_UNIFORM"
+
+[[network.layer]]
+neurons = 3
+activationFunction = "LINEAR"
+
+[[network.layer]]
+neurons = 2
+activationFunction = "LINEAR"
+
+[visualization]
+heatmapInterval = 1
+sankeyInterval = 0

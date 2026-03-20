@@ -81,7 +81,7 @@ class BananaQuality {
         /// Visualisierung des Netzwerks als Heatmap
         HeatmapData heatmapData = new HeatmapData(network);
         HeatmapView window = new HeatmapView();
-        window.showSingleMatrix("Manuelle Gewichtsmatrix", heatmapData);
+        window.addHeatmap(heatmapData, "Manuelle Gewichtsmatrix");
 
         /// Visualisierung des Netzwerks als Sankey-Plot
         try {
@@ -89,8 +89,7 @@ class BananaQuality {
             }); // JavaFx initialisieren
         } catch (IllegalStateException ignored) {
         } // Ignorieren, falls es schon läuft
-        SankeyView sankeyView = new SankeyView();
-        sankeyView.show(network);
+        new SankeyView(network, "Manueller Sankey-Plot");
     }
 
 }

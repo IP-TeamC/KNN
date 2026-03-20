@@ -71,7 +71,6 @@ public class ConfNetwork implements TomlSerializable {
      * @return Eine {@code Network}-Instanz, die gemäß den angegebenen Eigenschaften konfiguriert oder aus der Datei importiert wurde.
      * @throws IllegalArgumentException Wenn sowohl {@code importFile} angegeben als auch zusätzliche Konfigurationseigenschaften
      *                                  ({@code seed}, {@code weightInitializer} oder {@code layer}) festgelegt sind.
-     *
      * @see Network
      */
     public Network create(DataSet data) {
