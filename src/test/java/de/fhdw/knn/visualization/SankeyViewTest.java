@@ -22,19 +22,17 @@ class SankeyViewTest {
 
         CountDownLatch latch = new CountDownLatch(1);
 
-        assertDoesNotThrow(() -> {
-            Platform.runLater(() -> {
-                try {
-                    Network network1 = TestUtil.simpleDummyNetwork();
-                    SankeyView view = new SankeyView(network1, "Test-Epoche 1");
+        assertDoesNotThrow(() -> Platform.runLater(() -> {
+            try {
+                Network network1 = TestUtil.simpleDummyNetwork();
+                SankeyView view = new SankeyView(network1, "Test-Epoche 1");
 
-                    Network network2 = TestUtil.simpleDummyNetwork();
-                    view.update(network2, "Test-Epoche 2");
-                } finally {
-                    latch.countDown();
-                }
-            });
-        });
+                Network network2 = TestUtil.simpleDummyNetwork();
+                view.update(network2, "Test-Epoche 2");
+            } finally {
+                latch.countDown();
+            }
+        }));
 
         assertTrue(latch.await(5, TimeUnit.SECONDS));
         waitForJavaFX();
@@ -48,19 +46,17 @@ class SankeyViewTest {
 
         CountDownLatch latch = new CountDownLatch(1);
 
-        assertDoesNotThrow(() -> {
-            Platform.runLater(() -> {
-                try {
-                    Network network1 = TestUtil.simpleDummyNetwork();
-                    SankeyView view = new SankeyView(network1, "Test-Epoche 1");
+        assertDoesNotThrow(() -> Platform.runLater(() -> {
+            try {
+                Network network1 = TestUtil.simpleDummyNetwork();
+                SankeyView view = new SankeyView(network1, "Test-Epoche 1");
 
-                    Network network2 = TestUtil.simpleDummyNetwork();
-                    view.update(network2, "Test-Epoche 2");
-                } finally {
-                    latch.countDown();
-                }
-            });
-        });
+                Network network2 = TestUtil.simpleDummyNetwork();
+                view.update(network2, "Test-Epoche 2");
+            } finally {
+                latch.countDown();
+            }
+        }));
 
         assertTrue(latch.await(5, TimeUnit.SECONDS));
         waitForJavaFX();
@@ -74,19 +70,17 @@ class SankeyViewTest {
 
         CountDownLatch latch = new CountDownLatch(1);
 
-        assertDoesNotThrow(() -> {
-            Platform.runLater(() -> {
-                try {
-                    Network network1 = TestUtil.extremelyComplexDummyNetwork();
-                    SankeyView view = new SankeyView(network1, "Test-Epoche 1");
+        assertDoesNotThrow(() -> Platform.runLater(() -> {
+            try {
+                Network network1 = TestUtil.extremelyComplexDummyNetwork();
+                SankeyView view = new SankeyView(network1, "Test-Epoche 1");
 
-                    Network network2 = TestUtil.extremelyComplexDummyNetwork();
-                    view.update(network2, "Test-Epoche 2");
-                } finally {
-                    latch.countDown();
-                }
-            });
-        });
+                Network network2 = TestUtil.extremelyComplexDummyNetwork();
+                view.update(network2, "Test-Epoche 2");
+            } finally {
+                latch.countDown();
+            }
+        }));
 
         assertTrue(latch.await(5, TimeUnit.SECONDS));
         waitForJavaFX();
