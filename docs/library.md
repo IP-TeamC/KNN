@@ -77,7 +77,7 @@ public class BananaQuality {
         /// Visualisierung des Netzwerks als Heatmap
         HeatmapData heatmapData = new HeatmapData(network);
         HeatmapView window = new HeatmapView();
-        window.addHeatmap("Manuelle Gewichtsmatrix", heatmapData);
+        window.addHeatmap(heatmapData, "Manuelle Gewichtsmatrix");
 
         /// Visualisierung des Netzwerks als Sankey-Plot
         try {
@@ -85,8 +85,7 @@ public class BananaQuality {
             }); // JavaFx initialisieren
         } catch (IllegalStateException ignored) {
         } // Ignorieren, falls es schon läuft
-        SankeyView sankeyView = new SankeyView();
-        sankeyView.show(network);
+        new SankeyView(network, "Manueller Sankey-Plot");
     }
 }
 ```
@@ -372,7 +371,7 @@ Dieses Beispiel zeigt die Erstellung einer Heatmap:
 ```java
 HeatmapData heatmapData = new HeatmapData(network);
 HeatmapView heatnapView = new HeatmapView();
-heatmapView.showSingleMatrix("Manuelle Gewichtsmatrix", heatmapData);
+heatnapView.addHeatmap(heatmapData, "Manuelle Gewichtsmatrix");
 ```
 Networks lassen sich als Heatmap darstellen, in der die x- und y-Achse ein Neuron darstellt, und
 die Heatmapeinträge dann jeweils die Verbindung vom x-Neuron zum y-Neuron ist.
@@ -389,8 +388,7 @@ try {
 } catch (IllegalStateException ignored) {
 } // Ignorieren, falls es schon läuft
 
-SankeyView sankeyView = new SankeyView();
-sankeyView.show(network);
+new SankeyView(network, "Manueller Sankey-Plot");
 ```
 
 ![sankey_plot.png](assets/sankey_plot.png)
