@@ -1,3 +1,5 @@
+Dokumentation: [README.md](../README.md) - <strong><i>[library.md](library.md)</strong></i> - [configuration.md](configuration.md)
+
 # Verwendung der Bibliothek
 
 Im folgenden Abschnitt wird die Verwendung der Bibliothek am Beispiel eines Datensatzes zur Klassifikation der Bananen-Qualität schrittweise vorgestellt.
@@ -226,7 +228,7 @@ superNeuron.insert(network, 0, 0);
 
 Hat das äußere Netzwerk vom oberen Beispiel abweichend z.B. 2 Neuronen in dem Layer, das dem Super-Neuron direkt vorgelagert ist, und das eingebettete Netzwerk nur ein Neuron im Input-Layer, muss folgender Adapter verwendet werden:
 
-![superneuron_adapter.svg](assets_docs/superneuron_adapter.svg)
+![superneuron_adapter.svg](assets/superneuron_adapter.svg)
 
 A1 und A2 sind die neu hinzugefügten Adapter-Neuronen, die nun neu hinzugefügten Input-Layer des Netzwerks innerhalb des Super-Neurons liegen.
 I1 ist das Neuron des ursprünglichen Input-Layers des eingebetteten Netzwerks, welches nun zum ersten Dense-Layer wird.
@@ -376,7 +378,7 @@ Networks lassen sich als Heatmap darstellen, in der die x- und y-Achse ein Neuro
 die Heatmapeinträge dann jeweils die Verbindung vom x-Neuron zum y-Neuron ist.
 Rot stellt eine starke Verbindung (Gewicht) dar, während grün eine besonders schwache Verbindung (Gewicht) darstellt.
 
-![heatmap.png](assets_docs/heatmap.png)
+![heatmap.png](assets/heatmap.png)
 
 Der Sankey-Plot stellt die Verbindungen als Linien dar. Je dicker die Linie, desto stärker gewichtet ist die Verbindung.
 
@@ -391,4 +393,4 @@ SankeyView sankeyView = new SankeyView();
 sankeyView.show(network);
 ```
 
-![sankey_plot.png](assets_docs/sankey_plot.png)
+![sankey_plot.png](assets/sankey_plot.png)

@@ -27,10 +27,19 @@ public class TestUtil {
                 DenseLayer.createLayers(null, ActivationFunction.RELU, 100, 50, 100, 10));
     }
 
+    public static void initSleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void waitForSwing() {
         try {
-            SwingUtilities.invokeAndWait(() -> {
-            });
+            CountDownLatch latch = new CountDownLatch(1);
+            SwingUtilities.invokeAndWait(latch::countDown);
+            latch.await();
         } catch (InvocationTargetException | InterruptedException e) {
             throw new RuntimeException(e);
         }

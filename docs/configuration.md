@@ -1,3 +1,5 @@
+Dokumentation: [README.md](../README.md) - [library.md](library.md) - <strong><i>[configuration.md](configuration.md)</i></strong> 
+
 # Konfigurationsmöglichkeiten
 
 Dieses Projekt ermöglicht es, Konfigurationsdateien zu verwenden, um die Netzwerkarchitektur, das Training, die

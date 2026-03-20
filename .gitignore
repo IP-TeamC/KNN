@@ -4,4 +4,5 @@
 *.iml
 .idea
 .settings
-javadoc
+/docs/javadoc
+/docs/test_coverage

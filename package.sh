@@ -7,5 +7,5 @@ rm -r target
 mvn clean package
 cp target/knn-*-jar-with-dependencies.jar knn.jar
 
-zip -r target/KNN_TeamC.zip knn.jar README.md library.md configuration.md *.md pom.xml assets_docs conf data javadoc models src .run
+zip -r target/KNN_TeamC.zip knn.jar README.md pom.xml docs conf data models src .run
 rm knn.jar
