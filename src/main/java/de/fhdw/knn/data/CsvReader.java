@@ -22,17 +22,14 @@ public class CsvReader {
     /**
      * Liest die CSV-Datei ein, ohne Zeilen zu überspringen
      *
-     * @see CsvReader#readFile(String, int, int, int, int, int)
-     *
-     * @param fileName Dateipfad zur einzulesenden Datei
-     * @param inputStart Startindex der Eingabedaten (Spalte)
-     * @param inputSize Größe der Eingabedaten (Zeile)
+     * @param fileName    Dateipfad zur einzulesenden Datei
+     * @param inputStart  Startindex der Eingabedaten (Spalte)
+     * @param inputSize   Größe der Eingabedaten (Zeile)
      * @param outputStart Startindex der Ausgabedaten (Spalte)
-     * @param outputSize Größe der Ausgabedaten (Zeile)
-     *
-     * @throws IOException Wird bei fehlern des BufferedReaders geworfen
-     *
+     * @param outputSize  Größe der Ausgabedaten (Zeile)
      * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert
+     * @throws IOException Wird bei fehlern des BufferedReaders geworfen
+     * @see CsvReader#readFile(String, int, int, int, int, int)
      */
     public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize) throws IOException {
         return readFile(fileName, inputStart, inputSize, outputStart, outputSize, 0);
@@ -41,16 +38,14 @@ public class CsvReader {
     /**
      * Liest die CSV-Datei ein und überspringt dabei ersten angegebenen Zeilen
      *
-     * @param fileName Dateipfad zur einzulesenden Datei
-     * @param inputStart Startindex der Eingabedaten (Spalte)
-     * @param inputSize Größe der Eingabedaten (Zeile)
+     * @param fileName    Dateipfad zur einzulesenden Datei
+     * @param inputStart  Startindex der Eingabedaten (Spalte)
+     * @param inputSize   Größe der Eingabedaten (Zeile)
      * @param outputStart Startindex der Ausgabedaten (Spalte)
-     * @param outputSize Größe der Ausgabedaten (Zeile)
-     * @param skip Überspringt die ersten skip Zeilen; startet sonst in Header Zeile
-     *
-     * @throws IOException Wird bei fehlern des BufferedReaders geworfen
-     *
+     * @param outputSize  Größe der Ausgabedaten (Zeile)
+     * @param skip        Überspringt die ersten skip Zeilen; startet sonst in Header Zeile
      * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert
+     * @throws IOException Wird bei fehlern des BufferedReaders geworfen
      */
     public static DataSet readFile(String fileName, int inputStart, int inputSize, int outputStart, int outputSize, int skip) throws IOException {
         return readFile(fileName, skip, line -> {
@@ -74,13 +69,11 @@ public class CsvReader {
     /**
      * Liest die CSV-Datei ein und überspringt dabei ersten angegebenen Zeilen
      *
-     * @param fileName Dateipfad zur einzulesenden Datei
-     * @param skip Überspringt die ersten skip Zeilen; startet sonst in Header Zeile
+     * @param fileName   Dateipfad zur einzulesenden Datei
+     * @param skip       Überspringt die ersten skip Zeilen; startet sonst in Header Zeile
      * @param lineParser Funktion, welche jede Zeile der eingelesenen Datei in ein Paar/Entry aus Eingabe- und Ausgabe-Array konvertiert
-     *
-     * @throws IOException Wird bei fehlern des BufferedReaders geworfen
-     *
      * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert
+     * @throws IOException Wird bei fehlern des BufferedReaders geworfen
      */
     public static DataSet readFile(String fileName, int skip, Function<String, Stream<Map.Entry<double[], double[]>>> lineParser) throws IOException {
         return readFile(fileName, skip, lineParser, null);
@@ -89,14 +82,12 @@ public class CsvReader {
     /**
      * Liest die CSV-Datei ein und überspringt dabei ersten angegebenen Zeilen
      *
-     * @param fileName Dateipfad zur einzulesenden Datei
-     * @param skip Überspringt die ersten skip Zeilen; startet sonst in Header Zeile
-     * @param lineParser Funktion, welche jede Zeile der eingelesenen Datei in ein Paar/Entry aus Eingabe- und Ausgabe-Array konvertiert
+     * @param fileName    Dateipfad zur einzulesenden Datei
+     * @param skip        Überspringt die ersten skip Zeilen; startet sonst in Header Zeile
+     * @param lineParser  Funktion, welche jede Zeile der eingelesenen Datei in ein Paar/Entry aus Eingabe- und Ausgabe-Array konvertiert
      * @param labelParser Verarbeitet die Header-Zeile (erste Zeile, wenn skip > 0) und kann das DataSet dabei anpassen. Akzeptiert Dataset, String
-     *
-     * @throws java.io.IOException Bei einem Fehler mit dem BufferedReader
-     *
      * @return Dataset, eingeteilt in Eingabe- und Ausgabedaten, wie durch die Parameter definiert
+     * @throws java.io.IOException Bei einem Fehler mit dem BufferedReader
      */
     public static DataSet readFile(String fileName, int skip,
                                    Function<String, Stream<Map.Entry<double[], double[]>>> lineParser,
@@ -109,7 +100,7 @@ public class CsvReader {
             }
             List<Map.Entry<double[], double[]>> data = br.lines().skip(skip).flatMap(lineParser).toList();
 
-            if(data.isEmpty()){
+            if (data.isEmpty()) {
                 throw new IllegalArgumentException("Csv-File not allowed to be empty.");
             }
 
@@ -134,7 +125,6 @@ public class CsvReader {
      * Initialisiert, wenn möglich, einen Double aus dem String-Value.
      *
      * @param value String, welcher zu einem Double umgewandelt wird
-     *
      * @return Double, wenn der String nicht umgewandelt werden kann, Double.NaN
      */
     private static double parseDoubleOrNaN(String value) {

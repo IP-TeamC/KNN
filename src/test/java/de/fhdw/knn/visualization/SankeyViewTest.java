@@ -17,8 +17,10 @@ class SankeyViewTest {
     @Test
     void testSimpleSankeyView() throws Exception {
         try {
-            Platform.startup(() -> {});
-        } catch (IllegalStateException ignored) {}
+            Platform.startup(() -> {
+            });
+        } catch (IllegalStateException ignored) {
+        }
 
         CountDownLatch latch = new CountDownLatch(1);
 
@@ -41,8 +43,10 @@ class SankeyViewTest {
     @Test
     void testComplexSankeyView() throws Exception {
         try {
-            Platform.startup(() -> {});
-        } catch (IllegalStateException ignored) {}
+            Platform.startup(() -> {
+            });
+        } catch (IllegalStateException ignored) {
+        }
 
         CountDownLatch latch = new CountDownLatch(1);
 
@@ -65,8 +69,10 @@ class SankeyViewTest {
     @Test
     void testExtremelyComplexSankeyView() throws Exception {
         try {
-            Platform.startup(() -> {});
-        } catch (IllegalStateException ignored) {}
+            Platform.startup(() -> {
+            });
+        } catch (IllegalStateException ignored) {
+        }
 
         CountDownLatch latch = new CountDownLatch(1);
 

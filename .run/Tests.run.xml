@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name=" Tests 🧪" type="JUnit" factoryName="JUnit" activateToolWindowBeforeRun="false">
+  <configuration default="false" name="Tests" type="JUnit" factoryName="JUnit" activateToolWindowBeforeRun="false">
     <module name="knn" />
     <extension name="coverage">
       <pattern>

@@ -29,7 +29,8 @@ public class TestUtil {
 
     public static void waitForSwing() {
         try {
-            SwingUtilities.invokeAndWait(() -> {});
+            SwingUtilities.invokeAndWait(() -> {
+            });
         } catch (InvocationTargetException | InterruptedException e) {
             throw new RuntimeException(e);
         }

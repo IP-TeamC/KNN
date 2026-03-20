@@ -42,13 +42,13 @@ public class ClassificationScorerTest {
             trainer.train(dataSet);
 
             return new Pair<>(dataSet, network);
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new TestAbortedException("Alarm im ClassificationScorerTest Setup");
         }
     }
 
     @Test
-    public void testConfusionMatrix(){
+    public void testConfusionMatrix() {
         Pair<DataSet, Network> testDataAndNetwork = this.setUp();
         ClassificationScorer classificationScorer = new ClassificationScorer(testDataAndNetwork.y);
 
@@ -61,7 +61,7 @@ public class ClassificationScorerTest {
     }
 
     @Test
-    public void testAccuracyRecallErrorPrecisionF1(){
+    public void testAccuracyRecallErrorPrecisionF1() {
         ClassificationScorer.Score score = new ClassificationScorer.Score(234, 182, 54, 32);
         assertEquals(0.8287, score.accuracy, 0.0001);
         assertEquals(0.1713, score.error, 0.0001);
@@ -72,18 +72,18 @@ public class ClassificationScorerTest {
 
     @Generated("GitHub Copilot")
     @Test
-    public void testPrintFunction(){
+    public void testPrintFunction() {
         ClassificationScorer.Score score = new ClassificationScorer.Score(234, 182, 54, 32);
-        
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outputStream));
-        
+
         try {
             score.print();
             System.setOut(originalOut);
             String output = outputStream.toString();
-            
+
             assertTrue(output.contains("TP:"), "Ausgabe sollte 'TP:' enthalten");
             assertTrue(output.contains("TN:"), "Ausgabe sollte 'TN:' enthalten");
             assertTrue(output.contains("FP:"), "Ausgabe sollte 'FP:' enthalten");

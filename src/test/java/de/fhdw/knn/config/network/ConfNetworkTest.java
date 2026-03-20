@@ -19,7 +19,7 @@ class ConfNetworkTest {
         conf.weightInitializer = "GLOROT_UNIFORM";
         conf.layer = new ConfLayer[]{layer1};
 
-        DataSet ds = new DataSet(new double[][]{{1.0, 2.0, 3.0}}, new double[][]{{0.0}} );
+        DataSet ds = new DataSet(new double[][]{{1.0, 2.0, 3.0}}, new double[][]{{0.0}});
         Network network = conf.create(ds);
         assertNotNull(network);
     }
@@ -29,7 +29,7 @@ class ConfNetworkTest {
         ConfNetwork conf = new ConfNetwork();
         conf.importFile = "models/test_conf.knn";
 
-        DataSet ds = new DataSet(new double[][]{{1.0, 2.0, 3.0}}, new double[][]{{0.0}} );
+        DataSet ds = new DataSet(new double[][]{{1.0, 2.0, 3.0}}, new double[][]{{0.0}});
         Network network = conf.create(ds);
         assertNotNull(network);
     }
@@ -53,7 +53,7 @@ class ConfNetworkTest {
                     break;
             }
 
-            DataSet ds = new DataSet(new double[][]{{1.0, 2.0, 3.0}}, new double[][]{{0.0}} );
+            DataSet ds = new DataSet(new double[][]{{1.0, 2.0, 3.0}}, new double[][]{{0.0}});
             assertThrows(IllegalArgumentException.class, () -> conf.create(ds));
         }
 

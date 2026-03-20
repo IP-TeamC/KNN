@@ -46,8 +46,7 @@ public class HeatmapData {
      * Nicht verbundene Neuronenpaare werden mit {@code Double.NaN} dargestellt.
      *
      * @return Ein 2D-Array von Double-Werten, das die vollständige Gewichtsmatrix darstellt, wobei die Zeilen die Quellneuronen und
-     *         die Spalten die Zielneuronen repräsentieren. Nicht verbundene Neuronen haben den Wert {@code Double.NaN}.
-     *
+     * die Spalten die Zielneuronen repräsentieren. Nicht verbundene Neuronen haben den Wert {@code Double.NaN}.
      * @see Double#NaN
      */
     public double[][] buildFullWeightMatrix() {
@@ -122,9 +121,8 @@ public class HeatmapData {
      * Berechnet die Startindizes der Neuronen jeder Schicht.
      *
      * @return Ein Array von {@code Integer}, wobei jedes Element den Startindex der Neuronen einer Schicht darstellt.
-     *         Das erste Element ist immer 0 (Beginn der Eingabeschicht), und die nachfolgenden Elemente entsprechen
-     *         der kumulativen Anzahl von Neuronen bis zu jeder Schicht.
-     *
+     * Das erste Element ist immer 0 (Beginn der Eingabeschicht), und die nachfolgenden Elemente entsprechen
+     * der kumulativen Anzahl von Neuronen bis zu jeder Schicht.
      * @see HeatmapData#layerOffsets
      */
     private int[] computeLayerOffsets() {

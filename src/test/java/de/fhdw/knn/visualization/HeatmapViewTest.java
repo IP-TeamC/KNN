@@ -197,7 +197,8 @@ class HeatmapViewTest {
     }
 
     @Generated("ChatGPT")
-    @Test // Testen über Reflection, um 100% Branch-Coverage zu erreichen.
+    @Test
+        // Testen über Reflection, um 100% Branch-Coverage zu erreichen.
     void testRendererPaintScaleAndBoundsViaReflection() throws Exception {
         Method method = HeatmapView.class.getDeclaredMethod("getXyBlockRenderer", double.class, double.class, double.class, boolean.class, ColorScheme.class);
         method.setAccessible(true);

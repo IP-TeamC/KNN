@@ -14,37 +14,37 @@ class ConfigTest {
         Network network = TestUtil.simpleDummyNetwork();
         network.export("models/test_conf.knn");
 
-        Config config = Config.read("conf/test_conf_import.toml");
+        Config config = Config.read("conf/test/conf_import.toml");
         assertDoesNotThrow(config::execute);
     }
 
     @Test
     void testExecuteWithTrainerAndVisualization() {
-        Config config = Config.read("conf/test_conf_trainer_visualization.toml");
+        Config config = Config.read("conf/test/conf_trainer_visualization.toml");
         assertDoesNotThrow(config::execute);
     }
 
     @Test
     void testReadAndExecuteWithVisualizationOnly() {
-        Config config = Config.read("conf/test_conf_no_trainer_visualization.toml");
+        Config config = Config.read("conf/test/conf_no_trainer_visualization.toml");
         assertDoesNotThrow(config::execute);
     }
 
     @Test
     void testExecuteTrainerVisualizationDisabled() {
-        Config config = Config.read("conf/test_conf_visualization_disabled_with_trainer.toml");
+        Config config = Config.read("conf/test/conf_visualization_disabled_with_trainer.toml");
         assertDoesNotThrow(config::execute);
     }
 
     @Test
     void testExecuteNoTrainerVisualizationDisabled() {
-        Config config = Config.read("conf/test_conf_visualization_disabled_without_trainer.toml");
+        Config config = Config.read("conf/test/conf_visualization_disabled_without_trainer.toml");
         assertDoesNotThrow(config::execute);
     }
 
     @Test
     void testExecuteTrainerWithoutVisualization() {
-        Config config = Config.read("conf/test_conf_trainer_no_visualization.toml");
+        Config config = Config.read("conf/test/conf_trainer_no_visualization.toml");
         assertDoesNotThrow(config::execute);
     }
 

@@ -108,7 +108,6 @@ public class HeatmapView extends JFrame {
      * @param data     Das {@code HeatmapData}-Objekt enthält Informationen über das Netzwerk,
      *                 einschließlich der Gewichtungsmatrix und Neuronenbezeichnungen.
      * @param tabTitle Der Titel der hinzuzufügenden Registerkarte. Er steht in der Regel für die aktuelle Epoche.
-     *
      * @see HeatmapView
      * @see HeatmapData
      */
@@ -134,7 +133,7 @@ public class HeatmapView extends JFrame {
             // Beim Zoomen Viewgrenzen einhalten
             panel.addMouseWheelListener(e -> {
                 ValueAxis domain = xyPlot.getDomainAxis();
-                ValueAxis range  = xyPlot.getRangeAxis();
+                ValueAxis range = xyPlot.getRangeAxis();
 
                 double minBound = -0.5;
                 double maxBound = N - 0.5;
@@ -170,10 +169,8 @@ public class HeatmapView extends JFrame {
      *
      * @param data  Das {@code HeatmapData}-Objekt enthält die Gewichtungsmatrix und die Neuronenbezeichnungen für das Netzwerk.
      * @param title Der Titel, der auf dem Diagramm angezeigt werden soll.
-     *
      * @return Ein {@code JFreeChart}-Objekt, das die Heatmap der Gewichtungsmatrix darstellt und
-     *         mit den entsprechenden Darstellungs- und Achsenbeschriftungen konfiguriert ist.
-     *
+     * mit den entsprechenden Darstellungs- und Achsenbeschriftungen konfiguriert ist.
      * @see HeatmapData
      * @see JFreeChart
      */
@@ -244,9 +241,7 @@ public class HeatmapView extends JFrame {
      *                 Diese Beschriftungen geben die Namen der Neuronen auf beiden Achsen wieder.
      * @param dataset  Das {@code DefaultXYZDataset} enthält die zu visualisierenden Daten.
      * @param renderer Ein {@code XYBlockRenderer}, der für die Darstellung der Gitterzellen im Plot verantwortlich ist.
-     *
      * @return Eine {@code XYPlot}-Instanz, konfiguriert mit symbolischen Achsen, dem bereitgestellten Datensatz und dem definierten Renderer.
-     *
      * @see XYPlot
      * @see DefaultXYZDataset
      * @see XYBlockRenderer
@@ -275,10 +270,8 @@ public class HeatmapView extends JFrame {
      * @param threshold   Der Schwellenwert, unter dem Gewichte als unbedeutend betrachtet und weiß dargestellt werden.
      * @param showWeights Gibt an, ob die numerischen Gewichtswerte in den Gitterzellen angezeigt werden sollen.
      * @param colorScheme Das Farbschema, das zum Zuordnen von Datenwerten zu Farben verwendet wird.
-     *
      * @return Eine {@code XYBlockRenderer}-Instanz, konfiguriert mit einer Blockgröße von 1.0 und
      * einer Farbskala, um Datenwerte Farben von Grün (negativ) bis Rot (positiv) zuzuordnen.
-     *
      * @see XYBlockRenderer
      * @see HeatmapView#threshold
      * @see ColorScheme
@@ -372,9 +365,9 @@ public class HeatmapView extends JFrame {
      * @return Ein {@code Paint}-Objekt, das die interpolierte Farbe darstellt.
      */
     private static Paint interpolateToWhite(Color target, double ratio) {
-        float r = Math.clamp(1.0f - (float) ratio * (1.0f - target.getRed()   / 255.0f), 0.0f, 1.0f);
+        float r = Math.clamp(1.0f - (float) ratio * (1.0f - target.getRed() / 255.0f), 0.0f, 1.0f);
         float g = Math.clamp(1.0f - (float) ratio * (1.0f - target.getGreen() / 255.0f), 0.0f, 1.0f);
-        float b = Math.clamp(1.0f - (float) ratio * (1.0f - target.getBlue()  / 255.0f), 0.0f, 1.0f);
+        float b = Math.clamp(1.0f - (float) ratio * (1.0f - target.getBlue() / 255.0f), 0.0f, 1.0f);
         return new Color(r, g, b);
     }
 }

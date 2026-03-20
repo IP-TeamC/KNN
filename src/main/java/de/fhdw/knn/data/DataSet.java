@@ -85,7 +85,6 @@ public class DataSet {
      * Die Reihenfolge der Spalten entspricht der Reihenfolge der als Parameter übergebenen Spalten-Indizes.
      *
      * @param columns Beliebige Anzahl an Spalten-Indizes
-     *
      * @return Dataset, mit dem Subset als Eingabe und normalen Ausgaben
      */
     public DataSet subsetInputs(int... columns) {
@@ -126,11 +125,9 @@ public class DataSet {
      * Teilt danach den letzten Anteil der Daten (testShare zwischen 0 und 1) den Test-Daten zu.
      * Der vordere Teil wird als Trainings-Daten verwendet.
      *
-     * @param seed Verwendeter Random Seed für den shuffle
+     * @param seed      Verwendeter Random Seed für den shuffle
      * @param testShare Prozentualer Anzeil an Daten in dezimalschreibweise, die in den Test-Anteil sollen
-     *
      * @return TrainTestSplit, der jeweils aus einem Test-Dataset und einem Train-Dataset besteht
-     *
      * @see DataSet#shuffle(long)
      */
     public TrainTestSplit shuffleAndSplit(long seed, double testShare) throws IllegalArgumentException {
