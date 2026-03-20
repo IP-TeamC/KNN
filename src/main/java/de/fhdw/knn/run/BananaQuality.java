@@ -89,8 +89,7 @@ class BananaQuality {
             }); // JavaFx initialisieren
         } catch (IllegalStateException ignored) {
         } // Ignorieren, falls es schon läuft
-        SankeyView sankeyView = new SankeyView();
-        sankeyView.show(network);
+        new SankeyView(network, "Manueller Sankey-Plot");
     }
 
 }
