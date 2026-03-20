@@ -1,6 +1,6 @@
 package de.fhdw.knn.trainer;
 
-import de.fhdw.knn.TestUtil;
+import de.fhdw.knn.util.TestUtil;
 import de.fhdw.knn.data.CsvReader;
 import de.fhdw.knn.data.DataSet;
 import de.fhdw.knn.network.Network;

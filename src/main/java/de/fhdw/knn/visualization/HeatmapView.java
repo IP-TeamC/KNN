@@ -41,7 +41,7 @@ public class HeatmapView extends JFrame {
      * <p>Die Registerkarten werden dynamisch verwaltet und aktualisiert,
      * wenn die Methode {@code addEpoch} aufgerufen wird.
      *
-     * @see #addEpoch(String, HeatmapData)
+     * @see #addHeatmap(String, HeatmapData)
      */
     private final JTabbedPane tabs;
 
@@ -96,25 +96,6 @@ public class HeatmapView extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
     }
-
-    /**
-     * Zeigt eine einzelne Heatmap in einem neuen Tab innerhalb des HeatmapView-Fensters an.
-     *
-     * @param title  Der Titel, der für die Heatmap und die entsprechende Registerkarte angezeigt werden soll.
-     * @param matrix das {@code HeatmapData}-Objekt, das Informationen über das neuronale Netzwerk und
-     *               die zugehörige Gewichtungsmatrix enthält, die visualisiert werden sollen
-     *
-     * @see HeatmapData
-     */
-    public void showSingleMatrix(String title, HeatmapData matrix) {
-        this.addEpoch(title, matrix);
-
-        this.setTitle(title);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.pack();
-        this.setVisible(true);
-    }
-
     /**
      * Fügt eine weitere Registerkarte zur {@code HeatmapView} hinzu.
      * Diese Methode wird im Event Dispatch Thread ausgeführt, da Swing-Komponenten nicht threadsicher sind.
@@ -126,44 +107,49 @@ public class HeatmapView extends JFrame {
      * @see HeatmapView
      * @see HeatmapData
      */
-    public void addEpoch(String tabTitle, HeatmapData data) {
+    public void addHeatmap(String tabTitle, HeatmapData data) {
         SwingUtilities.invokeLater(() -> { // invokeLater, da Swing nicht Thread-safe ist
-            int N = data.buildFullWeightMatrix().length; // für Zoom-Grenzen
 
             JFreeChart chart = buildChart(data, tabTitle);
-            ChartPanel panel = new ChartPanel(chart) {
-                @Override
-                public void restoreAutoBounds() {
-                    getChart().getXYPlot().getDomainAxis().setRange(-0.5, N - 0.5);
-                    getChart().getXYPlot().getRangeAxis().setRange(-0.5, N - 0.5);
-                }
-            };
+            ChartPanel panel = new ChartPanel(chart);
+            XYPlot xyPlot = panel.getChart().getXYPlot();
 
             panel.setMouseWheelEnabled(true);
-            panel.setDomainZoomable(true);
-            panel.setRangeZoomable(true);
 
-            panel.getChart().getXYPlot().setDomainPannable(true);
-            panel.getChart().getXYPlot().setRangePannable(true);
+            xyPlot.setDomainPannable(true);
+            xyPlot.setRangePannable(true);
 
-            panel.getChart().getXYPlot().getDomainAxis().setLowerBound(-0.5);
-            panel.getChart().getXYPlot().getDomainAxis().setUpperBound(N - 0.5);
-            panel.getChart().getXYPlot().getRangeAxis().setLowerBound(-0.5);
-            panel.getChart().getXYPlot().getRangeAxis().setUpperBound(N - 0.5);
+            int N = data.buildFullWeightMatrix().length; // für Zoom-Grenzen
 
-            // Wenn zu weit rausgezoomt dann zurück auf Standard setzen
+            xyPlot.getDomainAxis().setLowerBound(-0.5);
+            xyPlot.getDomainAxis().setUpperBound(N - 0.5);
+            xyPlot.getRangeAxis().setLowerBound(-0.5);
+            xyPlot.getRangeAxis().setUpperBound(N - 0.5);
+
+            // Beim Zoomen Viewgrenzen einhalten
             panel.addMouseWheelListener(e -> {
-                XYPlot xyPlot = panel.getChart().getXYPlot();
                 ValueAxis domain = xyPlot.getDomainAxis();
                 ValueAxis range  = xyPlot.getRangeAxis();
 
                 double minBound = -0.5;
                 double maxBound = N - 0.5;
 
-                if (domain.getLowerBound() < minBound || domain.getUpperBound() > maxBound ||
-                        range.getLowerBound()  < minBound || range.getUpperBound()  > maxBound) {
-                    domain.setRange(minBound, maxBound);
-                    range.setRange(minBound, maxBound);
+                double domainLower = domain.getLowerBound();
+                double domainUpper = domain.getUpperBound();
+                if (domainLower < minBound) {
+                    domain.setLowerBound(minBound);
+                }
+                if (domainUpper > maxBound) {
+                    domain.setUpperBound(maxBound);
+                }
+
+                double rangeLower = range.getLowerBound();
+                double rangeUpper = range.getUpperBound();
+                if (rangeLower < minBound) {
+                    range.setLowerBound(minBound);
+                }
+                if (rangeUpper > maxBound) {
+                    range.setUpperBound(maxBound);
                 }
             });
 
@@ -311,8 +297,8 @@ public class HeatmapView extends JFrame {
                         dataset, series, item, crosshairState, pass);
 
                 if (!showWeights) return;
-                if (!(dataset instanceof XYZDataset xyzDataset)) return;
 
+                XYZDataset xyzDataset = (XYZDataset) dataset;
                 double z = xyzDataset.getZValue(series, item);
                 if (Double.isNaN(z)) return;
 

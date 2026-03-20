@@ -71,10 +71,7 @@ public class HeatmapData {
 
                 for (int w = 0; w < neuron.incoming.length; w++) {
                     int sourceGlobalIndex = sourceLayerStart + w;
-
-                    if (sourceGlobalIndex < this.totalNeurons) {
-                        matrix[sourceGlobalIndex][targetGlobalIndex] = neuron.incoming[w].weight;
-                    }
+                    matrix[sourceGlobalIndex][targetGlobalIndex] = neuron.incoming[w].weight;
                 }
             }
         }

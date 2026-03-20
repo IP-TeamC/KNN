@@ -12,7 +12,6 @@ import java.awt.*;
  * @see ColorScheme#RED_GREEN
  * @see ColorScheme#BLUE_RED
  * @see ColorScheme#MONOCHROME
- * @see ColorScheme#ColorScheme(Color, Color)
  */
 public enum ColorScheme {
 

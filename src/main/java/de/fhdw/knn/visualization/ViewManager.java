@@ -81,7 +81,7 @@ public class ViewManager {
             this.heatmapView.setShowWeights(showWeights);
             this.heatmapView.setNormalizeColors(normalizeColors);
             this.heatmapView.setColorSchema(colorScheme);
-            this.heatmapView.addEpoch("Epoche 0", new HeatmapData(network));
+            this.heatmapView.addHeatmap("Epoche 0", new HeatmapData(network));
         }
 
         if (this.sankeyInterval > 0) {
@@ -106,7 +106,7 @@ public class ViewManager {
     public void nextEpoch(final int epoch, Network network, int maxEpochs) {
         // Heatmap Update
         if (heatmapView != null && shouldUpdate(epoch, heatmapInterval, maxEpochs)) {
-            heatmapView.addEpoch("Epoche " + epoch, new HeatmapData(network));
+            heatmapView.addHeatmap("Epoche " + epoch, new HeatmapData(network));
         }
 
         // Sankey Update
@@ -126,7 +126,7 @@ public class ViewManager {
      * @param network Die für Aktualisierungen zu verwendenden Daten des neuronalen Netzwerks.
      */
     public void earlyStop(int epoch, Network network) {
-        if (heatmapView != null) heatmapView.addEpoch("Epoche " + epoch + " (Early Stopping)", new HeatmapData(network));
+        if (heatmapView != null) heatmapView.addHeatmap("Epoche " + epoch + " (Early Stopping)", new HeatmapData(network));
         if (sankeyView != null) sankeyView.update(network, "Epoche " + epoch + " (Early Stopping)");
     }
 

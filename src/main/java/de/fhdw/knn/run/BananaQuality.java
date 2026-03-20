@@ -56,7 +56,7 @@ class BananaQuality {
 
         HeatmapData heatmapData = new HeatmapData(network);
         HeatmapView window = new HeatmapView();
-        window.showSingleMatrix("Manuelle Gewichtsmatrix", heatmapData);
+        window.addHeatmap("Manuelle Gewichtsmatrix", heatmapData);
     }
 
 }

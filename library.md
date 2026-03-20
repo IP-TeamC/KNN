@@ -24,6 +24,7 @@ import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import de.fhdw.knn.visualization.HeatmapData;
 import de.fhdw.knn.visualization.HeatmapView;
+
 import java.io.IOException;
 
 public class BananaQuality {
@@ -37,12 +38,12 @@ public class BananaQuality {
         // Network
         DenseLayer[] denseLayers = DenseLayer.createLayers(ActivationFunction.SWISH, ActivationFunction.SIGMOID, 100, 100, 1);
         Network network = new Network(42, WeightInitializer.GLOROT_UNIFORM, 7, denseLayers);
-        
+
         // Trainer
         LossFunction lossFunction = LossFunction.CROSS_ENTROPY_LOSS;
         StopFunction stopFunction = EarlyStopping.NEVER;
         OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.03));
-        
+
         Trainer trainer = new Trainer(network, 50, true, 1, lossFunction, stopFunction, optimizationFunction);
         trainer.train(train);
 
@@ -54,7 +55,7 @@ public class BananaQuality {
         // Visualization
         HeatmapData heatmapData = new HeatmapData(network);
         HeatmapView window = new HeatmapView();
-        window.showSingleMatrix("Manuelle Gewichtsmatrix", heatmapData);
+        window.addHeatmap("Manuelle Gewichtsmatrix", heatmapData);
     }
 }
 ```
