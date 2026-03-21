@@ -68,7 +68,7 @@ public class TrainerTest {
 
         DataSet data = CsvReader.readFile("data/banana_quality.csv", 0, 1, 7, 1);
         OptimizationFunction optimizationFunction = new GradientDescent(LossFunction.MEAN_SQUARED_ERROR, new ConstantLearningRate(0.01));
-        ViewManager viewManager = new ViewManager(10, 10, false, false, ColorScheme.RED_GREEN, outer);
+        ViewManager viewManager = new ViewManager(10, 10, false, false, ColorScheme.GREEN_RED, outer);
         AtomicBoolean earlyStoppingOnTime = new AtomicBoolean(false);
         Trainer trainer = new Trainer(outer, 2, true, 1, null,
                 (loss) -> earlyStoppingOnTime.getAndSet(true), optimizationFunction, viewManager);

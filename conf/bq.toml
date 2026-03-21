@@ -26,14 +26,14 @@ activationFunction = "SIGMOID"
 
 [trainer]
 lossFunction = "CROSS_ENTROPY_LOSS"
-maxEpochs = 20
+maxEpochs = 30
 shuffleEpoch = true
-batchSize = 1
-learningRate = 0.04
+batchSize = 10
+learningRate = 0.03
 #exportFile = "models/test.knn"
 
 [trainer.earlyStopping]
-minDelta = 0.01
+minDelta = 0.002
 patience = 5
 
 [scorer]
@@ -43,4 +43,4 @@ type = "ClassificationScorer"
 [visualization]
 heatmapInterval = 10
 sankeyInterval = 10
-colorScheme = "BLUE_RED"
+colorScheme = "GREEN_RED"

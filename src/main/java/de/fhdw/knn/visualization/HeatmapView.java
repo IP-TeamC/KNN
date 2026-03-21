@@ -77,7 +77,7 @@ public class HeatmapView extends JFrame {
      * @see ColorScheme
      */
     @Setter
-    private ColorScheme colorSchema = ColorScheme.RED_GREEN;
+    private ColorScheme colorSchema = ColorScheme.GREEN_RED;
 
     /**
      * Erstellt eine neue HeatmapView-Instanz.

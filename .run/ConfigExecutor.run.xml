@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ConfigExecutor" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="de.fhdw.knn.ConfigExecutor" />
+    <module name="knn" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="de.fhdw.knn.run.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="de.fhdw.knn.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

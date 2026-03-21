@@ -9,16 +9,16 @@ import java.awt.*;
  * repräsentieren. Die tatsächliche Farbe eines Feldes wird durch lineare Interpolation
  * zwischen Weiß (Wert = 0) und der jeweiligen Zielfarbe (maximaler Absolutwert) berechnet.
  *
- * @see ColorScheme#RED_GREEN
+ * @see ColorScheme#GREEN_RED
  * @see ColorScheme#BLUE_RED
  * @see ColorScheme#MONOCHROME
  */
 public enum ColorScheme {
 
     /**
-     * Negative Gewichte werden in Rot, positive in Grün dargestellt.
+     * Negative Gewichte werden in Grün, positive in Rot dargestellt.
      */
-    RED_GREEN(Color.RED, Color.GREEN),
+    GREEN_RED(Color.GREEN, Color.RED),
 
     /**
      * Negative Gewichte werden in Blau, positive in Rot dargestellt.

@@ -12,7 +12,7 @@ class ConfVisualizationTest {
         ConfVisualization conf = new ConfVisualization();
         conf.heatmapInterval = 1;
         conf.sankeyInterval = 1;
-        conf.colorScheme = "RED_GREEN";
+        conf.colorScheme = "GREEN_RED";
 
         assertNotNull(conf.create(TestUtil.simpleDummyNetwork()));
         assertTrue(conf.isEnabled());

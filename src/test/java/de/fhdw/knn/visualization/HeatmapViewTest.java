@@ -256,7 +256,7 @@ class HeatmapViewTest {
         method.setAccessible(true);
 
         // Renderer erzeugen
-        XYBlockRenderer renderer = (XYBlockRenderer) method.invoke(null, -1.0, 1.0, 0.1, true, ColorScheme.RED_GREEN);
+        XYBlockRenderer renderer = (XYBlockRenderer) method.invoke(null, -1.0, 1.0, 0.1, true, ColorScheme.GREEN_RED);
         assertNotNull(renderer);
 
         // PaintScale aus Renderer extrahieren

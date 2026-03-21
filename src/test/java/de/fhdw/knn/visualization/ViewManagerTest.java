@@ -16,7 +16,7 @@ class ViewManagerTest {
     void viewManagerWithHeatmapDoesNotThrow() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             Network network = TestUtil.simpleDummyNetwork();
-            ViewManager vm = new ViewManager(3, 0, true, true, ColorScheme.RED_GREEN, network);
+            ViewManager vm = new ViewManager(3, 0, true, true, ColorScheme.GREEN_RED, network);
             assertDoesNotThrow(() -> vm.nextEpoch(1, network, 4));
             assertDoesNotThrow(() -> vm.nextEpoch(2, network, 4));
             assertDoesNotThrow(() -> vm.nextEpoch(3, network, 4));
@@ -30,7 +30,7 @@ class ViewManagerTest {
     void viewManagerWithSankeyDoesNotThrow() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             Network network = TestUtil.simpleDummyNetwork();
-            ViewManager vm = new ViewManager(0, 3, true, true, ColorScheme.RED_GREEN, network);
+            ViewManager vm = new ViewManager(0, 3, true, true, ColorScheme.GREEN_RED, network);
             assertDoesNotThrow(() -> vm.nextEpoch(1, network, 4));
             assertDoesNotThrow(() -> vm.nextEpoch(2, network, 4));
             assertDoesNotThrow(() -> vm.nextEpoch(3, network, 4));
@@ -44,14 +44,14 @@ class ViewManagerTest {
     @Test
     void viewManagerDeactivatedDoesNotThrow() {
         Network network = TestUtil.simpleDummyNetwork();
-        assertDoesNotThrow(() -> new ViewManager(0, 0, true, false, ColorScheme.RED_GREEN, network));
+        assertDoesNotThrow(() -> new ViewManager(0, 0, true, false, ColorScheme.GREEN_RED, network));
     }
 
     @Generated("Claude AI")
     @Test
     void viewManagerNextEpochDoesNotThrow() {
         Network network = TestUtil.simpleDummyNetwork();
-        ViewManager vm = new ViewManager(1, 1, true, false, ColorScheme.RED_GREEN, network);
+        ViewManager vm = new ViewManager(1, 1, true, false, ColorScheme.GREEN_RED, network);
         assertDoesNotThrow(() -> vm.nextEpoch(1, network, 10));
         assertDoesNotThrow(() -> vm.nextEpoch(5, network, 10));
         assertDoesNotThrow(() -> vm.nextEpoch(10, network, 10));
@@ -61,7 +61,7 @@ class ViewManagerTest {
     @Test
     void viewManagerEarlyStopDoesNotThrow() {
         Network network = TestUtil.simpleDummyNetwork();
-        ViewManager vm = new ViewManager(1, 1, true, false, ColorScheme.RED_GREEN, network);
+        ViewManager vm = new ViewManager(1, 1, true, false, ColorScheme.GREEN_RED, network);
         assertDoesNotThrow(() -> vm.earlyStop(5, network));
     }
 }

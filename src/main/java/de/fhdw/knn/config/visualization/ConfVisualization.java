@@ -70,7 +70,7 @@ public class ConfVisualization implements TomlSerializable {
      *
      * @see ColorScheme
      */
-    public String colorScheme = "RED_GREEN";
+    public String colorScheme = "GREEN_RED";
 
     /**
      * Erstellt eine neue Instanz von {@code ViewManager}, die mit den angegebenen Intervallen
