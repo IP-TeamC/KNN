@@ -28,6 +28,9 @@ public class ConfVisualization implements TomlSerializable {
      *
      * <p>{@code 0} bedeutet, dass keine Heatmaps generiert werden sollen.
      *
+     * <p>{@code -1} bedeutet, dass die Heatmap nur am Ende des Trainings (letzte Epoche
+     * oder Early Stopping) generiert wird.
+     *
      * @see ConfVisualization#create(Network)
      */
     public int heatmapInterval = 0;
@@ -35,6 +38,9 @@ public class ConfVisualization implements TomlSerializable {
      * Gibt an, nach wie vielen Epochen ein neues SankeyPlot generiert werden soll.
      *
      * <p>{@code 0} bedeutet, dass keine SankeyPlots generiert werden sollen.
+     *
+     * <p>{@code -1} bedeutet, dass das SankeyPlot nur am Ende des Trainings (letzte Epoche
+     * oder Early Stopping) generiert wird.
      *
      * @see ConfVisualization#create(Network)
      */
@@ -76,8 +82,8 @@ public class ConfVisualization implements TomlSerializable {
      * Erstellt eine neue Instanz von {@code ViewManager}, die mit den angegebenen Intervallen
      * für Heatmap- und Sankey-Diagramm-Visualisierungen konfiguriert ist.
      *
-     * <p>Wenn sowohl {@code heatmapInterval} als auch {@code sankeyInterval} den Wert {@code 0} oder
-     * einen negativen Wert haben, gibt diese Methode {@code null} zurück.
+     * <p>Wenn sowohl {@code heatmapInterval} als auch {@code sankeyInterval} den Wert {@code 0} haben,
+     * gibt diese Methode {@code null} zurück.
      *
      * @param network die {@code Network}-Instanz, die zum Initialisieren der Visualisierungen verwendet wird.
      * @return eine {@code ViewManager}-Instanz, die mit den Heatmap- und Sankey-Intervallen konfiguriert ist;
@@ -85,7 +91,7 @@ public class ConfVisualization implements TomlSerializable {
      * @see ViewManager
      */
     public ViewManager create(Network network) {
-        if (heatmapInterval <= 0 && sankeyInterval <= 0) {
+        if (heatmapInterval == 0 && sankeyInterval == 0) {
             return null;
         }
         ColorScheme scheme = ColorScheme.valueOf(colorScheme.toUpperCase());
@@ -96,10 +102,10 @@ public class ConfVisualization implements TomlSerializable {
     /**
      * Legt fest, ob die Visualisierung basierend auf der Konfiguration der Heatmap- und Sankey-Intervalle aktiviert ist.
      *
-     * @return {@code true}, wenn entweder das Heatmap-Intervall oder das Sankey-Intervall größer als 0 ist,
+     * @return {@code true}, wenn entweder das Heatmap-Intervall oder das Sankey-Intervall ungleich {@code 0} ist,
      * was bedeutet, dass mindestens eine Art der Visualisierung aktiviert ist; andernfalls {@code false}.
      */
     public boolean isEnabled() {
-        return heatmapInterval > 0 || sankeyInterval > 0;
+        return heatmapInterval != 0 || sankeyInterval != 0;
     }
 }

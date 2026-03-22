@@ -2,10 +2,7 @@ package de.fhdw.knn.visualization;
 
 import de.fhdw.knn.network.Network;
 import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import eu.hansolo.fx.charts.SankeyPlot;
 import eu.hansolo.fx.charts.data.PlotItem;
@@ -38,10 +35,6 @@ public class SankeyView {
      * @see SankeyView
      */
     private SankeyPlot sankey;
-    /**
-     * Stellt eine JavaFX-Komponente zur Anzeige der aktuellen Epochennummer dar.
-     */
-    private Label epochLabel;
 
     /**
      * Erstellt eine neue SankeyView-Instanz, die das angegebene Netzwerk in einem Sankey-Diagramm visualisiert.
@@ -55,18 +48,13 @@ public class SankeyView {
         Platform.runLater(() -> {
             this.stage = new Stage();
             this.sankey = new SankeyPlot();
-            this.epochLabel = new Label(title);
-
-            epochLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 10px;");
-            StackPane root = new StackPane(sankey, epochLabel);
-            StackPane.setAlignment(epochLabel, Pos.TOP_LEFT);
 
             sankey.setItems(initialItems);
             sankey.setStreamFillMode(SankeyPlot.StreamFillMode.GRADIENT);
             sankey.setShowFlowDirection(false);
 
-            this.stage.setTitle("Sankey - Network View");
-            this.stage.setScene(new Scene(root, 1200, 900));
+            this.stage.setTitle("Sankey - Network View (" + title + ")");
+            this.stage.setScene(new Scene(sankey, 1200, 900));
             this.stage.show();
             this.stage.toFront();
             this.stage.requestFocus();
@@ -84,8 +72,8 @@ public class SankeyView {
     public void update(Network network, String title) {
         List<PlotItem> items = SankeyData.convertNetworkToItems(network);
         Platform.runLater(() -> {
+            stage.setTitle("Sankey - Network View (" + title + ")");
             sankey.setItems(items);
-            epochLabel.setText(title);
         });
     }
 }

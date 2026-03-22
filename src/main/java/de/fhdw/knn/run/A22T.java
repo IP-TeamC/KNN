@@ -12,8 +12,9 @@ import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
+import de.fhdw.knn.visualization.*;
+import javafx.application.Platform;
 
-import javax.annotation.processing.Generated;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
@@ -41,6 +42,20 @@ class A22T {
 
         long trainTime = trainStop - trainStart;
         System.out.printf("Train Time: %d ms (%.2f s)%n", trainTime, trainTime / 1000.0);
+
+        HeatmapView window = new HeatmapView();
+        window.setShowWeights(false);
+        window.setNormalizeColors(false);
+        window.setThreshold(1);
+        window.setColorSchema(ColorScheme.WHITE_RED);
+        window.addHeatmap(new HeatmapData(encryption), "Encryption");
+        window.addHeatmap(new HeatmapData(decryption), "Decryption");
+
+        try {
+            Platform.startup(() -> {});
+        } catch (IllegalStateException ignored) {}
+        new SankeyView(encryption, "Encryption");
+        new SankeyView(decryption, "Decryption");
 
         verify(encryption, decryption);
     }
@@ -144,5 +159,4 @@ class A22T {
         }
         return ok;
     }
-
 }

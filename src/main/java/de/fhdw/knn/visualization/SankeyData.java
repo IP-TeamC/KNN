@@ -161,6 +161,6 @@ public class SankeyData {
      */
     private static Color getColorForLayer(int layer, Color[] colors, int totalLayers) {
         int colorIndex = (layer * (colors.length - 1)) / Math.max(1, totalLayers - 1);
-        return colors[Math.min(colorIndex, colors.length - 1)];
+        return colors[colorIndex % colors.length];
     }
 }
