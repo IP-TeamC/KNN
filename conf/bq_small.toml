@@ -1,0 +1,45 @@
+[data]
+file = "data/banana_quality.csv"
+inputStart = 0
+inputSize = 7
+outputStart = 7
+outputSize = 1
+seed = 42
+testShare = 0.2
+
+[network]
+seed = 42
+weightInitializer = "GLOROT_UNIFORM"
+
+[[network.layer]]
+neurons = 10
+activationFunction = "SWISH"
+
+[[network.layer]]
+neurons = 10
+activationFunction = "SWISH"
+
+[[network.layer]]
+neurons = 1
+activationFunction = "SIGMOID"
+
+[trainer]
+lossFunction = "CROSS_ENTROPY_LOSS"
+maxEpochs = 30
+shuffleEpoch = true
+batchSize = 10
+learningRate = 0.05
+#exportFile = "models/test.knn"
+
+[trainer.earlyStopping]
+minDelta = 0.001
+patience = 5
+
+[scorer]
+lossFunction = "CROSS_ENTROPY_LOSS"
+type = "ClassificationScorer"
+
+[visualization]
+heatmapInterval = 3
+sankeyInterval = 3
+colorScheme = "GREEN_RED"
