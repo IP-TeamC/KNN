@@ -41,8 +41,11 @@ import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
 import de.fhdw.knn.network.layer.DenseLayer;
+import de.fhdw.knn.scorer.Score;
+import de.fhdw.knn.scorer.Scorer;
 import de.fhdw.knn.trainer.Trainer;
 import de.fhdw.knn.trainer.learningrate.ConstantLearningRate;
+import de.fhdw.knn.trainer.learningrate.LearningRateFunction;
 import de.fhdw.knn.trainer.loss.LossFunction;
 import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
@@ -50,6 +53,9 @@ import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import de.fhdw.knn.visualization.HeatmapData;
 import de.fhdw.knn.visualization.HeatmapView;
+import de.fhdw.knn.visualization.SankeyData;
+import de.fhdw.knn.visualization.SankeyView;
+import javafx.application.Platform;
 import java.io.IOException;
 
 public class BananaQuality {
@@ -147,8 +153,11 @@ der Daten. Bei Bedarf lassen sich weitere Normalizer unter Implementierung des `
 implementieren. Weitere Informationen dazu sind in den Java-Docs zu finden.
 
 ```java
+Normalizer normalizerInputs = new MinMaxNormalizer(-10, 10);
+Normalizer normalizerOutputs = new MinMaxNormalizer(-10, 10);
+
 data.normalizeInputs(normalizerInputs);
-data.normalizeInputs(normalizerOutputs);
+data.normalizeOutputs(normalizerOutputs);
 ```
 
 ## Network
@@ -266,7 +275,7 @@ double[][] adapterWeights = new double[][]{
         new double[]{ // beschreibt alle eingehenden Verbindung zu I1
                 10, // Gewicht der Verbindung von A1 zu I1
                 5 // Gewicht der Verbindung von A2 zu I1
-        };
+        }
 };
 ```
 
@@ -287,7 +296,7 @@ Network importedNetwork = Importer.importNetwork("models/bq.knn");
 Der Trainer ist die Klasse, welche das Training ausführt. Für das Training
 muss mehrere Parametern angegeben werden:
 - `Network`, auf dem trainiert wird,
-- die maximale Anzahl an `Epchen` als Integer,
+- die maximale Anzahl an `Epochen` als Integer,
 - ein Boolean, ob ge`shuffle`t werden soll,
 - die `Batch-Size` (z.B. für Mini-Batching, deaktiviert wenn `1`),
 - die `Verlust-Funktion` zum Ermitteln Qualität des Netzwerks nach jeder Epoche (wird nur zur Ausgabe verwendet, nicht zum Training: `null` zum Deaktivieren),
@@ -351,7 +360,7 @@ sowie eine Patience, die angibt wie viele Epochen sich der Loss nicht stärker v
 vorzeitig abzubrechen (z.B. `10`);
 
 ```java
-StopFunction stopFunctionDisabled = EarlyStopping.NEVER;
+StopFunction stopFunctionDisabled = StopFunction.NEVER;
 StopFunction stopFunctionEarlyStopping = new EarlyStopping(0.01, 10);;
 ```
 

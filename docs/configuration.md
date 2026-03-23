@@ -69,8 +69,8 @@ type = "ClassificationScorer"
 [visualization.heatmap]
 interval = 10
 showWeights = true
-normalizeColor = true
-ColorSchema = "MONOCHROME"
+normalizeColors = true
+colorScheme = "MONOCHROME"
 [visualization.sankey]
 interval = 10
 ```
@@ -181,7 +181,7 @@ Der Abschnitt [network] definiert die globalen Einstellungen des Netzwerkes.
 ``` toml
 [network]
 
-# Das Saatgut für reproduzierbare Initialisierungen. Pflanze weise. 
+# Seed für Random/RNG: Das Saatgut für reproduzierbare Initialisierungen. Pflanze weise. 
 seed = 42
 
 # Methode zur Initialisierung der Gewichte
@@ -309,7 +309,7 @@ Der Abschnitt [visualization] steuert optionale Netzwerkvisualisierungen.
 [visualization]
 
 # Gibt an, ob die Visualisierungen aktiviert sind.
-enable = true
+enabled = true
 
 # Visualisierungsoptionen für Heatmaps
 [visualization.heatmap]
