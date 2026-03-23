@@ -373,9 +373,11 @@ HeatmapData heatmapData = new HeatmapData(network);
 HeatmapView heatnapView = new HeatmapView();
 heatnapView.addHeatmap(heatmapData, "Manuelle Gewichtsmatrix");
 ```
-Networks lassen sich als Heatmap darstellen, in der die x- und y-Achse ein Neuron darstellt, und
-die Heatmapeinträge dann jeweils die Verbindung vom x-Neuron zum y-Neuron ist.
-Rot stellt eine starke Verbindung (Gewicht) dar, während grün eine besonders schwache Verbindung (Gewicht) darstellt.
+Networks lassen sich als Heatmap darstellen, in der die x-Achse das Quell-Neuron und die y-Achse das Zeil-Neuron darstellt.
+Rote Felder stehen standardmäßig für positive Gewichte (verstärkende Verbindungen), grüne Felder für negative Gewichte (hemmende Verbindungen).
+Je intensiver die Farbe ist, desto größer ist der Einfluss. 
+Weiße Felder liegen unterhalb des konfigurierten Schwellenwertes und gelten als vernachlässigbar.
+Graue Felder verdeutlichen, dass es keine Verbindungen zwischen den jeweiligen Neuronen gibt.
 
 ![heatmap.png](assets/heatmap.png)
 
