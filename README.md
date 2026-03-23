@@ -174,7 +174,7 @@ um sie von manuell erstellten Tests zu unterscheiden und das verwendete Tool anz
     - 100% Line Coverage (experimentelles Package `de.fhdw.knn.run` ausgenommen)
 - manuell überprüfte, automatisiert generierte Tests (mit `@Generated`-Annotation) zur Erhöhung der Testabdeckung
 - Durchführung von Regressionstests nach Code-Änderungen
-- <strong>240 Testfälle</strong> insgesamt
+- <strong>264 Testfälle</strong> insgesamt
 - <strong>Coverage Report</strong> siehe [docs/test_coverage](docs/test_coverage/index.html)
 
 ![docs/assets/test_coverage.png](docs/assets/test_coverage.png)
