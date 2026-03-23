@@ -16,21 +16,16 @@ class SankeyViewTest {
 
     @Test
     void testSimpleSankeyView() throws Exception {
-        try {
-            Platform.startup(() -> {
-            });
-        } catch (IllegalStateException ignored) {
-        }
-
+        TestUtil.startPlatform();
         CountDownLatch latch = new CountDownLatch(1);
 
         assertDoesNotThrow(() -> Platform.runLater(() -> {
             try {
                 Network network1 = TestUtil.simpleDummyNetwork();
-                SankeyView view = new SankeyView(network1, "Test-Epoche 1");
+                SankeyView view = new SankeyView(new SankeyData(network1), "Test-Epoche 1");
 
                 Network network2 = TestUtil.simpleDummyNetwork();
-                view.update(network2, "Test-Epoche 2");
+                view.update(new SankeyData(network2), "Test-Epoche 2");
             } finally {
                 latch.countDown();
             }
@@ -42,21 +37,41 @@ class SankeyViewTest {
 
     @Test
     void testComplexSankeyView() throws Exception {
-        try {
-            Platform.startup(() -> {
-            });
-        } catch (IllegalStateException ignored) {
-        }
+        TestUtil.startPlatform();
 
         CountDownLatch latch = new CountDownLatch(1);
 
         assertDoesNotThrow(() -> Platform.runLater(() -> {
             try {
-                Network network1 = TestUtil.simpleDummyNetwork();
-                SankeyView view = new SankeyView(network1, "Test-Epoche 1");
+                Network network1 = TestUtil.complexDummyNetwork();
+                SankeyView view = new SankeyView(new SankeyData(network1), "Test-Epoche 1");
 
-                Network network2 = TestUtil.simpleDummyNetwork();
-                view.update(network2, "Test-Epoche 2");
+                Network network2 = TestUtil.complexDummyNetwork();
+                view.update(new SankeyData(network2), "Test-Epoche 2");
+            } finally {
+                latch.countDown();
+            }
+        }));
+
+        assertTrue(latch.await(5, TimeUnit.SECONDS));
+        waitForJavaFX();
+    }
+
+    @Test
+    void testChangeConfig() throws Exception {
+        TestUtil.startPlatform();
+
+        CountDownLatch latch = new CountDownLatch(1);
+
+        assertDoesNotThrow(() -> Platform.runLater(() -> {
+            try {
+                Network network1 = TestUtil.complexDummyNetwork();
+                SankeyView view = new SankeyView(new SankeyData(network1), "Test-Epoche 1");
+
+                SankeyConfig newConfig = new SankeyConfig(1, 0.2, WeightFilter.POSITIVE);
+                view.setConfig(newConfig);
+                Network network2 = TestUtil.complexDummyNetwork();
+                view.update(new SankeyData(network2), "Test-Epoche 2");
             } finally {
                 latch.countDown();
             }
@@ -68,21 +83,16 @@ class SankeyViewTest {
 
     @Test
     void testExtremelyComplexSankeyView() throws Exception {
-        try {
-            Platform.startup(() -> {
-            });
-        } catch (IllegalStateException ignored) {
-        }
-
+        TestUtil.startPlatform();
         CountDownLatch latch = new CountDownLatch(1);
 
         assertDoesNotThrow(() -> Platform.runLater(() -> {
             try {
                 Network network1 = TestUtil.extremelyComplexDummyNetwork();
-                SankeyView view = new SankeyView(network1, "Test-Epoche 1");
+                SankeyView view = new SankeyView(new SankeyData(network1), "Test-Epoche 1");
 
                 Network network2 = TestUtil.extremelyComplexDummyNetwork();
-                view.update(network2, "Test-Epoche 2");
+                view.update(new SankeyData(network2), "Test-Epoche 2");
             } finally {
                 latch.countDown();
             }

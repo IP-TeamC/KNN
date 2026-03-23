@@ -46,38 +46,12 @@ public class HeatmapView extends JFrame {
     private final JTabbedPane tabs;
 
     /**
-     * Stellt den Schwellenwert dar, der zur Bestimmung der Signifikanz bestimmter Verbindungen
-     * im Zusammenhang mit Heatmap-Visualisierungen verwendet wird.
+     * Die Konfiguration für Threshold, ShowWeights, NormalizeColors, ColorScheme und WeightFilter dieser Heatmap-Instanz.
+     *
+     * @see HeatmapConfig
      */
     @Setter
-    private double threshold = 0.1;
-
-    /**
-     * Gibt an, ob die Werte der Gewichte in der Heatmap angezeigt werden sollen.
-     *
-     * <p>Bei {@code false} werden nur die Farben dargestellt.
-     */
-    @Setter
-    private boolean showWeights = true;
-
-    /**
-     * Gibt an, ob die Farbskala auf den tatsächlichen Wertebereich der Gewichtsmatrix normalisiert wird.
-     *
-     * <p>Bei {@code false} wird ein fester Bereich von [-1, 1] verwendet.
-     *
-     * @see ColorScheme
-     */
-    @Setter
-    private boolean normalizeColors = true;
-
-    /**
-     * Das aktive Farbschema für die Heatmap-Visualisierung.
-     * Bestimmt die Farben für negative und positive Gewichtswerte.
-     *
-     * @see ColorScheme
-     */
-    @Setter
-    private ColorScheme colorSchema = ColorScheme.GREEN_RED;
+    private HeatmapConfig config = HeatmapConfig.withDefaults(1);
 
     /**
      * Erstellt eine neue HeatmapView-Instanz.
@@ -99,6 +73,18 @@ public class HeatmapView extends JFrame {
         this.requestFocus();
 
         System.out.println("Heatmap-Fenster geöffnet.");
+    }
+
+    /**
+     * Erstellt eine neue {@code HeatmapView} und konfiguriert die Visualisierung
+     * anhand der angegebenen {@link HeatmapConfig}.
+     *
+     * @param config Die Konfiguration.
+     * @see HeatmapConfig
+     */
+    public HeatmapView(HeatmapConfig config) {
+        this();
+        this.config = config;
     }
 
     /**
@@ -130,7 +116,7 @@ public class HeatmapView extends JFrame {
             xyPlot.getRangeAxis().setLowerBound(-0.5);
             xyPlot.getRangeAxis().setUpperBound(N - 0.5);
 
-            // Beim Zoomen Viewgrenzen einhalten
+            // Beim Zoomen View-Grenzen einhalten
             panel.addMouseWheelListener(e -> {
                 ValueAxis domain = xyPlot.getDomainAxis();
                 ValueAxis range = xyPlot.getRangeAxis();
@@ -204,7 +190,7 @@ public class HeatmapView extends JFrame {
 
         double min, max;
 
-        if (normalizeColors) {
+        if (config.normalizeColors()) {
             double dataMin = Double.MAX_VALUE;
             double dataMax = -Double.MAX_VALUE;
             for (double[] row : m) {
@@ -225,7 +211,7 @@ public class HeatmapView extends JFrame {
         }
 
         // Renderer
-        XYBlockRenderer renderer = getXyBlockRenderer(min, max, threshold, showWeights, colorSchema);
+        XYBlockRenderer renderer = getXyBlockRenderer(min, max, config.threshold(), config.showWeights(), config.weightFilter(), config.colorScheme());
         XYPlot plot = getXyPlot(labels, dataset, renderer);
 
         JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, false);
@@ -265,18 +251,20 @@ public class HeatmapView extends JFrame {
      * Der Renderer ist dafür verantwortlich, Gitterzellen mit einer Farbskala basierend auf den angegebenen
      * Mindest- sowie Höchstwerten und unter Beachtung des {@code THRESHOLD} zu rendern.
      *
-     * @param min         Der Mindestwert im Datenbereich. Dieser Wert stellt die Untergrenze der Farbskala dar.
-     * @param max         Der Maximalwert im Datenbereich. Dieser Wert stellt die Obergrenze der Farbskala dar.
-     * @param threshold   Der Schwellenwert, unter dem Gewichte als unbedeutend betrachtet und weiß dargestellt werden.
-     * @param showWeights Gibt an, ob die numerischen Gewichtswerte in den Gitterzellen angezeigt werden sollen.
-     * @param colorScheme Das Farbschema, das zum Zuordnen von Datenwerten zu Farben verwendet wird.
+     * @param min          Der Mindestwert im Datenbereich. Dieser Wert stellt die Untergrenze der Farbskala dar.
+     * @param max          Der Maximalwert im Datenbereich. Dieser Wert stellt die Obergrenze der Farbskala dar.
+     * @param threshold    Der Schwellenwert, unter dem Gewichte als unbedeutend betrachtet und weiß dargestellt werden.
+     * @param showWeights  Gibt an, ob die numerischen Gewichtswerte in den Gitterzellen angezeigt werden sollen.
+     * @param weightFilter Gibt an, ob positive, negative oder alle Gewichte eingefärbt werden.
+     *                     Nicht passende Gewichte werden weiß dargestellt.
+     * @param colorScheme  Das Farbschema, das zum Zuordnen von Datenwerten zu Farben verwendet wird.
      * @return Eine {@code XYBlockRenderer}-Instanz, konfiguriert mit einer Blockgröße von 1.0 und
      * einer Farbskala, um Datenwerte Farben von Grün (negativ) bis Rot (positiv) zuzuordnen.
      * @see XYBlockRenderer
-     * @see HeatmapView#threshold
+     * @see HeatmapView#config
      * @see ColorScheme
      */
-    private static XYBlockRenderer getXyBlockRenderer(double min, double max, double threshold, boolean showWeights, ColorScheme colorScheme) {
+    private static XYBlockRenderer getXyBlockRenderer(double min, double max, double threshold, boolean showWeights, WeightFilter weightFilter, ColorScheme colorScheme) {
         XYBlockRenderer renderer = new XYBlockRenderer() {
             @Override
             public void drawItem(Graphics2D g2,
@@ -299,6 +287,13 @@ public class HeatmapView extends JFrame {
                 XYZDataset xyzDataset = (XYZDataset) dataset;
                 double z = xyzDataset.getZValue(series, item);
                 if (Double.isNaN(z)) return;
+
+                boolean passes = switch (weightFilter) {
+                    case POSITIVE -> z > 0;
+                    case NEGATIVE -> z < 0;
+                    default -> true;
+                };
+                if (!passes) return;
 
                 double x = dataset.getXValue(series, item);
                 double y = dataset.getYValue(series, item);
@@ -347,8 +342,14 @@ public class HeatmapView extends JFrame {
                 if (Double.isNaN(value)) return new Color(240, 240, 240); // Helles Grau = "Keine Verbindung"
                 if (Math.abs(value) < threshold) return Color.WHITE; // Weiß = "Unter Threshold"
 
-                double ratio = (max > 0) ? Math.abs(value) / max : 0.0;
+                boolean passes = switch (weightFilter) {
+                    case POSITIVE -> value > 0;
+                    case NEGATIVE -> value < 0;
+                    default -> true;
+                };
+                if (!passes) return Color.WHITE;
 
+                double ratio = (max > 0) ? Math.abs(value) / max : 0.0;
                 Color target = (value > 0) ? colorScheme.positive : colorScheme.negative;
                 return interpolateToWhite(target, ratio);
             }

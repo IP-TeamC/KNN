@@ -1,11 +1,11 @@
 package de.fhdw.knn.visualization;
 
-import de.fhdw.knn.network.Network;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import eu.hansolo.fx.charts.SankeyPlot;
 import eu.hansolo.fx.charts.data.PlotItem;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -18,10 +18,10 @@ public class SankeyView {
 
     /**
      * Stellt die primäre JavaFX Stage für die Anzeige des Sankey-Diagramms dar.
-     * Diese Stufe wird initialisiert und angezeigt, wenn die Methode {@code update} aufgerufen wird,
+     * Die Stage wird initialisiert und angezeigt, wenn die Methode {@code update} aufgerufen wird,
      * und dient als Container für das Sankey-Diagramm und die zugehörigen UI-Elemente.
      *
-     * @see #update(Network, String)
+     * @see #update(SankeyData, String)
      */
     private Stage stage;
     /**
@@ -37,13 +37,25 @@ public class SankeyView {
     private SankeyPlot sankey;
 
     /**
-     * Erstellt eine neue SankeyView-Instanz, die das angegebene Netzwerk in einem Sankey-Diagramm visualisiert.
+     * Die Konfiguration für Threshold und WeightFilter dieser Sankey-Instanz.
      *
-     * @param initialNetwork Das Netzwerk, dessen Daten im Sankey-Diagramm visualisiert werden sollen.
-     * @param title          Das Label, das auf dem Sankey-Diagramm angezeigt werden soll.
+     * @see SankeyConfig
      */
-    public SankeyView(Network initialNetwork, String title) {
-        List<PlotItem> initialItems = SankeyData.convertNetworkToItems(initialNetwork);
+    @Setter
+    private SankeyConfig config;
+
+    /**
+     * Erstellt eine neue {@code SankeyView} und visualisiert die initialen Netzwerkdaten
+     * anhand der angegebenen Konfiguration.
+     *
+     * @param initialData Die initialen {@code SankeyData}, die beim Öffnen des Fensters dargestellt werden.
+     * @param title       Der Titel, der in der Titelleiste des Fensters angezeigt wird.
+     * @param config      Die {@link SankeyConfig} mit Threshold und WeightFilter.
+     * @see SankeyConfig
+     */
+    public SankeyView(SankeyData initialData, String title, SankeyConfig config) {
+        this.config = config;
+        List<PlotItem> initialItems = initialData.convertToPlotItems(config.threshold(), config.weightFilter());
 
         Platform.runLater(() -> {
             this.stage = new Stage();
@@ -64,13 +76,30 @@ public class SankeyView {
     }
 
     /**
-     * Aktualisiert das Sankey-Diagramm mit den neuesten Daten aus dem Netzwerk.
+     * Erstellt eine neue {@code SankeyView} mit Standardkonfiguration
+     * und visualisiert die initialen Netzwerkdaten.
      *
-     * @param network Das Netzwerk, dessen Daten im Sankey-Diagramm visualisiert werden sollen.
-     * @param title   Das Label, das auf dem Sankey-Diagramm angezeigt werden soll.
+     * <p>Entspricht {@link #SankeyView(SankeyData, String, SankeyConfig)}
+     * mit {@link SankeyConfig#withDefaults(int)}.
+     *
+     * @param initialData Die initialen {@code SankeyData}, die beim Öffnen des Fensters dargestellt werden.
+     * @param title       Der Titel, der in der Titelleiste des Fensters angezeigt wird.
      */
-    public void update(Network network, String title) {
-        List<PlotItem> items = SankeyData.convertNetworkToItems(network);
+    public SankeyView(SankeyData initialData, String title) {
+        this(initialData, title, SankeyConfig.withDefaults(1));
+    }
+
+    /**
+     * Aktualisiert das Sankey-Diagramm mit neuen Netzwerkdaten.
+     * Die Konvertierung der Daten erfolgt mit dem aktuell konfigurierten
+     * {@code threshold} und {@code weightFilter} dieser Instanz.
+     *
+     * @param data  Die {@code SankeyData}-Instanz, deren Netzwerk visualisiert werden soll.
+     * @param title Der Titel, der in der Titelleiste des Fensters angezeigt wird.
+     * @see SankeyData#convertToPlotItems(Double, WeightFilter)
+     */
+    public void update(SankeyData data, String title) {
+        List<PlotItem> items = data.convertToPlotItems(config.threshold(), config.weightFilter());
         Platform.runLater(() -> {
             stage.setTitle("Sankey - Network View (" + title + ")");
             sankey.setItems(items);

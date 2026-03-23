@@ -19,6 +19,7 @@ activationFunction = "LINEAR"
 neurons = 2
 activationFunction = "LINEAR"
 
-[visualization]
-heatmapInterval = 0
-sankeyInterval = 0
+[visualization.heatmap]
+interval = 0
+[visualization.sankey]
+interval = 0

@@ -54,5 +54,11 @@ public class TestUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public static void startPlatform() {
+        try {
+            Platform.startup(() -> {});
+        } catch (IllegalStateException ignored) {}
+    }
 }
 

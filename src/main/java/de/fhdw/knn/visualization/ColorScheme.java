@@ -28,17 +28,7 @@ public enum ColorScheme {
     /**
      * Sowohl negative als auch positive Gewichte werden in Schwarz dargestellt.
      */
-    MONOCHROME(Color.BLACK, Color.BLACK),
-
-    /**
-     * Negative Gewichte werden "nicht" dargestellt, positive in Rot dargestellt.
-     */
-    WHITE_RED(Color.WHITE, Color.RED),
-
-    /**
-     * Negative Gewichte werden in Blau dargestellt, positive "nicht" dargestellt.
-     */
-    BLUE_WHITE(Color.BLUE, Color.WHITE);
+    MONOCHROME(Color.BLACK, Color.BLACK);
 
     /**
      * Die Farbe, die für negative Gewichtswerte verwendet wird.
