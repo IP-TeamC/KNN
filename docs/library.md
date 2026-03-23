@@ -225,6 +225,10 @@ Zur Erzeugung eines `SuperNeuron`s kann zusätzlich ein Adapter verwendet werden
 - oder nicht nur genau jedes n-te Neuron des vorherigen Layers mit jedem n-ten Input-Neuron des Netzwerks innerhalb des `SuperNeuron`s verbunden werden soll
 
 Mithilfe des Adapters wird ein weiterer Input-Layer innerhalb des Netzwerks im `SuperNeuron` erzeugt.
+Der Adapter funktioniert so, dass jedes n-te Neuron des dem SuperNeuron vorgelagerten Layers mit dem n-ten Neuron des Adapter-Layers verbunden wird.
+Die Verbindung eines Neurons in ein SuperNeuron hinein stellt also tatsächlich nur eine Verbindung zu dem (internen) Neuron des SuperNeuron-Adapters dar,
+welches den gleichen Index hat. Der Adapter passt also das eingebettete Netzwerk im SuperNeuron an das äußere Netzwerk an (Integration).
+
 Der Adapter-Bias gibt den Bias für jedes Neuron des ursprünglichen Input-Layers vom eingebetteten Netzwerk an.
 Dieser ursprüngliche Input-Layer wird nun zum intern zum ersten Dense-Layer und benötigt also nun einen Bias.
 
