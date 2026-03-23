@@ -46,5 +46,6 @@ enabled = true
 [visualization.heatmap]
 interval = 10
 colorScheme = "GREEN_RED"
+
 [visualization.sankey]
 interval = 10

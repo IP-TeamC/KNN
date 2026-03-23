@@ -34,6 +34,3 @@ logLoss = false
 [scorer]
 lossFunction = "CROSS_ENTROPY_LOSS"
 type = "ClassificationScorer"
-
-[visualization.heatmap]
-interval = -1

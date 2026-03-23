@@ -40,6 +40,11 @@ lossFunction = "CROSS_ENTROPY_LOSS"
 type = "ClassificationScorer"
 
 [visualization]
-heatmapInterval = 3
-sankeyInterval = 3
+enabled = true
+
+[visualization.heatmap]
+interval = 3
 colorScheme = "GREEN_RED"
+
+[visualization.sankey]
+interval = 3
