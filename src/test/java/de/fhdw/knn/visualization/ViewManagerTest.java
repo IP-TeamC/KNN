@@ -85,6 +85,14 @@ class ViewManagerTest {
     }
 
     @Test
+    void viewManagerEarlyStopHeatmapIntervalZero() throws Exception {
+        Network network = TestUtil.simpleDummyNetwork();
+        ViewManager vm = new ViewManager(HeatmapConfig.withDefaults(0), null, network);
+        SwingUtilities.invokeAndWait(() -> assertDoesNotThrow(() -> vm.earlyStop(5, network)));
+        waitForSwing();
+    }
+
+    @Test
     void viewManagerEarlyStopSankeyIntervalZero() throws Exception {
         Network network = TestUtil.simpleDummyNetwork();
         ViewManager vm = new ViewManager(null, SankeyConfig.withDefaults(0), network);

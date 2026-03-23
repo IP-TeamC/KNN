@@ -78,7 +78,7 @@ public class ViewManager {
 
         if (sankeyConfig != null && sankeyConfig.interval() > 0) {
             if (initNetwork != null) {
-                this.sankeyView = getOrCreateSankeyView(initNetwork, "Epoche 0");
+                getOrCreateSankeyView(initNetwork, "Epoche 0");
             }
         }
     }
@@ -122,16 +122,13 @@ public class ViewManager {
      * @param network Die für Aktualisierungen zu verwendenden Daten des neuronalen Netzwerks.
      */
     public void earlyStop(int epoch, Network network) {
-        if (heatmapView != null) {
-            getOrCreateHeatmapView().addHeatmap(new HeatmapData(network), "Epoche " + epoch + " (Early Stopping)");
+        String label = "Epoche " + epoch + " (Early Stopping)";
+        if (heatmapConfig != null && heatmapConfig.interval() != 0) {
+            getOrCreateHeatmapView().addHeatmap(
+                    new HeatmapData(network), label);
         }
         if (sankeyConfig != null && sankeyConfig.interval() != 0) {
-            String label = "Epoche " + epoch + " (Early Stopping)";
-            if (sankeyView == null) {
-                sankeyView = getOrCreateSankeyView(network, label);
-            } else {
-                sankeyView.update(new SankeyData(network), label);
-            }
+            getOrCreateSankeyView(network, label).update(new SankeyData(network), label);
         }
     }
 
@@ -141,7 +138,7 @@ public class ViewManager {
      * <p>Die Methode evaluiert drei Bedingungen:
      *
      * <br>1. Ob es sich um die erste Epoche handelt.
-     * <br>2. Ob die Epoche ein Vielfaches des aktuellen Aktuallisierungsintervalles ist.
+     * <br>2. Ob die Epoche ein Vielfaches des aktuellen Aktualisierungsintervalls ist.
      * <br>3. Ob es sich um die letzte Epoche handelt.
      *
      * <p>Bei einem Intervall von {@code -1} wird ausschließlich die letzte Epoche aktualisiert.
@@ -150,7 +147,7 @@ public class ViewManager {
      * @param interval  Das Intervall, in welchem eine Aktualisierung auftreten soll.
      *                  {@code -1} bedeutet nur am Trainingsende.
      * @param maxEpochs Die maximale Anzahl der Epochen.
-     * @return {@code true} wenn eine Aktuallisierung für diese Epoche ausgelöst werden soll,
+     * @return {@code true} wenn eine Aktualisierung für diese Epoche ausgelöst werden soll,
      * {@code false} andernfalls.
      */
     private boolean shouldUpdate(int epoch, int interval, int maxEpochs) {
