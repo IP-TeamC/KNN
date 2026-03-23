@@ -1,14 +1,11 @@
 package de.fhdw.knn.visualization;
 
-import de.fhdw.knn.network.Network;
 import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import eu.hansolo.fx.charts.SankeyPlot;
 import eu.hansolo.fx.charts.data.PlotItem;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -21,10 +18,10 @@ public class SankeyView {
 
     /**
      * Stellt die primäre JavaFX Stage für die Anzeige des Sankey-Diagramms dar.
-     * Diese Stufe wird initialisiert und angezeigt, wenn die Methode {@code update} aufgerufen wird,
+     * Die Stage wird initialisiert und angezeigt, wenn die Methode {@code update} aufgerufen wird,
      * und dient als Container für das Sankey-Diagramm und die zugehörigen UI-Elemente.
      *
-     * @see #update(Network, String)
+     * @see #update(SankeyData, String)
      */
     private Stage stage;
     /**
@@ -38,35 +35,50 @@ public class SankeyView {
      * @see SankeyView
      */
     private SankeyPlot sankey;
-    /**
-     * Stellt eine JavaFX-Komponente zur Anzeige der aktuellen Epochennummer dar.
-     */
-    private Label epochLabel;
 
     /**
-     * Erstellt eine neue SankeyView-Instanz, die das angegebene Netzwerk in einem Sankey-Diagramm visualisiert.
+     * Stellt den Schwellenwert dar, der zur Bestimmung der Signifikanz bestimmter Verbindungen
+     * im Zusammenhang mit Heatmap-Visualisierungen verwendet wird.
      *
-     * @param initialNetwork Das Netzwerk, dessen Daten im Sankey-Diagramm visualisiert werden sollen.
-     * @param title          Das Label, das auf dem Sankey-Diagramm angezeigt werden soll.
+     * <p>Verbindungen mit {@code |weight| ≤ threshold} werden nicht dargestellt.
      */
-    public SankeyView(Network initialNetwork, String title) {
-        List<PlotItem> initialItems = SankeyData.convertNetworkToItems(initialNetwork);
+    @Setter
+    private double threshold;
+
+    /**
+     * Gibt an, ob positive, negative oder alle Gewichte dargestellt werden.
+     *
+     * @see WeightFilter
+     */
+    @Setter
+    private WeightFilter weightFilter;
+
+    /**
+     * Erstellt eine neue {@code SankeyView} und visualisiert die initialen Netzwerkdaten
+     * anhand der angegebenen Konfiguration.
+     *
+     * @param initialData  Die initialen {@code SankeyData}, die beim Öffnen des Fensters dargestellt werden.
+     * @param title        Der Titel, der in der Titelleiste des Fensters angezeigt wird.
+     * @param threshold    Der Schwellenwert, der zum Filtern von Verbindungen verwendet wird.
+     * @param weightFilter Der Filter, der angibt, welche Gewichte dargestellt werden sollen.
+     * @see SankeyConfig
+     */
+    public SankeyView(SankeyData initialData, String title, Double threshold, WeightFilter weightFilter) {
+        this.threshold = threshold;
+        this.weightFilter = weightFilter;
+
+        List<PlotItem> initialItems = initialData.convertToPlotItems(threshold, weightFilter);
 
         Platform.runLater(() -> {
             this.stage = new Stage();
             this.sankey = new SankeyPlot();
-            this.epochLabel = new Label(title);
-
-            epochLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 10px;");
-            StackPane root = new StackPane(sankey, epochLabel);
-            StackPane.setAlignment(epochLabel, Pos.TOP_LEFT);
 
             sankey.setItems(initialItems);
             sankey.setStreamFillMode(SankeyPlot.StreamFillMode.GRADIENT);
             sankey.setShowFlowDirection(false);
 
-            this.stage.setTitle("Sankey - Network View");
-            this.stage.setScene(new Scene(root, 1200, 900));
+            this.stage.setTitle("Sankey - Network View (" + title + ")");
+            this.stage.setScene(new Scene(sankey, 1200, 900));
             this.stage.show();
             this.stage.toFront();
             this.stage.requestFocus();
@@ -76,16 +88,33 @@ public class SankeyView {
     }
 
     /**
-     * Aktualisiert das Sankey-Diagramm mit den neuesten Daten aus dem Netzwerk.
+     * Erstellt eine neue {@code SankeyView} mit Standardkonfiguration
+     * und visualisiert die initialen Netzwerkdaten.
      *
-     * @param network Das Netzwerk, dessen Daten im Sankey-Diagramm visualisiert werden sollen.
-     * @param title   Das Label, das auf dem Sankey-Diagramm angezeigt werden soll.
+     * <p>- Threshold: {@code 0.1}
+     * <br>- WeightFilter: {@code WeightFilter.BOTH}
+     *
+     * @param initialData Die initialen {@code SankeyData}, die beim Öffnen des Fensters dargestellt werden.
+     * @param title       Der Titel, der in der Titelleiste des Fensters angezeigt wird.
      */
-    public void update(Network network, String title) {
-        List<PlotItem> items = SankeyData.convertNetworkToItems(network);
+    public SankeyView(SankeyData initialData, String title) {
+        this(initialData, title, 0.1, WeightFilter.BOTH);
+    }
+
+    /**
+     * Aktualisiert das Sankey-Diagramm mit neuen Netzwerkdaten.
+     * Die Konvertierung der Daten erfolgt mit dem aktuell konfigurierten
+     * {@code threshold} und {@code weightFilter} dieser Instanz.
+     *
+     * @param data  Die {@code SankeyData}-Instanz, deren Netzwerk visualisiert werden soll.
+     * @param title Der Titel, der in der Titelleiste des Fensters angezeigt wird.
+     * @see SankeyData#convertToPlotItems(Double, WeightFilter)
+     */
+    public void update(SankeyData data, String title) {
+        List<PlotItem> items = data.convertToPlotItems(this.threshold, this.weightFilter);
         Platform.runLater(() -> {
+            stage.setTitle("Sankey - Network View (" + title + ")");
             sankey.setItems(items);
-            epochLabel.setText(title);
         });
     }
 }

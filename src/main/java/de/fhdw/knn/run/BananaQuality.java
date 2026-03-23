@@ -20,6 +20,7 @@ import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
 import de.fhdw.knn.visualization.HeatmapData;
 import de.fhdw.knn.visualization.HeatmapView;
+import de.fhdw.knn.visualization.SankeyData;
 import de.fhdw.knn.visualization.SankeyView;
 import javafx.application.Platform;
 
@@ -89,7 +90,8 @@ class BananaQuality {
             }); // JavaFx initialisieren
         } catch (IllegalStateException ignored) {
         } // Ignorieren, falls es schon läuft
-        new SankeyView(network, "Manueller Sankey-Plot");
+        SankeyData sankeyData = new SankeyData(network);
+        new SankeyView(sankeyData, "Manueller Sankey-Plot");
     }
 
 }

@@ -66,12 +66,13 @@ patience = 5
 lossFunction = "CROSS_ENTROPY_LOSS"
 type = "ClassificationScorer"
 
-[visualization]
-heatmapInterval = 10
-sankeyInterval = 10
+[visualization.heatmap]
+interval = 10
 showWeights = true
 normalizeColor = true
 ColorSchema = "MONOCHROME"
+[visualization.sankey]
+interval = 10
 ```
 
 ### Beispiel 2
@@ -307,36 +308,64 @@ Der Abschnitt [visualization] steuert optionale Trainingsvisualisierungen.
 ``` toml
 [visualization]
 
-# Bestimmt, in welchem Epochenintervall eine Gewichts-Heatmap erzeugt wird
-#
-# Default: 0 (deaktiviert)
-heatmapInterval = 10
+# Gibt an, ob die Visualisierungen aktiviert sind.
+enable = true
 
-# Bestimmt, in welchem Epochenintervall das Sankey-Diagramm aktualisiert wird
+[visualization.heatmap]
+
+# Bestimmt, in welchem Epochenintervall eine Gewichts-Heatmap erzeugt wird.
 #
-# Default: 0 (deaktiviert)
-sankeyInterval = 10
+# 0  = deaktiviert (Default)
+# -1 = nur am Ende des Trainings
+#
+interval = 0
+
+# Schwellenwert: Gewichte mit |weight| ≤ threshold werden nicht dargestellt.
+threshold = 0.1
+
+# Gibt an, welche Gewichte dargestellt werden.
+#
+# - "BOTH"     : Positive und negative Gewichte (Default)
+# - "POSITIVE" : Nur positive Gewichte
+# - "NEGATIVE" : Nur negative Gewichte
+#
+weightFilter = "BOTH"
 
 # Gibt an, ob die Gewichtswerte innerhalb der Heatmap-Felder angezeigt werden sollen.
-#
-# Default: true
 showWeights = true
 
-# Gibt an, ob die Farbskala der Heatmap auf den tatsächlichen Wertebereich der Gewichtsmatrix
-# normalisiert wird. Bei false wird ein fester Bereich von [-1, 1] verwendet.
-#
-# Default: true
+# Gibt an, ob die Farbskala auf den tatsächlichen Wertebereich normalisiert wird.
+# Bei false wird ein fester Bereich von [-1, 1] verwendet.
 normalizeColors = true
 
-# Farbschema der Heatmap. Negative Gewichte werden in der ersten, positive in der zweiten Farbe dargestellt.
+# Farbschema der Heatmap.
+# Negative Gewichte werden in der ersten, positive in der zweiten Farbe dargestellt.
 #
-# - "RED_GREEN"  : Negative Gewichte in Rot, Positive Gewitchte in Grün 
-# - "BLUE_RED"   : Negative Gewichte in Blau, Positive Gewitchte in Rot 
-# - "MONOCHROME" : Negative und Positive Gewichte in Schwarz
+# - "GREEN_RED"  : Negative Gewichte in Grün, positive in Rot (Default)
+# - "BLUE_RED"   : Negative Gewichte in Blau, positive in Rot
+# - "MONOCHROME" : Negative und positive Gewichte in Schwarz
+#
+colorScheme = "GREEN_RED"
 
-# Default: RED_GREEN
-colorScheme = "RED_GREEN"
+
+[visualization.sankey]
+
+# Bestimmt, in welchem Epochenintervall das Sankey-Diagramm aktualisiert wird.
+#
+# 0  = deaktiviert (Default)
+# -1 = nur am Ende des Trainings
+#
+interval = 0
+
+# Schwellenwert: Gewichte mit |weight| ≤ threshold werden nicht dargestellt.
+threshold = 0.1
+
+# Gibt an, welche Gewichte dargestellt werden.
+#
+# - "BOTH"     : Positive und negative Gewichte (Default)
+# - "POSITIVE" : Nur positive Gewichte
+# - "NEGATIVE" : Nur negative Gewichte
+#
+weightFilter = "BOTH"
 ```
-
-
 

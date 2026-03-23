@@ -12,8 +12,9 @@ import de.fhdw.knn.trainer.optimization.GradientDescent;
 import de.fhdw.knn.trainer.optimization.OptimizationFunction;
 import de.fhdw.knn.trainer.stop.EarlyStopping;
 import de.fhdw.knn.trainer.stop.StopFunction;
+import de.fhdw.knn.visualization.*;
+import javafx.application.Platform;
 
-import javax.annotation.processing.Generated;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
@@ -24,7 +25,7 @@ class A22T {
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz ,:;-.";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         DataSet dataEncryption = CsvReader.readFile("data/a2_2_translation.csv", 1, line -> {
             String[] clearCipher = line.split("\",\"", 2);
             String clear = clearCipher[0].substring(1);
@@ -41,6 +42,24 @@ class A22T {
 
         long trainTime = trainStop - trainStart;
         System.out.printf("Train Time: %d ms (%.2f s)%n", trainTime, trainTime / 1000.0);
+
+        HeatmapView window = new HeatmapView();
+
+        window.addHeatmap(new HeatmapData(encryption), "Encryption (Raw)");
+        window.addHeatmap(new HeatmapData(decryption), "Decryption (Raw)");
+
+        window.setThreshold(1.0);
+        window.setShowWeights(false);
+        window.setWeightFilter(WeightFilter.POSITIVE);
+
+        window.addHeatmap(new HeatmapData(encryption), "Encryption");
+        window.addHeatmap(new HeatmapData(decryption), "Decryption");
+
+        try {
+            Platform.startup(() -> {});
+        } catch (IllegalStateException ignored) {}
+        new SankeyView(new SankeyData(encryption), "Encryption", 1.0, WeightFilter.POSITIVE);
+        new SankeyView(new SankeyData(decryption), "Decryption", 1.0, WeightFilter.POSITIVE);
 
         verify(encryption, decryption);
     }
@@ -144,5 +163,4 @@ class A22T {
         }
         return ok;
     }
-
 }

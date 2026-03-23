@@ -9,7 +9,7 @@ import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.util.FakeHeatmapData;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.JFreeChart;
 import org.jfree.chart.renderer.xy.XYBlockRenderer;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class HeatmapViewTest {
 
     @Test
-    void testAddHeatmap() throws Exception {
+    void testAddMultipleHeatmap() throws Exception {
         HeatmapView view = new HeatmapView();
         CountDownLatch latch1 = new CountDownLatch(1);
         SwingUtilities.invokeAndWait(() -> {
@@ -67,47 +67,46 @@ class HeatmapViewTest {
     }
 
     @Test
-    void testSetters() throws Exception {
+    void testAddMultipleHeatmapWithDifferentWeightFilter() throws Exception {
         HeatmapView view = new HeatmapView();
+        view.setColorScheme(ColorScheme.BLUE_RED);
+        view.setWeightFilter(WeightFilter.BOTH);
 
-        CountDownLatch latch1 = new CountDownLatch(1);
+        CountDownLatch latch = new CountDownLatch(2);
         SwingUtilities.invokeAndWait(() -> {
-            view.setColorSchema(ColorScheme.BLUE_RED);
-            view.setThreshold(0.5);
-            view.setNormalizeColors(true);
-            view.setShowWeights(true);
-            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test-Setters 1");
+            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test 1 - WeightFilter.BOTH");
             initSleep(100);
-            latch1.countDown();
+            latch.countDown();
         });
 
-        latch1.await();
-        CountDownLatch latch2 = new CountDownLatch(1);
+        view.setWeightFilter(WeightFilter.POSITIVE);
+
         SwingUtilities.invokeAndWait(() -> {
-            view.setColorSchema(ColorScheme.MONOCHROME);
-            view.setThreshold(-1.0);
-            view.setNormalizeColors(false);
-            view.setShowWeights(false);
-            view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test-Setters 2");
+            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test 2 - WeightFilter.POSITIVE");
             initSleep(100);
-            latch2.countDown();
+            latch.countDown();
         });
 
-        latch2.await();
+        view.setWeightFilter(WeightFilter.NEGATIVE);
+
+        SwingUtilities.invokeAndWait(() -> {
+            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test 3 - WeightFilter.NEGATIVE");
+            initSleep(100);
+            latch.countDown();
+        });
+
+        latch.await();
         waitForSwing();
 
         Field tabsField = view.getClass().getDeclaredField("tabs");
         tabsField.setAccessible(true);
-
         JTabbedPane tabbed = (JTabbedPane) tabsField.get(view);
-        assertEquals(2, tabbed.getTabCount());
+        assertEquals(3, tabbed.getTabCount());
 
         JScrollPane scrollPane = (JScrollPane) tabbed.getComponentAt(0);
         ChartPanel panel = (ChartPanel) scrollPane.getViewport().getView();
-        XYPlot plot = panel.getChart().getXYPlot();
-        assertNotNull(plot);
+        assertNotNull(panel.getChart().getXYPlot());
 
-        initSleep(100);
         view.dispose();
     }
 
@@ -122,7 +121,8 @@ class HeatmapViewTest {
 
         CountDownLatch latch1 = new CountDownLatch(1);
         SwingUtilities.invokeAndWait(() -> {
-            view.setColorSchema(ColorScheme.MONOCHROME);
+            view.setShowWeights(true);
+            view.setColorScheme(ColorScheme.MONOCHROME);
             view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test-Zooming 1");
             initSleep(100);
             latch1.countDown();
@@ -169,7 +169,8 @@ class HeatmapViewTest {
 
         CountDownLatch latch4 = new CountDownLatch(1);
         SwingUtilities.invokeAndWait(() -> {
-            view.setColorSchema(ColorScheme.BLUE_RED);
+            view.setShowWeights(true);
+            view.setColorScheme(ColorScheme.BLUE_RED);
             view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test-Zooming 2");
             initSleep(100);
             latch4.countDown();
@@ -213,6 +214,7 @@ class HeatmapViewTest {
     @Test
     void testZeroWeight() throws Exception {
         HeatmapView view = new HeatmapView();
+        view.setThreshold(0);
 
         CountDownLatch latch1 = new CountDownLatch(1);
         SwingUtilities.invokeAndWait(() -> {
@@ -222,11 +224,6 @@ class HeatmapViewTest {
             outputNeuron.incoming[0].weight = 0.0;
             outputNeuron.incoming[1].weight = 0.0;
             outputNeuron.bias = 0.0;
-
-            view.setNormalizeColors(true);
-            view.setShowWeights(true);
-            view.setColorSchema(ColorScheme.BLUE_RED);
-            view.setThreshold(0.0);
 
             view.addHeatmap(new HeatmapData(network), "Test-ZeroWeight");
             initSleep(300);
@@ -252,11 +249,13 @@ class HeatmapViewTest {
     @Generated("ChatGPT")
     @Test
     void testRendererPaintScaleAndBoundsViaReflection() throws Exception {
-        Method method = HeatmapView.class.getDeclaredMethod("getXyBlockRenderer", double.class, double.class, double.class, boolean.class, ColorScheme.class);
+        Method method = HeatmapView.class.getDeclaredMethod("getXyBlockRenderer",
+                double.class, double.class, double.class, boolean.class, WeightFilter.class, ColorScheme.class);
         method.setAccessible(true);
 
         // Renderer erzeugen
-        XYBlockRenderer renderer = (XYBlockRenderer) method.invoke(null, -1.0, 1.0, 0.1, true, ColorScheme.GREEN_RED);
+        XYBlockRenderer renderer = (XYBlockRenderer) method.invoke(
+                null, -1.0, 1.0, 0.1, true, WeightFilter.BOTH, ColorScheme.GREEN_RED);
         assertNotNull(renderer);
 
         // PaintScale aus Renderer extrahieren
@@ -276,7 +275,7 @@ class HeatmapViewTest {
         // getPaint() testen: alle relevanten Fälle
         Method getPaint = paintScaleObj.getClass().getDeclaredMethod("getPaint", double.class);
 
-        Paint pNaN = (Paint) getPaint.invoke(paintScaleObj, Double.NaN); // Grauer Block
+        Paint pNaN = (Paint) getPaint.invoke(paintScaleObj, Double.NaN); // NaN → Grauer Block
         assertNotNull(pNaN);
 
         Paint pUnderThreshold = (Paint) getPaint.invoke(paintScaleObj, 0.05); // Unter Threshold → weiß
@@ -287,16 +286,55 @@ class HeatmapViewTest {
 
         Paint pNegative = (Paint) getPaint.invoke(paintScaleObj, -0.8); // Negativ interpoliert
         assertNotNull(pNegative);
+
+        // WeightFilter.POSITIVE → negative Werte werden weiß
+        XYBlockRenderer rendererPos = (XYBlockRenderer) method.invoke(
+                null, -1.0, 1.0, 0.1, true, WeightFilter.POSITIVE, ColorScheme.GREEN_RED);
+        Object psPos = paintScaleField.get(rendererPos);
+        Method getPaintPos = psPos.getClass().getDeclaredMethod("getPaint", double.class);
+        assertEquals(Color.WHITE, (Paint) getPaintPos.invoke(psPos, -0.8)); // NEGATIVE → gefiltert → weiß
+        assertNotEquals(Color.WHITE, (Paint) getPaintPos.invoke(psPos, 0.8)); // POSITIVE → eingefärbt
+
+        // WeightFilter.NEGATIVE → positive Werte werden weiß
+        XYBlockRenderer rendererNeg = (XYBlockRenderer) method.invoke(
+                null, -1.0, 1.0, 0.1, true, WeightFilter.NEGATIVE, ColorScheme.GREEN_RED);
+        Object psNeg = paintScaleField.get(rendererNeg);
+        Method getPaintNeg = psNeg.getClass().getDeclaredMethod("getPaint", double.class);
+        assertEquals(Color.WHITE, (Paint) getPaintNeg.invoke(psNeg, 0.8));  // POSITIVE → gefiltert → weiß
+        assertNotEquals(Color.WHITE, (Paint) getPaintNeg.invoke(psNeg, -0.8)); // NEGATIVE → eingefärbt
+    }
+
+    @Generated("ChatGPT")
+    @Test
+    void testInvokeAndWaitException() {
+        HeatmapView view = new HeatmapView() {
+            @Override
+            protected JFreeChart buildChart(HeatmapData data, String tabTitle) {
+                throw new IllegalStateException("Boom");
+            }
+        };
+
+        assertFalse(SwingUtilities.isEventDispatchThread());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> {
+            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test-Crash");
+        });
+
+        assertNotNull(ex.getCause());
+        assertTrue(ex.getCause() instanceof java.lang.reflect.InvocationTargetException);
+        assertEquals("Boom", ex.getCause().getCause().getMessage());
     }
 
     @Generated("Claude AI")
     @Test
     void testInvalidXYZDataset() throws Exception {
         HeatmapView view = new HeatmapView();
+        view.setThreshold(0);
+        view.setShowWeights(true);
+        view.setNormalizeColors(true);
 
         CountDownLatch latch1 = new CountDownLatch(1);
         SwingUtilities.invokeAndWait(() -> {
-            view.setShowWeights(true);
             view.addHeatmap(new FakeHeatmapData(simpleDummyNetwork()), "Test-NonXYZBranch");
             initSleep(100);
             latch1.countDown();

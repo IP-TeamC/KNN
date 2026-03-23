@@ -31,6 +31,7 @@ learningRate = 0.01
 lossFunction = "MEAN_ABSOLUTE_ERROR"
 type = "ClassificationScorer"
 
-[visualization]
-heatmapInterval = 1
-sankeyInterval = 0
+[visualization.heatmap]
+interval = 1
+[visualization.sankey]
+interval = 0

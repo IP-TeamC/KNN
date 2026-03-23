@@ -36,5 +36,9 @@ lossFunction = "CROSS_ENTROPY_LOSS"
 type = "ClassificationScorer"
 
 [visualization]
-heatmapInterval = 2
-sankeyInterval = 2
+enabled = true
+
+[visualization.heatmap]
+interval = 2
+[visualization.sankey]
+interval = 2

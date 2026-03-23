@@ -388,7 +388,7 @@ try {
 } catch (IllegalStateException ignored) {
 } // Ignorieren, falls es schon läuft
 
-new SankeyView(network, "Manueller Sankey-Plot");
+new SankeyView(new SankeyData(network), "Manueller Sankey-Plot");
 ```
 
 ![sankey_plot.png](assets/sankey_plot.png)

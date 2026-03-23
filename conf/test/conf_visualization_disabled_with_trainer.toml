@@ -27,5 +27,9 @@ batchSize = 1
 learningRate = 0.01
 
 [visualization]
-heatmapInterval = 0
-sankeyInterval = 0
+enabled = false
+
+[visualization.heatmap]
+interval = 1
+[visualization.sankey]
+interval = 1
