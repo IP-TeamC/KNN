@@ -30,7 +30,8 @@ import java.util.List;
  * <p>Die Visualisierung verwendet JFreeChart zum Rendern von Diagrammen mit blockbasierter Darstellung
  * für die Heatmaps, wobei Gewichte auf Farben abgebildet und als Raster angezeigt werden.
  *
- * <p>Wir bedanken uns an dieser Stelle beim "TeamAB" für die Bereitstellung des Codes als Grundlage und zur Inspiration
+ * <p>Wir bedanken uns an dieser Stelle beim "TeamAB" für die Bereitstellung des Codes als Grundlage und zur Inspiration,
+ * auch wenn wir große Teile der Heatmap mittlerweile ausgetauscht, umgeschrieben, angepasst und erweitert haben.
  */
 public class HeatmapView extends JFrame {
 

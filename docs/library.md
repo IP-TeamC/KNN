@@ -6,6 +6,26 @@ Im folgenden Abschnitt wird die Verwendung der Bibliothek am Beispiel eines Date
 Zunächst wird der gesamte Code gezeigt, um einen Überblick zu geben.
 Anschließend werden die einzelnen Schritte und weitere Funktionen der KNN-Bibliothek detailliert erläutert.
 
+Zur Verwendung muss die Bibliothek zunächst als Dependency in ein neues Projekt (z.B. mit Maven) eingebunden werden.
+
+KNN-Bibliothek (`knn.jar`) ins lokale Maven-Repository installieren:
+```bash
+mvn install:install-file -Dfile=knn.jar -DpomFile=pom.xml
+```
+
+Maven-Dependency der `pom.xml` des neuen Projekts hinzufügen:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>de.fhdw</groupId>
+        <artifactId>knn</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
+```
+
+Alternativ kann die `knn.jar` auch manuell in das Projekt eingebunden werden (z.B. über IntelliJ, Eclipse, etc.)
+
 ## Beispiel-Code
 
 Vollständige/ausführbare Klasse für dieses Beispiel siehe `de.fhdw.knn.run.BananaQuality`
