@@ -221,7 +221,7 @@ neurons = 50
 # - "TANH"     : Hyperbolische Tangens; Werte liegen zwischen -1 und 1.
 # - "SWISH"    : Glatte, nichtlineare Funktion.
 # - "SOFTPLUS" : Glatte Version von ReLU; log(1 + e^x).
-# - "SNAKE"    : Periodische, nichtlineare Funktion; kann komplexe Muster lernen. Oder versucht es zumindest.
+# - "SNAKE"    : Periodischer Anteil, nichtlineare Funktion; kann komplexe Muster lernen.
 # - "SIN"      : Sinusfunktion; periodisch, für spezielle Aufgaben.
 #
 activationFunction = "SWISH"

@@ -1,4 +1,4 @@
-Dokumentation: [README.md](../README.md) - <strong><i>[library.md](library.md)</strong></i> - [configuration.md](configuration.md)
+Dokumentation: [README.md](../README.md) - <strong><i>[library.md](library.md)</i></strong> - [configuration.md](configuration.md)
 
 # Verwendung der Bibliothek
 
@@ -7,7 +7,7 @@ Zunächst wird der gesamte Code gezeigt, um einen Überblick zu geben.
 Anschließend werden die einzelnen Schritte und weitere Funktionen der KNN-Bibliothek detailliert erläutert.
 
 Zur Verwendung muss die Bibliothek zunächst als Dependency in ein neues Projekt (z.B. mit Maven) eingebunden werden.
-Die Bibliothek wurde mit Java 21 entwickelt und kann mit Java 21 (oder höher verwendet werden).
+Die Bibliothek wurde mit/für Java 21 entwickelt und sollte deshalb mit Java 21 verwendet werden.
 
 KNN-Bibliothek (`knn.jar`) ins lokale Maven-Repository installieren:
 ```bash
