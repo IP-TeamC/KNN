@@ -1,4 +1,4 @@
-Dokumentation: <strong><i>[README.md](README.md)</strong></i> - [library.md](docs/library.md) - [configuration.md](docs/configuration.md)
+Dokumentation: <strong><i>[README.md](README.md)</i></strong> - [library.md](docs/library.md) - [configuration.md](docs/configuration.md)
 
 # KNN
 

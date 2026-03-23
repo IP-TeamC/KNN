@@ -7,10 +7,15 @@ Zunächst wird der gesamte Code gezeigt, um einen Überblick zu geben.
 Anschließend werden die einzelnen Schritte und weitere Funktionen der KNN-Bibliothek detailliert erläutert.
 
 Zur Verwendung muss die Bibliothek zunächst als Dependency in ein neues Projekt (z.B. mit Maven) eingebunden werden.
+Die Bibliothek wurde mit Java 21 entwickelt und kann mit Java 21 (oder höher verwendet werden).
 
 KNN-Bibliothek (`knn.jar`) ins lokale Maven-Repository installieren:
 ```bash
+# Ausführung im Verzeichnis unseres KNN-Projekts, in welchem sich die knn.jar und die pom.xml befinden
 mvn install:install-file -Dfile=knn.jar -DpomFile=pom.xml
+
+# Alternativ kann auch der Quellcode des KNN-Projekts direkt gebaut und installiert werden
+mvn clean install
 ```
 
 Maven-Dependency der `pom.xml` des neuen Projekts hinzufügen:
@@ -123,9 +128,9 @@ Weitere Code-Beispiele, die während der Entwicklung erstellt wurden und nicht d
 ### CsvReader
 
 Mit dem CSV-Reader ist es möglich, CSV-Dateien in ein `DataSet` umzuwandeln. Hier muss einmal der
-Dateipfad und jeweils der Startindex und die Größe des Inputs und Outputs angegeben werden.
-In der nun vorliegenden Form sind die Daten dann bereit, in Train und Test-Splits aufgeteilt zu werden.
-Dabei kann ein Random-Seed und den Anteil der Daten im Test-Set angegeben werden.
+Dateipfad und jeweils der Startindex und die Größe des Inputs sowie Outputs angegeben werden.
+In der nun vorliegenden Form sind die Daten dann bereit, in Train- und Test-Splits aufgeteilt zu werden.
+Dabei kann ein Random-Seed und der Anteil der Daten im Test-Set angegeben werden.
 ```java
 DataSet data = CsvReader.readFile("data/banana_quality.csv", 0, 7, 7, 1);
 TrainTestSplit trainTest = data.shuffleAndSplit(42, 0.2);
@@ -298,7 +303,7 @@ müssen mehrere Parameter angegeben werden:
 - `Network`, auf dem trainiert wird,
 - die maximale Anzahl an `Epochen` als Integer,
 - ein Boolean, ob ge`shuffle`t werden soll,
-- die `Batch-Size` (z.B. für Mini-Batching, deaktiviert wenn `1`),
+- die `Batch-Size` (Mini-Batching mit `>1`, SGD mit `1`),
 - die `Verlust-Funktion` zum Ermitteln Qualität des Netzwerks nach jeder Epoche (wird nur zur Ausgabe verwendet, nicht zum Training: `null` zum Deaktivieren),
 - die `Stop-Methode` kann das Training vorzeitig beenden,
 - und die `Optimierungsfunktion` ermitteln die Anpassungen des Netzwerks (in der Regel `GradientDescent`, in welchem die tatsächlich zum Training genutzte Verlust-Funktion definiert wird, die von der Verlust-Funktion des Trainers abweichen kann)

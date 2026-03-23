@@ -170,6 +170,9 @@ seed = 42
 
 # Anteil der Testdaten
 testShare = 0.2
+
+# Anzahl der Zeilen, die zu Beginn des Datensatzes übersprungen werden sollen (z.B. für Header)
+skip = 0
 ```
 
 <br>
@@ -259,6 +262,9 @@ batchSize = 1
 
 # Lernrate für die Optimierung
 learningRate = 0.04
+
+# Steuert, ob nach jeder Epoche ein Verlust für den Trainings-Datensatz generiert und ausgegeben werden soll
+logLoss = true
 
 # Optionaler Pfad zum Speichern des trainierten Modells
 exportFile = "models/example.knn"
