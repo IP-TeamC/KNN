@@ -70,8 +70,7 @@ public class BananaQuality {
         TrainTestSplit trainTest = data.shuffleAndSplit(42, 0.2);
         DataSet train = trainTest.train;
         DataSet test = trainTest.test;
-
-
+        
         /// Netzwerk erzeugen
         DenseLayer[] denseLayers = DenseLayer.createLayers(
                 ActivationFunction.SWISH, ActivationFunction.SIGMOID,
@@ -93,7 +92,7 @@ public class BananaQuality {
         trainer.train(train);
 
         /// Evaluierung des trainierten Netzwerks
-        Scorer scorer = new ClassificationScorer(Vollständiger network);
+        Scorer scorer = new ClassificationScorer(network);
         Score score = scorer.score(test);
         score.print();
 
@@ -111,7 +110,8 @@ public class BananaQuality {
             }); // JavaFx initialisieren
         } catch (IllegalStateException ignored) {
         } // Ignorieren, falls es schon läuft
-        new SankeyView(network, "Manueller Sankey-Plot");
+        SankeyData sankeyData = new SankeyData(network);
+        new SankeyView(sankeyData, "Manueller Sankey-Plot");
     }
 }
 ```
