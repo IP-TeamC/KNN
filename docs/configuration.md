@@ -362,9 +362,9 @@ threshold = 0.1
 
 # Gibt an, welche Gewichte dargestellt werden.
 #
-# - "GREEN_RED"  : Negative Gewichte in Grün, positive in Rot (Default)
-# - "BLUE_RED"   : Negative Gewichte in Blau, positive in Rot
-# - "MONOCHROME" : Negative und positive Gewichte in Schwarz
+# - "BOTH"     : Positive und negative Gewichte (Default)
+# - "POSITIVE" : Nur positive Gewichte
+# - "NEGATIVE" : Nur negative Gewichte
 #
 weightFilter = "BOTH"
 ```
