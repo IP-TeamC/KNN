@@ -62,7 +62,7 @@ public class ViewManager {
         this.heatmapConfig = heatmapConfig;
         this.sankeyConfig = sankeyConfig;
 
-        if (heatmapConfig != null && heatmapConfig.interval() != 0) {
+        if (heatmapConfig != null && heatmapConfig.interval() > 0) {
             this.heatmapView = new HeatmapView();
 
             heatmapView.setThreshold(heatmapConfig.threshold());
@@ -71,26 +71,22 @@ public class ViewManager {
             heatmapView.setNormalizeColors(heatmapConfig.normalizeColors());
             heatmapView.setColorScheme(heatmapConfig.colorScheme());
 
-            if (heatmapConfig.interval() > 0 && initNetwork != null) {
+            if (initNetwork != null) {
                 this.heatmapView.addHeatmap(new HeatmapData(initNetwork), "Epoche 0");
             }
         }
 
-        if (sankeyConfig != null && sankeyConfig.interval() != 0) {
-            try {
-                Platform.startup(() -> {
-                }); // JavaFx initialisieren
-            } catch (IllegalStateException ignored) {
-            } // Ignorieren, falls es schon läuft
-
-            if (sankeyConfig.interval() > 0 && initNetwork != null) {
-                this.sankeyView = new SankeyView(new SankeyData(initNetwork), "Epoche 0", sankeyConfig.threshold(), sankeyConfig.weightFilter());
+        if (sankeyConfig != null && sankeyConfig.interval() > 0) {
+            if (initNetwork != null) {
+                this.sankeyView = getOrCreateSankeyView(initNetwork, "Epoche 0");
             }
         }
     }
 
     /**
-     * Aktualisiert die Heatmap und Sankeyplot basierend auf der aktuellen Epoche, den konfigurierten Intervallen und der Gesamtzahl der Epochen.
+     * Aktualisiert die Heatmap und den Sankeyplot basierend auf der aktuellen Epoche,
+     * den konfigurierten Intervallen und der Gesamtzahl der Epochen.
+     * Bei {@code interval == -1} wird die {@code HeatmapView} erst bei der letzten Epoche erstellt und geöffnet.
      *
      * @param epoch     Die aktuelle Epoche.
      * @param network   Die für Aktualisierungen zu verwendenden Daten des neuronalen Netzwerks.
@@ -99,21 +95,24 @@ public class ViewManager {
     public void nextEpoch(final int epoch, Network network, int maxEpochs) {
         // Heatmap Update
         if (heatmapConfig != null && shouldUpdate(epoch, heatmapConfig.interval(), maxEpochs)) {
-            heatmapView.addHeatmap(new HeatmapData(network), "Epoche " + epoch);
+            getOrCreateHeatmapView().addHeatmap(new HeatmapData(network), "Epoche " + epoch);
         }
 
         // Sankey Update
         if (sankeyConfig != null && shouldUpdate(epoch, sankeyConfig.interval(), maxEpochs)) {
+            String label = "Epoche " + epoch;
             if (sankeyView == null) {
-                sankeyView = new SankeyView(new SankeyData(network), "Epoche " + epoch, sankeyConfig.threshold(), sankeyConfig.weightFilter());
+                sankeyView = getOrCreateSankeyView(network, label);
             } else {
-                sankeyView.update(new SankeyData(network), "Epoche " + epoch);
+                sankeyView.update(new SankeyData(network), label);
             }
         }
     }
 
     /**
      * Erzwingt eine Aktualisierung der Heatmap bzw. des Sankeyplots bei einem EarlyStop.
+     * Falls die {@code HeatmapView} noch nicht initialisiert wurde (z. B. bei {@code interval == -1}),
+     * wird sie hier lazy erstellt und geöffnet.
      *
      * <p>Diese Methode wird in der Regel aufgerufen, wenn der Trainingsprozess vorzeitig durch
      * {@link de.fhdw.knn.trainer.stop.EarlyStopping} abgebrochen wird,
@@ -124,12 +123,12 @@ public class ViewManager {
      */
     public void earlyStop(int epoch, Network network) {
         if (heatmapView != null) {
-            heatmapView.addHeatmap(new HeatmapData(network), "Epoche " + epoch + " (Early Stopping)");
+            getOrCreateHeatmapView().addHeatmap(new HeatmapData(network), "Epoche " + epoch + " (Early Stopping)");
         }
         if (sankeyConfig != null && sankeyConfig.interval() != 0) {
             String label = "Epoche " + epoch + " (Early Stopping)";
             if (sankeyView == null) {
-                sankeyView = new SankeyView(new SankeyData(network), label);
+                sankeyView = getOrCreateSankeyView(network, label);
             } else {
                 sankeyView.update(new SankeyData(network), label);
             }
@@ -139,7 +138,7 @@ public class ViewManager {
     /**
      * Evaluiert, ob für eine bestimmte Epoche eine Aktualisierung ausgelöst werden soll.
      *
-     * <p>The method evaluates three conditions:
+     * <p>Die Methode evaluiert drei Bedingungen:
      *
      * <br>1. Ob es sich um die erste Epoche handelt.
      * <br>2. Ob die Epoche ein Vielfaches des aktuellen Aktuallisierungsintervalles ist.
@@ -155,7 +154,51 @@ public class ViewManager {
      * {@code false} andernfalls.
      */
     private boolean shouldUpdate(int epoch, int interval, int maxEpochs) {
-        if (interval == -1) return epoch == maxEpochs;
+        if (interval == -1) {
+            return epoch == maxEpochs;
+        }
+        if (interval == 0) {
+            return false;
+        }
         return epoch == 1 || epoch % interval == 0 || epoch == maxEpochs;
+    }
+
+    /**
+     * Gibt die bestehende {@code HeatmapView} zurück oder erstellt sie lazy,
+     * falls sie noch nicht initialisiert wurde.
+     *
+     * @return Die initialisierte {@code HeatmapView}-Instanz.
+     */
+    private HeatmapView getOrCreateHeatmapView() {
+        if (heatmapView == null) {
+            heatmapView = new HeatmapView();
+            heatmapView.setThreshold(heatmapConfig.threshold());
+            heatmapView.setWeightFilter(heatmapConfig.weightFilter());
+            heatmapView.setShowWeights(heatmapConfig.showWeights());
+            heatmapView.setNormalizeColors(heatmapConfig.normalizeColors());
+            heatmapView.setColorScheme(heatmapConfig.colorScheme());
+        }
+        return heatmapView;
+    }
+
+    /**
+     * Gibt die bestehende {@code SankeyView} zurück oder erstellt sie lazy,
+     * falls sie noch nicht initialisiert wurde.
+     *
+     * @param network Die Netzwerkdaten für die initiale Darstellung.
+     * @param label   Der Anzeigetitel des ersten Tabs.
+     * @return Die initialisierte {@code SankeyView}-Instanz.
+     */
+    private SankeyView getOrCreateSankeyView(Network network, String label) {
+        if (sankeyView == null) {
+            try {
+                Platform.startup(() -> {
+                });
+            } catch (IllegalStateException ignored) {
+                // Ignorieren, falls JavaFX bereits läuft
+            }
+            sankeyView = new SankeyView(new SankeyData(network), label, sankeyConfig.threshold(), sankeyConfig.weightFilter());
+        }
+        return sankeyView;
     }
 }

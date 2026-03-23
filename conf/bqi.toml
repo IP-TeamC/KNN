@@ -13,7 +13,7 @@ importFile = "models/bq.knn"
 [visualization.heatmap]
 interval = 1
 [visualization.sankey]
-interval = 1
+interval = 0
 
 [scorer]
 type = "ClassificationScorer"

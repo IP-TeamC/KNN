@@ -82,7 +82,7 @@ class HeatmapViewTest {
         view.setWeightFilter(WeightFilter.POSITIVE);
 
         SwingUtilities.invokeAndWait(() -> {
-            view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test 2 - WeightFilter.POSITIVE");
+            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test 2 - WeightFilter.POSITIVE");
             initSleep(100);
             latch.countDown();
         });
@@ -90,7 +90,7 @@ class HeatmapViewTest {
         view.setWeightFilter(WeightFilter.NEGATIVE);
 
         SwingUtilities.invokeAndWait(() -> {
-            view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test 3 - WeightFilter.NEGATIVE");
+            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test 3 - WeightFilter.NEGATIVE");
             initSleep(100);
             latch.countDown();
         });
