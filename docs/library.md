@@ -123,7 +123,7 @@ Weitere Code-Beispiele, die während der Entwicklung erstellt wurden und nicht d
 ### CsvReader
 
 Mit dem CSV-Reader ist es möglich, CSV-Dateien in ein `DataSet` umzuwandeln. Hier muss einmal der
-Dateipfad und jeweils der Startindex und die größe des Inputs und Outputs angegeben werden.
+Dateipfad und jeweils der Startindex und die Größe des Inputs und Outputs angegeben werden.
 In der nun vorliegenden Form sind die Daten dann bereit, in Train und Test-Splits aufgeteilt zu werden.
 Dabei kann ein Random-Seed und den Anteil der Daten im Test-Set angegeben werden.
 ```java
@@ -294,7 +294,7 @@ Network importedNetwork = Importer.importNetwork("models/bq.knn");
 ## Trainer
 
 Der Trainer ist die Klasse, welche das Training ausführt. Für das Training
-muss mehrere Parametern angegeben werden:
+müssen mehrere Parameter angegeben werden:
 - `Network`, auf dem trainiert wird,
 - die maximale Anzahl an `Epochen` als Integer,
 - ein Boolean, ob ge`shuffle`t werden soll,
@@ -353,7 +353,7 @@ hinzugefügt werden. Weitere Informationen sind in den Java-Docs zu finden.
 
 Diese Bibliothek unterstützt außerdem das `EarlyStopping`, um Overfitting vorzubeugen.
 Diese Stop-Funktion muss beim Erstellen des Trainers mitgegeben werden. Bislang kann man
-nur Early-Stopping aktivieren (Erzeugen einer `EarlyStopping`-Instanz) und deaktivieren (`NEVER`).
+nur Early-Stopping aktivieren (Erzeugen einer `EarlyStopping`-Instanz) und deaktivieren (`StopFunction.NEVER`).
 
 `EarlyStopping`-Instanz benötigt eine minimale Verbesserung des Loss je Epoche (z.B. `0.01`)
 sowie eine Patience, die angibt wie viele Epochen sich der Loss nicht stärker verbessern darf,
@@ -387,7 +387,7 @@ den Java-Docs zu finden.
 Das `Scorer`-Interface kann für einen Datensatz einen `Score` ermitteln, der ausgegeben werden kann.
 
 Implementiert ist bisher nur der `ClassificationScorer`, welcher anhand eines DataSets übliche Metriken für Klassifikationsprobleme errechnet.
-Zu diesen zählen die `Confusion Matrix`, `Accuracy`, `Error`, `Precision`, `Recall`, `F1-Score`
+Zu diesen zählen die `Confusion Matrix` sowie `Accuracy`, `Error`, `Precision`, `Recall`, `F1-Score`
 und werden in der `ClassificationScorer.Score`-Klasse zusammengefasst.
 Diese werden dann durch das am Ende des Testings ausgegeben.
 
@@ -399,7 +399,7 @@ score.print();
 
 ## Visualization
 
-Mithilfe der Networks lassen sich verschiedene Visualisierungen der Ergebnisse darstellen.
+Mithilfe der Netzwerke lassen sich verschiedene Visualisierungen der Ergebnisse darstellen.
 Dieses Beispiel zeigt die Erstellung einer Heatmap:
 ```java
 HeatmapData heatmapData = new HeatmapData(network);

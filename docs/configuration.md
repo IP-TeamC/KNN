@@ -233,7 +233,7 @@ Der Abschnitt [trainer] definiert das Lernverhalten des Netzes.
 ``` toml
 [trainer]
 
-# Anzuwendene Verlustfunktion
+# Anzuwendende Verlustfunktion
 #
 # - "MEAN_SQUARED_ERROR"  : Klassische Verlustfunktion für Regression, berechnet den mittleren quadratischen Fehler.
 # - "CROSS_ENTROPY_LOSS"  : Binary Cross Entropy Loss; Verlustfunktion für Klassifikation, misst, wie gut die Wahrscheinlichkeiten zu den Labels passen.

@@ -48,7 +48,7 @@ Visualisierung der KNN-Struktur und der Trainingsfortschritte.
     - Flexible Anzahl Neuronen im Input Layer
      - Flexible Anzahl Dense Layer mit konfigurierbarer Anzahl Neuronen
          - Verzicht auf Hidden Layer möglich
-         - Hilfsmethoden zum einfachen Erstellen mehrerer Dense Layer (üblicher Strukturen)
+         - Hilfsmethoden zum einfachen Erstellen mehrerer Dense-Layer (üblicher Strukturen)
     - verschiedene Neuronen-Arten: Input Neuronen, Dense Neuronen, Super Neuronen
         - Integration komplexer Strukturen in einzelne Neuronen möglich (Super Neuronen)
         - Super Neuronen können als Container für Subnetze dienen (mit Adapter für die Integration in das Hauptnetz)
@@ -68,7 +68,7 @@ Visualisierung der KNN-Struktur und der Trainingsfortschritte.
         - parallelisiertes Batch-Training (Multi-Threading) für große Batch-Größen
     - dynamischer Export während des Trainings (z.B. alle n Epochen)
     - Visualisierung des Netzes während des Trainings
-    - randomisierter Shuffle der Trainings-Daten (mit Seed für Reproduzierbarkeit)
+    - zufälliges Mischen der Trainings-Daten (randomisierter Shuffle mit Seed für Reproduzierbarkeit)
 
 
 - <strong>Modell-Export/Import</strong>
