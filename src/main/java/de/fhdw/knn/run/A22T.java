@@ -25,7 +25,7 @@ class A22T {
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz ,:;-.";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         DataSet dataEncryption = CsvReader.readFile("data/a2_2_translation.csv", 1, line -> {
             String[] clearCipher = line.split("\",\"", 2);
             String clear = clearCipher[0].substring(1);
@@ -43,17 +43,23 @@ class A22T {
         long trainTime = trainStop - trainStart;
         System.out.printf("Train Time: %d ms (%.2f s)%n", trainTime, trainTime / 1000.0);
 
-        HeatmapConfig heatmapConfig = new HeatmapConfig(0, 1.0, WeightFilter.POSITIVE, false, false, ColorScheme.GREEN_RED);
-        HeatmapView window = new HeatmapView(heatmapConfig);
+        HeatmapView window = new HeatmapView();
+
+        window.addHeatmap(new HeatmapData(encryption), "Encryption (Raw)");
+        window.addHeatmap(new HeatmapData(decryption), "Decryption (Raw)");
+
+        window.setThreshold(1.0);
+        window.setShowWeights(false);
+        window.setWeightFilter(WeightFilter.POSITIVE);
+
         window.addHeatmap(new HeatmapData(encryption), "Encryption");
         window.addHeatmap(new HeatmapData(decryption), "Decryption");
 
-        SankeyConfig sankeyConfig = new SankeyConfig(0, 1.0, WeightFilter.POSITIVE);
         try {
             Platform.startup(() -> {});
         } catch (IllegalStateException ignored) {}
-        new SankeyView(new SankeyData(encryption), "Encryption", sankeyConfig);
-        new SankeyView(new SankeyData(decryption), "Decryption", sankeyConfig);
+        new SankeyView(new SankeyData(encryption), "Encryption", 1.0, WeightFilter.POSITIVE);
+        new SankeyView(new SankeyData(decryption), "Decryption", 1.0, WeightFilter.POSITIVE);
 
         verify(encryption, decryption);
     }

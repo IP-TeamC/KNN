@@ -46,12 +46,46 @@ public class HeatmapView extends JFrame {
     private final JTabbedPane tabs;
 
     /**
-     * Die Konfiguration für Threshold, ShowWeights, NormalizeColors, ColorScheme und WeightFilter dieser Heatmap-Instanz.
+     * Stellt den Schwellenwert dar, der zur Bestimmung der Signifikanz bestimmter Verbindungen
+     * im Zusammenhang mit Heatmap-Visualisierungen verwendet wird.
      *
-     * @see HeatmapConfig
+     * <p>Verbindungen mit {@code |weight| ≤ threshold} werden nicht dargestellt.
      */
     @Setter
-    private HeatmapConfig config = HeatmapConfig.withDefaults(1);
+    private double threshold = 0.1;
+
+    /**
+     * Gibt an, ob die Werte der Gewichte in der Heatmap angezeigt werden sollen.
+     *
+     * <p>Bei {@code false} werden nur die Farben dargestellt.
+     */
+    @Setter
+    private boolean showWeights = true;
+
+    /**
+     * Gibt an, ob die Farbskala auf den tatsächlichen Wertebereich der Gewichtsmatrix normalisiert wird.
+     *
+     * <p>Bei {@code false} wird ein fester Bereich von [-1, 1] verwendet.
+     */
+    @Setter
+    private boolean normalizeColors = true;
+
+    /**
+     * Gibt an, ob positive, negative oder alle Gewichte dargestellt werden.
+     *
+     * @see WeightFilter
+     */
+    @Setter
+    private WeightFilter weightFilter = WeightFilter.BOTH;
+
+    /**
+     * Das aktive Farbschema für die Heatmap-Visualisierung.
+     * Bestimmt die Farben für negative und positive Gewichtswerte.
+     *
+     * @see ColorScheme
+     */
+    @Setter
+    private ColorScheme colorScheme = ColorScheme.GREEN_RED;
 
     /**
      * Erstellt eine neue HeatmapView-Instanz.
@@ -76,18 +110,6 @@ public class HeatmapView extends JFrame {
     }
 
     /**
-     * Erstellt eine neue {@code HeatmapView} und konfiguriert die Visualisierung
-     * anhand der angegebenen {@link HeatmapConfig}.
-     *
-     * @param config Die Konfiguration.
-     * @see HeatmapConfig
-     */
-    public HeatmapView(HeatmapConfig config) {
-        this();
-        this.config = config;
-    }
-
-    /**
      * Fügt eine weitere Registerkarte zur {@code HeatmapView} hinzu.
      * Diese Methode wird im Event Dispatch Thread ausgeführt, da Swing-Komponenten nicht threadsicher sind.
      *
@@ -98,7 +120,7 @@ public class HeatmapView extends JFrame {
      * @see HeatmapData
      */
     public void addHeatmap(HeatmapData data, String tabTitle) {
-        SwingUtilities.invokeLater(() -> { // invokeLater, da Swing nicht Thread-safe ist
+        Runnable task = () -> {
 
             JFreeChart chart = buildChart(data, tabTitle);
             ChartPanel panel = new ChartPanel(chart);
@@ -146,7 +168,17 @@ public class HeatmapView extends JFrame {
             JScrollPane scrollPane = new JScrollPane(panel);
             this.tabs.addTab(tabTitle, scrollPane);
             this.tabs.setSelectedIndex(this.tabs.getTabCount() - 1);
-        });
+        };
+
+        if (SwingUtilities.isEventDispatchThread()) {
+            task.run();
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(task);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -160,7 +192,7 @@ public class HeatmapView extends JFrame {
      * @see HeatmapData
      * @see JFreeChart
      */
-    private JFreeChart buildChart(HeatmapData data, String title) {
+    protected JFreeChart buildChart(HeatmapData data, String title) {
         double[][] m = data.buildFullWeightMatrix();
         String[] labels = data.getNeuronLabels();
 
@@ -190,7 +222,7 @@ public class HeatmapView extends JFrame {
 
         double min, max;
 
-        if (config.normalizeColors()) {
+        if (this.normalizeColors) {
             double dataMin = Double.MAX_VALUE;
             double dataMax = -Double.MAX_VALUE;
             for (double[] row : m) {
@@ -211,7 +243,7 @@ public class HeatmapView extends JFrame {
         }
 
         // Renderer
-        XYBlockRenderer renderer = getXyBlockRenderer(min, max, config.threshold(), config.showWeights(), config.weightFilter(), config.colorScheme());
+        XYBlockRenderer renderer = getXyBlockRenderer(min, max, this.threshold, this.showWeights, this.weightFilter, this.colorScheme);
         XYPlot plot = getXyPlot(labels, dataset, renderer);
 
         JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, false);
@@ -261,7 +293,7 @@ public class HeatmapView extends JFrame {
      * @return Eine {@code XYBlockRenderer}-Instanz, konfiguriert mit einer Blockgröße von 1.0 und
      * einer Farbskala, um Datenwerte Farben von Grün (negativ) bis Rot (positiv) zuzuordnen.
      * @see XYBlockRenderer
-     * @see HeatmapView#config
+     * @see HeatmapView
      * @see ColorScheme
      */
     private static XYBlockRenderer getXyBlockRenderer(double min, double max, double threshold, boolean showWeights, WeightFilter weightFilter, ColorScheme colorScheme) {
@@ -303,7 +335,7 @@ public class HeatmapView extends JFrame {
                 double blockWidthPx = Math.abs(x1 - x0);
 
                 // Mindestgröße für Schrift
-                if (blockWidthPx < 14) return;
+                if (blockWidthPx < 20) return;
 
                 double fontSize = Math.min(blockWidthPx * 0.3, 14);
                 g2.setFont(new Font("SansSerif", Font.PLAIN, (int) fontSize));

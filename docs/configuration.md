@@ -307,6 +307,7 @@ Der Abschnitt [visualization] steuert optionale Trainingsvisualisierungen.
 
 ``` toml
 [visualization]
+
 # Gibt an, ob die Visualisierungen aktiviert sind.
 enable = true
 

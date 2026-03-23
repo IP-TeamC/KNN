@@ -9,6 +9,7 @@ import de.fhdw.knn.network.layer.DenseLayer;
 import de.fhdw.knn.network.neuron.DenseNeuron;
 import de.fhdw.knn.util.FakeHeatmapData;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
 import org.jfree.chart.renderer.xy.XYBlockRenderer;
 import org.junit.jupiter.api.Test;
 
@@ -67,8 +68,9 @@ class HeatmapViewTest {
 
     @Test
     void testAddMultipleHeatmapWithDifferentWeightFilter() throws Exception {
-        HeatmapConfig config1 = new HeatmapConfig(0, 0.1, WeightFilter.BOTH, true, true, ColorScheme.MONOCHROME);
-        HeatmapView view = new HeatmapView(config1);
+        HeatmapView view = new HeatmapView();
+        view.setColorScheme(ColorScheme.BLUE_RED);
+        view.setWeightFilter(WeightFilter.BOTH);
 
         CountDownLatch latch = new CountDownLatch(2);
         SwingUtilities.invokeAndWait(() -> {
@@ -77,8 +79,7 @@ class HeatmapViewTest {
             latch.countDown();
         });
 
-        HeatmapConfig config2 = new HeatmapConfig(0, 0.1, WeightFilter.POSITIVE, true, true, ColorScheme.GREEN_RED);
-        view.setConfig(config2);
+        view.setWeightFilter(WeightFilter.POSITIVE);
 
         SwingUtilities.invokeAndWait(() -> {
             view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test 2 - WeightFilter.POSITIVE");
@@ -86,8 +87,7 @@ class HeatmapViewTest {
             latch.countDown();
         });
 
-        HeatmapConfig config3 = new HeatmapConfig(0, 0.1, WeightFilter.NEGATIVE, true, true, ColorScheme.BLUE_RED);
-        view.setConfig(config3);
+        view.setWeightFilter(WeightFilter.NEGATIVE);
 
         SwingUtilities.invokeAndWait(() -> {
             view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test 3 - WeightFilter.NEGATIVE");
@@ -121,8 +121,8 @@ class HeatmapViewTest {
 
         CountDownLatch latch1 = new CountDownLatch(1);
         SwingUtilities.invokeAndWait(() -> {
-            HeatmapConfig heatmapConfig = new HeatmapConfig(0, 0.1, WeightFilter.BOTH, true, true, ColorScheme.MONOCHROME);
-            view.setConfig(heatmapConfig);
+            view.setShowWeights(true);
+            view.setColorScheme(ColorScheme.MONOCHROME);
             view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test-Zooming 1");
             initSleep(100);
             latch1.countDown();
@@ -169,8 +169,8 @@ class HeatmapViewTest {
 
         CountDownLatch latch4 = new CountDownLatch(1);
         SwingUtilities.invokeAndWait(() -> {
-            HeatmapConfig heatmapConfig = new HeatmapConfig(0, 0.1, WeightFilter.BOTH, true, true, ColorScheme.BLUE_RED);
-            view.setConfig(heatmapConfig);
+            view.setShowWeights(true);
+            view.setColorScheme(ColorScheme.BLUE_RED);
             view.addHeatmap(new HeatmapData(TestUtil.extremelyComplexDummyNetwork()), "Test-Zooming 2");
             initSleep(100);
             latch4.countDown();
@@ -213,9 +213,8 @@ class HeatmapViewTest {
 
     @Test
     void testZeroWeight() throws Exception {
-        HeatmapView view = new HeatmapView(
-                new HeatmapConfig(0, 0, WeightFilter.BOTH, true, true, ColorScheme.BLUE_RED)
-        );
+        HeatmapView view = new HeatmapView();
+        view.setThreshold(0);
 
         CountDownLatch latch1 = new CountDownLatch(1);
         SwingUtilities.invokeAndWait(() -> {
@@ -305,12 +304,34 @@ class HeatmapViewTest {
         assertNotEquals(Color.WHITE, (Paint) getPaintNeg.invoke(psNeg, -0.8)); // NEGATIVE → eingefärbt
     }
 
+    @Generated("ChatGPT")
+    @Test
+    void testInvokeAndWaitException() {
+        HeatmapView view = new HeatmapView() {
+            @Override
+            protected JFreeChart buildChart(HeatmapData data, String tabTitle) {
+                throw new IllegalStateException("Boom");
+            }
+        };
+
+        assertFalse(SwingUtilities.isEventDispatchThread());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> {
+            view.addHeatmap(new HeatmapData(TestUtil.complexDummyNetwork()), "Test-Crash");
+        });
+
+        assertNotNull(ex.getCause());
+        assertTrue(ex.getCause() instanceof java.lang.reflect.InvocationTargetException);
+        assertEquals("Boom", ex.getCause().getCause().getMessage());
+    }
+
     @Generated("Claude AI")
     @Test
     void testInvalidXYZDataset() throws Exception {
-        HeatmapView view = new HeatmapView(
-                new HeatmapConfig(1, 0.0, WeightFilter.BOTH, true, true, ColorScheme.GREEN_RED)
-        );
+        HeatmapView view = new HeatmapView();
+        view.setThreshold(0);
+        view.setShowWeights(true);
+        view.setNormalizeColors(true);
 
         CountDownLatch latch1 = new CountDownLatch(1);
         SwingUtilities.invokeAndWait(() -> {

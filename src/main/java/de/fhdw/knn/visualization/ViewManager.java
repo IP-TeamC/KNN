@@ -63,7 +63,13 @@ public class ViewManager {
         this.sankeyConfig = sankeyConfig;
 
         if (heatmapConfig != null && heatmapConfig.interval() != 0) {
-            this.heatmapView = new HeatmapView(heatmapConfig);
+            this.heatmapView = new HeatmapView();
+
+            heatmapView.setThreshold(heatmapConfig.threshold());
+            heatmapView.setWeightFilter(heatmapConfig.weightFilter());
+            heatmapView.setShowWeights(heatmapConfig.showWeights());
+            heatmapView.setNormalizeColors(heatmapConfig.normalizeColors());
+            heatmapView.setColorScheme(heatmapConfig.colorScheme());
 
             if (heatmapConfig.interval() > 0 && initNetwork != null) {
                 this.heatmapView.addHeatmap(new HeatmapData(initNetwork), "Epoche 0");
@@ -78,7 +84,7 @@ public class ViewManager {
             } // Ignorieren, falls es schon läuft
 
             if (sankeyConfig.interval() > 0 && initNetwork != null) {
-                this.sankeyView = new SankeyView(new SankeyData(initNetwork), "Epoche 0", sankeyConfig);
+                this.sankeyView = new SankeyView(new SankeyData(initNetwork), "Epoche 0", sankeyConfig.threshold(), sankeyConfig.weightFilter());
             }
         }
     }
@@ -99,7 +105,7 @@ public class ViewManager {
         // Sankey Update
         if (sankeyConfig != null && shouldUpdate(epoch, sankeyConfig.interval(), maxEpochs)) {
             if (sankeyView == null) {
-                sankeyView = new SankeyView(new SankeyData(network), "Epoche " + epoch, sankeyConfig);
+                sankeyView = new SankeyView(new SankeyData(network), "Epoche " + epoch, sankeyConfig.threshold(), sankeyConfig.weightFilter());
             } else {
                 sankeyView.update(new SankeyData(network), "Epoche " + epoch);
             }

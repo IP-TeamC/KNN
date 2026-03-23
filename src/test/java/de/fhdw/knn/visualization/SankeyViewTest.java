@@ -67,9 +67,8 @@ class SankeyViewTest {
             try {
                 Network network1 = TestUtil.complexDummyNetwork();
                 SankeyView view = new SankeyView(new SankeyData(network1), "Test-Epoche 1");
-
-                SankeyConfig newConfig = new SankeyConfig(1, 0.2, WeightFilter.POSITIVE);
-                view.setConfig(newConfig);
+                view.setThreshold(0.2);
+                view.setWeightFilter(WeightFilter.POSITIVE);
                 Network network2 = TestUtil.complexDummyNetwork();
                 view.update(new SankeyData(network2), "Test-Epoche 2");
             } finally {

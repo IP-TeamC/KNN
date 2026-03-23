@@ -37,25 +37,37 @@ public class SankeyView {
     private SankeyPlot sankey;
 
     /**
-     * Die Konfiguration für Threshold und WeightFilter dieser Sankey-Instanz.
+     * Stellt den Schwellenwert dar, der zur Bestimmung der Signifikanz bestimmter Verbindungen
+     * im Zusammenhang mit Heatmap-Visualisierungen verwendet wird.
      *
-     * @see SankeyConfig
+     * <p>Verbindungen mit {@code |weight| ≤ threshold} werden nicht dargestellt.
      */
     @Setter
-    private SankeyConfig config;
+    private double threshold;
+
+    /**
+     * Gibt an, ob positive, negative oder alle Gewichte dargestellt werden.
+     *
+     * @see WeightFilter
+     */
+    @Setter
+    private WeightFilter weightFilter;
 
     /**
      * Erstellt eine neue {@code SankeyView} und visualisiert die initialen Netzwerkdaten
      * anhand der angegebenen Konfiguration.
      *
-     * @param initialData Die initialen {@code SankeyData}, die beim Öffnen des Fensters dargestellt werden.
-     * @param title       Der Titel, der in der Titelleiste des Fensters angezeigt wird.
-     * @param config      Die {@link SankeyConfig} mit Threshold und WeightFilter.
+     * @param initialData  Die initialen {@code SankeyData}, die beim Öffnen des Fensters dargestellt werden.
+     * @param title        Der Titel, der in der Titelleiste des Fensters angezeigt wird.
+     * @param threshold    Der Schwellenwert, der zum Filtern von Verbindungen verwendet wird.
+     * @param weightFilter Der Filter, der angibt, welche Gewichte dargestellt werden sollen.
      * @see SankeyConfig
      */
-    public SankeyView(SankeyData initialData, String title, SankeyConfig config) {
-        this.config = config;
-        List<PlotItem> initialItems = initialData.convertToPlotItems(config.threshold(), config.weightFilter());
+    public SankeyView(SankeyData initialData, String title, Double threshold, WeightFilter weightFilter) {
+        this.threshold = threshold;
+        this.weightFilter = weightFilter;
+
+        List<PlotItem> initialItems = initialData.convertToPlotItems(threshold, weightFilter);
 
         Platform.runLater(() -> {
             this.stage = new Stage();
@@ -79,14 +91,14 @@ public class SankeyView {
      * Erstellt eine neue {@code SankeyView} mit Standardkonfiguration
      * und visualisiert die initialen Netzwerkdaten.
      *
-     * <p>Entspricht {@link #SankeyView(SankeyData, String, SankeyConfig)}
-     * mit {@link SankeyConfig#withDefaults(int)}.
+     * <p>- Threshold: {@code 0.1}
+     * <br>- WeightFilter: {@code WeightFilter.BOTH}
      *
      * @param initialData Die initialen {@code SankeyData}, die beim Öffnen des Fensters dargestellt werden.
      * @param title       Der Titel, der in der Titelleiste des Fensters angezeigt wird.
      */
     public SankeyView(SankeyData initialData, String title) {
-        this(initialData, title, SankeyConfig.withDefaults(1));
+        this(initialData, title, 0.1, WeightFilter.BOTH);
     }
 
     /**
@@ -99,7 +111,7 @@ public class SankeyView {
      * @see SankeyData#convertToPlotItems(Double, WeightFilter)
      */
     public void update(SankeyData data, String title) {
-        List<PlotItem> items = data.convertToPlotItems(config.threshold(), config.weightFilter());
+        List<PlotItem> items = data.convertToPlotItems(this.threshold, this.weightFilter);
         Platform.runLater(() -> {
             stage.setTitle("Sankey - Network View (" + title + ")");
             sankey.setItems(items);

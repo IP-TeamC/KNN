@@ -16,21 +16,17 @@ import java.util.List;
  * in eine Liste von {@code PlotItem}-Instanzen, die zur Erstellung eines Sankey-Diagramms geeignet sind.
  * Sie verarbeitet die Schichten des neuronalen Netzwerks und berechnet die entsprechende visuelle
  * Darstellung, indem sie Neuronen und deren Verbindungen auf {@code PlotItems} abbildet.
+ *
+ * @param network Die Netzwerkinstanz, die die Struktur eines neuronalen Netzwerks darstellt.
  */
-public class SankeyData {
-
-    /**
-     * Die Netzwerkinstanz, die die Struktur eines neuronalen Netzwerks darstellt.
-     */
-    private final Network network;
+public record SankeyData(Network network) {
 
     /**
      * Erstellt eine neue {@code SankeyData}-Instanz für das angegebene Netzwerk.
      *
      * @param network Das neuronale Netzwerk, das visualisiert werden soll.
      */
-    public SankeyData(Network network) {
-        this.network = network;
+    public SankeyData {
     }
 
     /**
