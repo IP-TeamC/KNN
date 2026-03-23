@@ -303,7 +303,7 @@ type = "ClassificationScorer"
 
 ### Darstellung
 
-Der Abschnitt [visualization] steuert optionale Trainingsvisualisierungen.
+Der Abschnitt [visualization] steuert optionale Netzwerkvisualisierungen.
 
 ``` toml
 [visualization]
@@ -311,6 +311,7 @@ Der Abschnitt [visualization] steuert optionale Trainingsvisualisierungen.
 # Gibt an, ob die Visualisierungen aktiviert sind.
 enable = true
 
+# Visualisierungsoptionen für Heatmaps
 [visualization.heatmap]
 
 # Bestimmt, in welchem Epochenintervall eine Gewichts-Heatmap erzeugt wird.
@@ -347,7 +348,7 @@ normalizeColors = true
 #
 colorScheme = "GREEN_RED"
 
-
+# Visualisierungsoptionen für Sankey-Diagramme
 [visualization.sankey]
 
 # Bestimmt, in welchem Epochenintervall das Sankey-Diagramm aktualisiert wird.
