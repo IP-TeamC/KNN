@@ -1,9 +1,7 @@
 package de.fhdw.knn.run;
 
+import de.fhdw.knn.data.*;
 import de.fhdw.knn.scorer.ClassificationScorer;
-import de.fhdw.knn.data.CsvReader;
-import de.fhdw.knn.data.DataSet;
-import de.fhdw.knn.data.TrainTestSplit;
 import de.fhdw.knn.network.Network;
 import de.fhdw.knn.network.activation.ActivationFunction;
 import de.fhdw.knn.network.connection.WeightInitializer;
@@ -32,8 +30,8 @@ class BananaQuality {
         /// Datenaufbereitung
         DataSet data = CsvReader.readFile("data/banana_quality.csv", 0, 7, 7, 1);
         /// optional Inputs (oder Outputs) normalisieren
-        // MinMaxNormalizer data = new MinMaxNormalizer(-10, 10);
-        // train.normalizeInputs(data);
+        // Normalizer inputNormalizer = new MinMaxNormalizer(-10, 10);
+        // data.normalizeInputs(inputNormalizer);
 
         /// Train-/Test-Split erzeugen
         TrainTestSplit trainTest = data.shuffleAndSplit(42, 0.2);

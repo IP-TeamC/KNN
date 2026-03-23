@@ -63,8 +63,8 @@ public class BananaQuality {
         /// Datenaufbereitung
         DataSet data = CsvReader.readFile("data/banana_quality.csv", 0, 7, 7, 1);
         /// optional Inputs (oder Outputs) normalisieren
-        // MinMaxNormalizer data = new MinMaxNormalizer(-10, 10);
-        // train.normalizeInputs(data);
+        // Normalizer inputNormalizer = new MinMaxNormalizer(-10, 10);
+        // data.normalizeInputs(inputNormalizer);
 
         /// Train-/Test-Split erzeugen
         TrainTestSplit trainTest = data.shuffleAndSplit(42, 0.2);
@@ -198,7 +198,7 @@ letzte Wert die Größe des Output-Layers bestimmt.
 Alternativ kann das Array der Dense-Layer auch manuell mit beliebigen Neuronen und Aktivierungsfunktionen erstellt werden.
 Die übergebenen Neuronen der DenseLayer werden vom Konstruktor der Netzwerk-Klasse automatisch verbunden (fully-connected, Feed-Forward).
 
-Bei Bedarf können weitere Akivierungsfunktion unter Implementierung des `ActivationFunction`-
+Bei Bedarf können weitere Aktivierungsfunktionen unter Implementierung des `ActivationFunction`-
 Interfaces eingebaut werden. Weitere Informationen sind in den Java-Docs zu finden.
 
 ```java
@@ -361,7 +361,7 @@ vorzeitig abzubrechen (z.B. `10`);
 
 ```java
 StopFunction stopFunctionDisabled = StopFunction.NEVER;
-StopFunction stopFunctionEarlyStopping = new EarlyStopping(0.01, 10);;
+StopFunction stopFunctionEarlyStopping = new EarlyStopping(0.01, 10);
 ```
 
 Bei Bedarf können weitere Stop-Funktionen unter Berücksichtigung des `StopFunction`-Interfaces
@@ -372,7 +372,7 @@ implementiert werden. Weitere Informationen sind unter den Java-Docs zu finden.
 Unter Optimierungs-Funktionen ist hier die Backpropagation-Funktion zu verstehen. Also mit welchem Vorgehen
 die kontinuierliche Anpassung der Gewichte passiert.
 Hier kann aktuell nur der `GradientDescent`-Algorithmus verwendet werden.
-Dieser benötigt zur Initialisierung die ausgewählte Verlust-Funktionsowie Learning-Rate.
+Dieser benötigt zur Initialisierung die ausgewählte Verlust-Funktion sowie Learning-Rate.
 
 ```java
 OptimizationFunction optimizationFunction = new GradientDescent(lossFunction, new ConstantLearningRate(0.03));

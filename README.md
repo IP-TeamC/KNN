@@ -68,7 +68,7 @@ Visualisierung der KNN-Struktur und der Trainingsfortschritte.
         - parallelisiertes Batch-Training (Multi-Threading) für große Batch-Größen
     - dynamischer Export während des Trainings (z.B. alle n Epochen)
     - Visualisierung des Netzes während des Trainings
-    - randomisierter Shuffle der Tranings-Daten (mit Seed für Reproduzierbarkeit)
+    - randomisierter Shuffle der Trainings-Daten (mit Seed für Reproduzierbarkeit)
 
 
 - <strong>Modell-Export/Import</strong>
