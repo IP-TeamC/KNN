@@ -3,6 +3,7 @@ Dokumentation: <strong><i>[README.md](README.md)</strong></i> - [library.md](doc
 # KNN
 
 Dokumentation zur KNN-Bibliothek von Team C (Marcel Anker, Lennart Heinrich, Piet Ostendorp).
+
 Hier wird die grundlegende Dokumentation anhand von Beispielen erklärt.
 Detaillierte Informationen zu einzelnen Klassen bzw. Interfaces sind der
 beiliegenden [Javadoc](docs/javadoc/de/fhdw/knn/package-summary.html) zu entnehmen.
@@ -135,10 +136,10 @@ Visualisierung der KNN-Struktur und der Trainingsfortschritte.
     - Performance-Verbesserung um ca. 30%
     - stabile Speicherauslastung (Entlastung des Garbage Collectors)
   - Neuron-Ausgabe in wiederverwendbarem Buffer
-  - Optimierungsalgorithmus während Trainings-Epoche stateless und thread-safe
+  - Optimierungsalgorithmus während Trainings-Epoche immutable und thread-safe
     - Multithreading trotz wiederverwendeter Buffer
 - Parallelisierung des Feedforward bei Vorhersage für große DataSets
-  - Netzwerk ist während Feedforward stateless und thread-safe
+  - Netzwerk ist während Feedforward immutable und thread-safe
 - Vergleichbare Performance wie scikit-learn je nach Trainings-Parametern
   - schneller für kleine Batch-Größen (z.B. SGD)
     - Batch-Größe 1: `23.78s` (KNN-Bibliothek) vs. `175.51s` (scikit-learn)

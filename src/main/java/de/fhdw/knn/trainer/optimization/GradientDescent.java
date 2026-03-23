@@ -11,7 +11,7 @@ import de.fhdw.knn.trainer.loss.LossFunction;
  * Beim KNN-Training üblicherweise verwendeter Optimierungsalgorithmus Gradient Descent.
  * Dieser ermittelt die Gradienten (Ableitung der Verlustfunktion nach einem Gewicht bzw. Bias),
  * passt diesen auf Basis der Learning Rate an und subtrahiert diesen von den jeweiligen Werten im Netzwerk.
- * Objekte dieser Klasse sind während einer Epoche stateless und damit thread-safe!
+ * Objekte dieser Klasse sind während einer Epoche immutable und damit thread-safe!
  *
  * @see OptimizationFunction
  */
