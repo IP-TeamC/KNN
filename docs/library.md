@@ -403,10 +403,10 @@ Mithilfe der Networks lassen sich verschiedene Visualisierungen der Ergebnisse d
 Dieses Beispiel zeigt die Erstellung einer Heatmap:
 ```java
 HeatmapData heatmapData = new HeatmapData(network);
-HeatmapView heatnapView = new HeatmapView();
-heatnapView.addHeatmap(heatmapData, "Manuelle Gewichtsmatrix");
+HeatmapView heatmapView = new HeatmapView();
+heatmapView.addHeatmap(heatmapData, "Manuelle Gewichtsmatrix");
 ```
-Networks lassen sich als Heatmap darstellen, in der die x-Achse das Quell-Neuron und die y-Achse das Zeil-Neuron darstellt.
+Networks lassen sich als Heatmap darstellen, in der die x-Achse das Quell-Neuron und die y-Achse das Ziel-Neuron darstellt.
 Rote Felder stehen standardmäßig für positive Gewichte (verstärkende Verbindungen), grüne Felder für negative Gewichte (hemmende Verbindungen).
 Je intensiver die Farbe ist, desto größer ist der Einfluss. 
 Weiße Felder liegen unterhalb des konfigurierten Schwellenwertes und gelten als vernachlässigbar.
