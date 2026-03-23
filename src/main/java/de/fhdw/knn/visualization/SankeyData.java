@@ -47,10 +47,11 @@ public record SankeyData(Network network) {
                 Color.LIGHTGREEN, Color.CYAN, Color.LIGHTBLUE, Color.BLUE,
         };
 
-        int totalLayers = network.denseLayers.length + 1;
+        DenseLayer[] denseLayers = network().denseLayers;
+        int totalLayers = denseLayers.length + 1;
 
         // Output Layer
-        DenseLayer outputLayer = network.denseLayers[network.denseLayers.length - 1];
+        DenseLayer outputLayer = denseLayers[denseLayers.length - 1];
         PlotItem[] outputItems = new PlotItem[outputLayer.neurons.length];
 
         for (int i = outputLayer.neurons.length - 1; i >= 0; i--) {
@@ -64,11 +65,11 @@ public record SankeyData(Network network) {
         }
 
         // Hidden Layers
-        PlotItem[][] hiddenItems = new PlotItem[network.denseLayers.length - 1][];
+        PlotItem[][] hiddenItems = new PlotItem[denseLayers.length - 1][];
 
-        for (int layer = network.denseLayers.length - 2; layer >= 0; layer--) {
-            DenseLayer currentLayer = network.denseLayers[layer];
-            int visualLayer = network.denseLayers.length - 1 - layer;
+        for (int layer = denseLayers.length - 2; layer >= 0; layer--) {
+            DenseLayer currentLayer = denseLayers[layer];
+            int visualLayer = denseLayers.length - 1 - layer;
 
             hiddenItems[layer] = new PlotItem[currentLayer.neurons.length];
 
@@ -100,20 +101,20 @@ public record SankeyData(Network network) {
         // Verbindungen erstellen
 
         // Output -> Hidden (letzter Hidden Layer)
-        if (network.denseLayers.length > 1) {
-            createConnectionsReversed(outputItems, hiddenItems[network.denseLayers.length - 2], outputLayer, threshold, weightFilter);
+        if (denseLayers.length > 1) {
+            createConnectionsReversed(outputItems, hiddenItems[denseLayers.length - 2], outputLayer, threshold, weightFilter);
         } else {
             createConnectionsReversed(outputItems, inputItems, outputLayer, threshold, weightFilter);
         }
 
         // Hidden Layers untereinander
-        for (int layer = network.denseLayers.length - 2; layer > 0; layer--) {
+        for (int layer = denseLayers.length - 2; layer > 0; layer--) {
             createConnectionsReversed(hiddenItems[layer], hiddenItems[layer - 1], network.denseLayers[layer], threshold, weightFilter);
         }
 
         // Letzter Hidden Layer -> Input
-        if (network.denseLayers.length > 1) {
-            createConnectionsReversed(hiddenItems[0], inputItems, network.denseLayers[0], threshold, weightFilter);
+        if (denseLayers.length > 1) {
+            createConnectionsReversed(hiddenItems[0], inputItems, denseLayers[0], threshold, weightFilter);
         }
 
         return allItems;
