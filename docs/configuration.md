@@ -1,5 +1,3 @@
-Dokumentation: [README.md](../README.md) - [library.md](library.md) - <strong><i>[configuration.md](configuration.md)</i></strong> 
-
 # Konfigurationsmöglichkeiten
 
 Dieses Projekt ermöglicht es, Konfigurationsdateien zu verwenden, um die Netzwerkarchitektur, das Training, die
@@ -17,8 +15,6 @@ Das unterstützte Dateiformati ist [TOML](https://toml.io/en/).
 
 TOML erlaubt Abschnittsdefinitionen wie bspw. `[network]` sowie wiederholbare Blöcke wie `[[network.layer]]`, die hier
 vor allem für die Definition mehrerer Netzwerkschichten verwendet werden.
-
-<br>
 
 ## Beispiele von Konfigurationen
 
@@ -66,11 +62,15 @@ patience = 5
 lossFunction = "CROSS_ENTROPY_LOSS"
 type = "ClassificationScorer"
 
+[visualization]
+enabled = true
+
 [visualization.heatmap]
 interval = 10
 showWeights = true
 normalizeColors = true
 colorScheme = "MONOCHROME"
+
 [visualization.sankey]
 interval = 10
 ```
@@ -94,8 +94,6 @@ importFile = "models/example.knn"
 type = "ClassificationScorer"
 ```
 
-<br>
-
 ## Konfigurationen ausführen
 
 ### Option 1: ConfigExecutor (empfohlen)
@@ -111,17 +109,24 @@ Optional kann der Pfad bzw. Name der zu ladenden Konfigurationsdatei auch direkt
 als Command-Line-Argument angegeben werden.
 
 In beiden Fällen sollte die mitgelieferte JAR-Datei direkt verwendet werden:
-```
+
+::: code-group
+```bash [Interaktiv]
 # Interaktiv ohne Argument
 java -jar knn.jar
 > Config (.toml-Dateiendung optional): ./conf/example.toml
 > ...
-
+```
+```bash [Mit Argument]
 # Direkt mit Argument
 java -jar knn.jar example.toml
 > ...
 ```
+:::
 
+> [!TIP]
+> Der Dateipfad kann ohne `.toml`-Endung angegeben werden –
+> `example` und `example.toml` funktionieren beide. Auch der default `./conf` Ordner kann weggelassen werden.
 
 ### Option 2: Dedizierte Runner-Klasse
 
@@ -138,8 +143,6 @@ public class ConfRun {
     }
 }
 ```
-
-<br>
 
 ## Verfügbare Konfigurationsoptionen
 

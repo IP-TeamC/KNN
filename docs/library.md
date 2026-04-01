@@ -1,5 +1,3 @@
-Dokumentation: [README.md](../README.md) - <strong><i>[library.md](library.md)</i></strong> - [configuration.md](configuration.md)
-
 # Verwendung der Bibliothek
 
 Im folgenden Abschnitt wird die Verwendung der Bibliothek am Beispiel eines Datensatzes zur Klassifikation der Bananen-Qualität schrittweise vorgestellt.
@@ -236,7 +234,7 @@ Weitere Informationen finden sich in den Java-Docs.
 
 Zur Erzeugung eines `SuperNeuron`s kann zusätzlich ein Adapter verwendet werden, wenn
 - die Anzahl der Input-Neuronen des Netzwerks innerhalb des `SuperNeuron`s von der Anzahl der Neuronen im Layer vor dem `SuperNeuron` abweicht,
-- oder nicht nur genau jedes n-te Neuron des vorherigen Layers mit jedem n-ten Input-Neuron des Netzwerks innerhalb des `SuperNeuron`s verbunden werden soll
+- oder nicht nur genau jedes n-te Neuron des vorherigen Layers mit jedem n-ten Input-Neuron des Netzwerks innerhalb des `SuperNeuron`s verbunden werden soll.
 
 Mithilfe des Adapters wird ein weiterer Input-Layer innerhalb des Netzwerks im `SuperNeuron` erzeugt.
 Der Adapter funktioniert so, dass jedes n-te Neuron des dem SuperNeuron vorgelagerten Layers mit dem n-ten Neuron des Adapter-Layers verbunden wird.
@@ -295,6 +293,10 @@ Network networkToExport = ...
 networkToExport.export("models/bq.knn");
 Network importedNetwork = Importer.importNetwork("models/bq.knn");
 ```
+
+> [!WARNING]
+> Das Exportformat ist binär und nicht menschenlesbar. Versionskonflikte zwischen
+> unterschiedlichen Bibliotheksversionen können beim Import zu Fehlern führen.
 
 ## Trainer
 

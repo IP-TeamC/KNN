@@ -6,3 +6,7 @@
 .settings
 /docs/javadoc
 /docs/test_coverage
+/docs/.vitepress/dist
+/docs/.vitepress/cache
+/docs/.vitepress/cachedocs/readme.md
+/node_modules
