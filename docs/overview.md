@@ -4,7 +4,7 @@ Dokumentation zur KNN-Bibliothek.
 
 Hier wird die grundlegende Dokumentation anhand von Beispielen erklärt.
 Detaillierte Informationen zu einzelnen Klassen bzw. Interfaces sind der
-beiliegenden [Javadoc](docs/javadoc/de/fhdw/knn/package-summary.html) zu entnehmen.
+beiliegenden [Javadoc] zu entnehmen.
 Ein grober [Überblick](#überblick) über die Funktionalität der Bibliothek ist ebenfalls weiter unten zu finden.
 
 ## Was ist dieses Projekt?
@@ -17,11 +17,11 @@ Visualisierungsmethoden der KNNs und die Möglichkeit, Dateien einzulesen.
 
 ## Verwendung der Konfiguration
 
-Die Verwendung von TOML-Konfigurationsdateien ist unter [docs/configuration.md](docs/configuration.md) beschrieben.
+Die Verwendung von TOML-Konfigurationsdateien ist unter [configuration.md](configuration.md) beschrieben.
 
 ## Verwendung der Bibliothek
 
-Die Verwendung dieses Projekts als Bibliothek ist unter [docs/library.md](docs/library.md) beschrieben.
+Die Verwendung dieses Projekts als Bibliothek ist unter [library.md](library.md) beschrieben.
 
 ## Überblick
 
@@ -148,15 +148,15 @@ Visualisierung der KNN-Struktur und der Trainingsfortschritte.
     - Batch-Größe 64: `12.45s` (KNN-Bibliothek) vs. `5.23s` (scikit-learn)
   - Beispiel für die Messung: Konfiguration `conf/bq_perf.toml`
     - CPU: AMD Ryzen 5 3600 (6 Kerne, 4.2 GHz)
-    - scikit-learn siehe [docs/assets/bq_perf.py](docs/assets/bq_perf.py)
+    - scikit-learn siehe [assets/bq_perf.py]
 
 ### Dokumentation
 
 Eine ausführliche Dokumentation zu diesem Projekt ist in drei Teilen verfügbar:
 
-- TOML-Konfigurationsdateien: [docs/configuration.md](docs/configuration.md)
-- Java-Bibliothek (grundlegend): [docs/library.md](docs/library.md)
-- Javadoc (detailliert): [docs/javadoc](docs/javadoc/de/fhdw/knn/package-summary.html)
+- TOML-Konfigurationsdateien: [configuration.md](configuration.md)
+- Java-Bibliothek (grundlegend): [library.md](library.md)
+- Javadoc (detailliert): [javadoc]
 
 ### Testvolumen
 
@@ -174,6 +174,6 @@ um sie von manuell erstellten Tests zu unterscheiden und das verwendete Tool anz
 - manuell überprüfte, automatisiert generierte Tests (mit `@Generated`-Annotation) zur Erhöhung der Testabdeckung
 - Durchführung von Regressionstests nach Code-Änderungen
 - <strong>265 Testfälle</strong> insgesamt
-- <strong>Coverage Report</strong> siehe [docs/test_coverage](docs/test_coverage/index.html)
+- <strong>Coverage Report</strong> siehe [test_coverage]
 
-![docs/assets/test_coverage.png](docs/assets/test_coverage.png)
+![assets/test_coverage.png](assets/test_coverage.png)
